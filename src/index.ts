@@ -1,21 +1,15 @@
-import type { Express } from "express";
-import type { Sql } from "postgres";
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import Logger from "./utils/Logger.js/src/Logger";
-
 import connectToPostgers from "./configs/postgres.config";
+import createLogger from "./configs/logger.config";
 
 dotenv.config();
 
-export const logger: Logger<"dev"> = new Logger<"dev">({
-  mode: "dev"
-});
-export const sql: Sql = connectToPostgers();
-const server: Express = express();
+export const logger = createLogger();
+export const sql = connectToPostgers();
+const server = express();
 
 server
   .use(cors())
