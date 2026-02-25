@@ -5,6 +5,7 @@ export default {
   REFRESH_TOKEN_KEY: "--refresh-auth-token--",
   OPTIONS: {
     httpOnly: true,
-    maxAge: 604800
+    maxAge: 604800,
+    secure: true
   } as CookieOptions
 } as const;
