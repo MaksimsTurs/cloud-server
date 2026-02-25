@@ -1,7 +1,7 @@
 import type { User } from "../../index.type";
 import type { UserLogUpReqBody } from "../../routes/user/user.type";
 
-import generateArgon2iHash from "../../utils/argon2.util";
+import generateArgon2iHash from "../../utils/generate-argon2i-hash.util";
 import generateId from "../../utils/generate-id.util";
 import { generateAccessToken } from "../../utils/jwt.util";
 
