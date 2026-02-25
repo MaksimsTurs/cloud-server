@@ -7,7 +7,9 @@ export default function createLogger(): Logger<LoggingModes> {
     mode: process.env.MODE as LoggingModes,
     styling: {
       colors: {
-        info: Logger.colorizer.font().rgb(70, 135, 255)
+        info: Logger.colorizer().font().rgb(70, 135, 255),
+        warn: Logger.colorizer().font().rgb(150, 150, 100),
+        error: Logger.colorizer().font().rgb(150, 50, 50)
       }
     }
   });

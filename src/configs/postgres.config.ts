@@ -6,7 +6,7 @@ import { logger } from "../index";
 
 export default function connectToPostgres(): Sql {
   logger.terminal.info("Connecting to Postgres");
-
+  
   return postgres({
     host: process.env.POSTGRES_HOST as string,
     port: parseInt(process.env.POSTGRES_PORT as string),

@@ -3,11 +3,7 @@ import type { JwtPayload } from "jsonwebtoken";
 import jsonwebtoken from "jsonwebtoken";
 
 function generateToken(payload: string, secret: string): string {
-  return jsonwebtoken.sign(
-    payload, 
-    secret,
-    { expiresIn: "7 days" }
-  );
+  return jsonwebtoken.sign(payload, secret, { expiresIn: "7 days" });
 };
 
 function verifyToken<P = unknown>(token: string = "", secret: string): P & JwtPayload | undefined {
