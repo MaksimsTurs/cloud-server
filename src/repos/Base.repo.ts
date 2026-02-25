@@ -9,7 +9,7 @@ class BaseRepository {
 
   public async insert<D>(data: D): Promise<void> {
     const keys: string[] = Object.keys(data as any);
-    await sql`INSERT INTO ${sql(this.name)} ${sql(data as any, keys)}`
+    await sql`INSERT INTO ${sql(this.name)} ${sql(data as any, keys)}`;
   };
 };
 

@@ -8,5 +8,5 @@ export default function generateArgon2iHash(payload: string): string {
     nonce: crypto.randomBytes(16),
     parallelism: 4,
     passes: 3,
-  }).toString();
+  }).toString("base64");
 };
