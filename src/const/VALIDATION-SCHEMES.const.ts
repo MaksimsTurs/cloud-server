@@ -8,6 +8,7 @@ export default {
       .string()
       .trim()
       .escape()
+      .maxLength(254)
       .email(),
     password: vine
       .string()
