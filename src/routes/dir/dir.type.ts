@@ -1,11 +1,21 @@
 import type { DirItem } from "../../index.type";
 
-export type GetDirResLocals = {
+export type ReadDirResLocals = {
   userId: string
 };
 
-export type GetDirReqQueries = {
+export type ReadDirReqQueries = {
   dir: string
 };
 
-export type GetDirResBody = DirItem[];
+export type ReadDirResBody = DirItem[];
+
+export type CopyDirResLocals = {
+  userId: string
+};
+
+export type CopyDirReqBody = {
+  from: string
+  into: string
+  items: string[]
+};

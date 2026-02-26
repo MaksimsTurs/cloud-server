@@ -1,5 +1,7 @@
-import readDir from "./read-dir.service";
+import read from "./read.service";
+import copy from "./copy.service";
 
 export default {
-  readDir
+  read,
+  copy
 } as const;

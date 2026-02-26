@@ -2,16 +2,24 @@ import auth from "../../middlewares/auth.middleware";
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
 
-import getDir from "./get-dir.route";
+import read from "./read.route";
+import copy from "./copy.route";
 
-import VALIDATIONSCHEMES from "../../const/VALIDATION-SCHEMES.const";
+import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
 
 export default {
-  getDir: [
-    validate("query", VALIDATIONSCHEMES.GET_DIR),
-    validate("cookies", VALIDATIONSCHEMES.AUTH),
+  read: [
+    validate("query", VALIDATION_SCHEMES.DIR_READ),
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
-    getDir,
+    read,
+    handleError
+  ],
+  copy: [
+    validate("body", VALIDATION_SCHEMES.DIR_COPY),
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    auth,
+    copy,
     handleError
   ]
 } as const;
