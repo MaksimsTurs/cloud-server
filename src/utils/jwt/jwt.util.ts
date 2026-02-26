@@ -30,15 +30,15 @@ export function verifyRefreshToken<P = unknown>(token?: string): JwtTokenPaylaod
   return verifyToken(token, process.env.REFRESH_TOKEN_SECRET!);
 };
 
-export function isBlackListed(token: string): boolean {
+export function isBlackListed(_token: string): boolean {
   // TODO: Implement...
   return false;
 };
 
-export function addTokenToBlackList(token: string): void {
+export function addTokenToBlackList(_token: string): void {
   // TODO: Implement...
 };
 
-export function removeTokenFromBlackList(token: string): void {
+export function removeTokenFromBlackList(_token: string): void {
   // TODO: Implement...
 };

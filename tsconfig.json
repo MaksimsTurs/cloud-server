@@ -4,10 +4,19 @@
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "outDir": "output",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+
     "strict": true,
-    "noImplicitAny": true,
-    "skipLibCheck": false,
-    "removeComments": true,
-  },
-  "include": ["./src/**/*.ts"]
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  }
 }
