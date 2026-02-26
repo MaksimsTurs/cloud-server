@@ -4,7 +4,7 @@ import type { UserLogUpReqBody } from "../../routes/user/user.type";
 import CaughtError from "../../utils/Caught-Error.util";
 import generateArgon2iHash from "../../utils/generate-argon2i-hash.util";
 import generateId from "../../utils/generate-id.util";
-import { generateAccessToken } from "../../utils/jwt.util";
+import { generateAccessToken } from "../../utils/jwt/jwt.util";
 
 import userRepo from "../../repos/User.repo";
 
@@ -34,7 +34,7 @@ export default async function create(data: UserLogUpReqBody): Promise<User> {
   };
   
   await fsAsync.mkdir(user.root_path);
-  await userRepo.insert<User>(user);
+  await userRepo.insert(user);
 
   return user;
 };
