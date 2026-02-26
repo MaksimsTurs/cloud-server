@@ -1,8 +1,9 @@
-export type UserAuthLocals = {
+export type InitUserLocals = {
   userId: string
 };
 
-export type UserAuthResBody = {
+export type InitUserResBody = {
+  user: string
   tokens: {
     access: string
   }

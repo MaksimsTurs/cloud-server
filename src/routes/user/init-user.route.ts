@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { User } from "../../index.type";
-import type { UserAuthLocals } from "./user.type";
+import type { InitUserLocals, InitUserResBody } from "./user.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
@@ -8,7 +8,7 @@ import userService from "../../services/user/user.service";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
-export default async function initUser(_req: Request, res: Response<unknown, UserAuthLocals>): Promise<void> {
+export default async function initUser(_req: Request, res: Response<InitUserResBody, InitUserLocals>): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
 
   if(!user) {
@@ -20,5 +20,10 @@ export default async function initUser(_req: Request, res: Response<unknown, Use
     });
   }
 
-  res.status(200).send({ access: user.token });
+  res.status(200).send({
+    user: user.id,
+    tokens: {
+      access: user.token, 
+    },
+  });
 };
