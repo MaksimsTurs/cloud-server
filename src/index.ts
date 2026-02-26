@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
 import connectToPostgers from "./configs/postgres.config";
@@ -14,8 +15,10 @@ export const sql = connectToPostgers();
 const server = express();
 
 server
-  .use(cors())
+  .use(cors({ origin: "http://localhost:3000", credentials: true }))
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
+  .use(cookieParser())
   .post("/user/log-up", ...userRoute.logUp)
-  .listen(process.env.SERVER_DEV_PORT)
+  .get("/user/auth", ...userRoute.initUser)
+  .listen(process.env.SERVER_PORT)
