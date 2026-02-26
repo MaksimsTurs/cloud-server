@@ -3,7 +3,7 @@ type CaughtErrorOptions = {
     code: number
     message: string
   }
-  server: {
+  server?: {
     message: string
   }
 };
