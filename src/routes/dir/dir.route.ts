@@ -6,6 +6,7 @@ import read from "./read.route";
 import copy from "./copy.route";
 import move from "./move.route";
 import remove from "./remove.route";
+import create from "./create.route";
 
 import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
 
@@ -36,6 +37,13 @@ export default {
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
     remove,
+    handleError
+  ],
+  create: [
+    validate("body", VALIDATION_SCHEMES.DIR_CREATE),
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    auth,
+    create,
     handleError
   ]
 } as const;

@@ -26,4 +26,5 @@ server
   .post("/dir/copy", ...dirRoute.copy)
   .post("/dir/move", ...dirRoute.move)
   .post("/dir/remove", ...dirRoute.remove)
+  .post("/dir/create", ...dirRoute.create)
   .listen(process.env.SERVER_PORT)

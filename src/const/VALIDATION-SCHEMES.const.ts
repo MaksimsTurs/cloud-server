@@ -6,6 +6,16 @@ vine.convertEmptyStringsToNull = true;
 
 export default {
   // Directory route schemes
+  DIR_CREATE: vine.create({
+    name: vine
+      .string()
+      .trim()
+      .escape(),
+    whichPath: vine
+      .string()
+      .trim()
+      .escape()
+  }),
   DIR_READ: vine.create({
     dir: vine
       .string()

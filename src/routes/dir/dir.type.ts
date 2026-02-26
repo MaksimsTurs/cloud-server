@@ -38,3 +38,12 @@ export type RemoveDirReqBody = {
   from: string
   items: string[]
 };
+
+export type CreateDirLocals = {
+  userId: string
+};
+
+export type CreateDirReqBody = {
+  name: string
+  whichPath: string
+};
