@@ -10,6 +10,12 @@ export default {
       .string()
       .uuid({ version: [4] })
   }),
+  GET_DIR: vine.create({
+    dir: vine
+      .string()
+      .trim()
+      .escape()
+  }),
   AUTH: vine.create({
     [COOKIE.ACCESS_TOKEN_KEY]: vine
       .string()

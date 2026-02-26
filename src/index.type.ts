@@ -9,3 +9,15 @@ export type User = {
   email: string
   root_path: string
 };
+
+export type DirItem = {
+  type: number
+  path: string
+  name: string
+  // Dir only properties
+  items?: DirItem[]
+  // File only properties
+  buffer?: string
+  size?: number
+  extention?: string
+};

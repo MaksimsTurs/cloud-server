@@ -7,6 +7,7 @@ import connectToPostgers from "./configs/postgres.config";
 import createLogger from "./configs/logger.config";
 
 import userRoute from "./routes/user/user.route";
+import dirRoute from "./routes/dir/dir.route";
 
 dotenv.config();
 
@@ -20,5 +21,6 @@ server
   .use(express.urlencoded({ extended: true }))
   .use(cookieParser())
   .post("/user/log-up", ...userRoute.logUp)
-  .get("/user/auth", ...userRoute.initUser)
+  .get("/user/init", ...userRoute.initUser)
+  .get("/dir/get", ...dirRoute.getDir)
   .listen(process.env.SERVER_PORT)
