@@ -2,16 +2,21 @@ import type { Row, RowList } from "postgres";
 
 import { sql } from "../index";
 
-class BaseRepository {
+class BaseRepository<T = unknown> {
   public name: string = "";
 
   constructor(name: string) {
     this.name = name;
   };
 
-  public async insert<D>(data: D): Promise<void> {
+  public async insert(data: T): Promise<void> {
     const keys: string[] = Object.keys(data as any);
     await sql`INSERT INTO ${sql(this.name)} ${sql(data as any, keys)}`;
+  };
+
+  public async getById(id: string): Promise<T | undefined> {
+    const res: T | undefined = (await sql`SELECT * FROM ${sql(this.name)} WHERE id = ${id} LIMIT 1`).at(-1) as T | undefined;
+    return res;
   };
 
   public async isExist(column: string, value: any): Promise<boolean> {
