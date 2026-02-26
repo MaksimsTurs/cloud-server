@@ -1,7 +1,7 @@
 import logUp from "./log-up.route";
-import initUser from "./init-user.route";
+import init from "./init.route";
 
-import VALIDATIONSCHEMES from "../../const/VALIDATION-SCHEMES.const";
+import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
 
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
@@ -9,14 +9,14 @@ import auth from "../../middlewares/auth.middleware";
 
 export default {
   logUp: [
-    validate("body", VALIDATIONSCHEMES.LOG_UP_BODY), 
+    validate("body", VALIDATION_SCHEMES.LOG_UP), 
     logUp, 
     handleError
   ],
-  initUser: [
-    validate("cookies", VALIDATIONSCHEMES.AUTH),
+  init: [
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
-    initUser,
+    init,
     handleError
   ]
 } as const;

@@ -6,24 +6,15 @@ import isPathSecure from "../../utils/is-path-secure.util";
 import isPathHasBase from "../../utils/is-path-has-base.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
-import DIRITEMTYPES from "../../const/DIR-ITEM-TYPES.const";
+import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
 
 import path from "node:path";
 import fsAsync from "node:fs/promises";
 
-export default async function readDir(user: User, dirPath: string): Promise<DirItem[]> {
+export default async function read(user: User, dirPath: string): Promise<DirItem[]> {
   const items: DirItem[] = [];
 
   let fullPath: string = "";
-
-  if(!user) {
-    throw new CaughtError({
-      server: {
-        message: `Unauthicated user try to fetch ${dirPath} directory`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
-    });
-  }
 
   if(!isPathSecure(user.root_path)) {
     throw new CaughtError({
@@ -66,13 +57,13 @@ export default async function readDir(user: User, dirPath: string): Promise<DirI
   const dirents: Dir = await fsAsync.opendir(fullPath);
     
   for await(let dirent of dirents) {
-    const direntPath: string = `${dirent.parentPath}/${dirent.name}`;
+    const direntPath: string = `${dirPath}/${dirent.name}`;
 
     if(dirent.isDirectory()) {
       items.push({
         name: dirent.name,
         path: direntPath,
-        type: DIRITEMTYPES.DIR
+        type: DIR_ITEM_TYPES.DIR
       });
     } else if(dirent.isFile()) {
       const itemStat = await fsAsync.lstat(direntPath);
@@ -80,7 +71,7 @@ export default async function readDir(user: User, dirPath: string): Promise<DirI
       items.push({
         name: dirent.name,
         path: direntPath,
-        type: DIRITEMTYPES.FILE,
+        type: DIR_ITEM_TYPES.FILE,
         extention: path.extname(dirent.name),
         size: itemStat.size
       })

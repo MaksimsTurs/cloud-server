@@ -8,7 +8,7 @@ import userService from "../../services/user/user.service";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
-export default async function initUser(_req: Request, res: Response<InitUserResBody, InitUserLocals>): Promise<void> {
+export default async function init(_req: Request, res: Response<InitUserResBody, InitUserLocals>): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
 
   if(!user) {
