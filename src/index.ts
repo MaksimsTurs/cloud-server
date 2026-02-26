@@ -24,4 +24,5 @@ server
   .get("/user/init", ...userRoute.init)
   .get("/dir/read", ...dirRoute.read)
   .post("/dir/copy", ...dirRoute.copy)
+  .post("/dir/move", ...dirRoute.move)
   .listen(process.env.SERVER_PORT)

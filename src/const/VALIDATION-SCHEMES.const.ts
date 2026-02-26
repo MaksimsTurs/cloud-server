@@ -12,6 +12,21 @@ export default {
       .trim()
       .escape()
   }),
+  DIR_MOVE: vine.create({
+    from: vine
+      .string()
+      .trim()
+      .escape(),
+    into: vine
+      .string()
+      .trim()
+      .escape(),
+    items: vine
+      .array(vine
+            .string()
+            .trim()
+            .escape())
+    }),
   DIR_COPY: vine.create({
     from: vine
       .string()

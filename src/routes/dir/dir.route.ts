@@ -4,6 +4,7 @@ import handleError from "../../middlewares/handle-errors.middleware";
 
 import read from "./read.route";
 import copy from "./copy.route";
+import move from "./move.route";
 
 import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
 
@@ -20,6 +21,13 @@ export default {
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
     copy,
+    handleError
+  ],
+  move: [
+    validate("body", VALIDATION_SCHEMES.DIR_MOVE),
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    auth,
+    move,
     handleError
   ]
 } as const;
