@@ -29,3 +29,12 @@ export type MoveDirReqBody = {
   into: string
   items: string[]
 };
+
+export type RemoveDirLocals = {
+  userId: string
+};
+
+export type RemoveDirReqBody = {
+  from: string
+  items: string[]
+};

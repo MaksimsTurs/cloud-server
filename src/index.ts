@@ -25,4 +25,5 @@ server
   .get("/dir/read", ...dirRoute.read)
   .post("/dir/copy", ...dirRoute.copy)
   .post("/dir/move", ...dirRoute.move)
+  .post("/dir/remove", ...dirRoute.remove)
   .listen(process.env.SERVER_PORT)
