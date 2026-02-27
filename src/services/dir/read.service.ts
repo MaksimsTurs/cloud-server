@@ -12,8 +12,17 @@ import path from "node:path";
 import fsAsync from "node:fs/promises";
 
 export default async function read(user: User, dirPath: string): Promise<DirItem[]> {
+  if(!isPathSecure(dirPath)) {
+    throw new CaughtError({
+      server: {
+        message: `${user.id} has tried to read items from a suspicious directory ${dirPath}`
+      },
+      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
+    });
+  }
+
   const items: DirItem[] = [];
-  const fullPath: string = path.resolve(path.normalize(user.root_path), path.normalize(dirPath));
+  const dirFullPath: string = path.resolve(path.normalize(user.root_path), path.normalize(dirPath));
 
   if(!isPathSecure(user.root_path)) {
     throw new CaughtError({
@@ -24,25 +33,16 @@ export default async function read(user: User, dirPath: string): Promise<DirItem
     });
   }
 
-  if(!isPathSecure(dirPath)) {
+  if(!isPathSecure(dirFullPath) || !isPathHasBase(user.root_path, dirFullPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} has tried to read items from a suspicious directory ${dirPath}`
+        message: `${user.id} has tried to read items from a suspicious directory ${dirFullPath}`
       },
       client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
     });
   }
 
-  if(!isPathSecure(fullPath) || !isPathHasBase(user.root_path, fullPath)) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to read items from a suspicious directory ${fullPath}`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
-    });
-  }
-
-  const dirents: Dir = await fsAsync.opendir(fullPath);
+  const dirents: Dir = await fsAsync.opendir(dirFullPath);
     
   for await(let dirent of dirents) {
     const direntPath: string = (`${dirPath}/${dirent.name}`);

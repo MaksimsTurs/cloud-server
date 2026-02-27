@@ -15,9 +15,9 @@ export type CopyDirResLocals = {
 };
 
 export type CopyDirReqBody = {
-  from: string
-  into: string
-  items: string[]
+  fromPath: string
+  intoPath: string
+  itemNames: string[]
 };
 
 export type MoveDirResLocals = {
@@ -25,9 +25,9 @@ export type MoveDirResLocals = {
 };
 
 export type MoveDirReqBody = {
-  from: string
-  into: string
-  items: string[]
+  fromPath: string
+  intoPath: string
+  itemNames: string[]
 };
 
 export type RemoveDirLocals = {
@@ -35,8 +35,8 @@ export type RemoveDirLocals = {
 };
 
 export type RemoveDirReqBody = {
-  from: string
-  items: string[]
+  fromPath: string
+  itemNames: string[]
 };
 
 export type CreateDirLocals = {
@@ -45,7 +45,7 @@ export type CreateDirLocals = {
 
 export type CreateDirReqBody = {
   name: string
-  whichPath: string
+  inWhichPath: string
 };
 
 export type UploadDirResLocals = {

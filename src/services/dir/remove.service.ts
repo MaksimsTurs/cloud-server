@@ -12,10 +12,10 @@ import CaughtError from "../../utils/Caught-Error.util";
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function remove(user: User, body: RemoveDirReqBody): Promise<void> {
-  const { from, items } = body;
+  const { itemNames } = body;
 
   const rootPath: string = path.normalize(user.root_path);
-  const fromPath: string = path.resolve(rootPath, path.normalize(from));
+  const fromPath: string = path.resolve(rootPath, path.normalize(body.fromPath));
 
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
@@ -35,27 +35,28 @@ export default async function remove(user: User, body: RemoveDirReqBody): Promis
     });
   }
 
-  for(let index: number = 0; index < items.length; index++) {
-    const itemPath: string = path.resolve(fromPath, items[index]);
+  for(let index: number = 0; index < itemNames.length; index++) {
+    const itemName: string = itemNames[index];
+    const itemFullPath: string = path.resolve(fromPath, itemName);
 
-    if(!isPathSecure(itemPath) || !isPathHasBase(rootPath, itemPath)) {
+    if(!isPathSecure(itemFullPath) || !isPathHasBase(rootPath, itemFullPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} has tried to remove suspicious item ${itemPath}`
+          message: `${user.id} has tried to remove suspicious item ${itemFullPath}`
         },
         client: HTTP_ERRORS.FORBIDDEN("You can not remove this items!")
       });
     }
 
-    if(!fsSync.existsSync(itemPath)) {
+    if(!fsSync.existsSync(itemFullPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} has tried to remove items that not exist ${itemPath}`
+          message: `${user.id} has tried to remove items that not exist ${itemFullPath}`
         },
         client: HTTP_ERRORS.CONFLICT("You can not remove item that not exist!")
       });
     }
 
-    await fsAsync.rm(itemPath, { recursive: true });
+    await fsAsync.rm(itemFullPath, { recursive: true });
   }
 };

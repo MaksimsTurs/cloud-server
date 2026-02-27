@@ -2,8 +2,8 @@ import type { User } from "../../index.type";
 import type { CopyDirReqBody } from "../../routes/dir/dir.type";
 
 import path from "node:path/posix";
-import fsAsync from "node:fs/promises";
-import fsSync from "node:fs";
+import fsSync from "fs";
+import fsAsync from "fs/promises";
 
 import isPathSecure from "../../utils/is-path-secure.util";
 import isPathHasBase from "../../utils/is-path-has-base.util";
@@ -12,11 +12,10 @@ import CaughtError from "../../utils/Caught-Error.util";
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function copy(user: User, body: CopyDirReqBody): Promise<void> {
-  const { from, into, items } = body;
-
+  const { itemNames } = body;
   const rootPath: string = path.normalize(user.root_path);
-  const fromPath: string = path.resolve(rootPath, path.normalize(from));
-  const intoPath: string = path.resolve(rootPath, path.normalize(into));
+  const fromPath: string = path.resolve(rootPath, path.normalize(body.fromPath));
+  const intoPath: string = path.resolve(rootPath, path.normalize(body.intoPath));
 
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
@@ -45,14 +44,15 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
     });
   }
 
-  for(let index: number = 0; index < items.length; index++) {
-    const itemSrcPath: string = path.resolve(fromPath, path.normalize(items[index]));
-    const itemDestPath: string = path.resolve(intoPath, path.normalize(items[index]));
+  for(let index: number = 0; index < itemNames.length; index++) {
+    const itemName: string = itemNames[index];
+    const itemSrcPath: string = path.resolve(fromPath, path.normalize(itemName));
+    const itemDestPath: string = path.resolve(intoPath, path.normalize(itemName));
     
     if(!isPathSecure(itemSrcPath) || !isPathHasBase(rootPath, itemSrcPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} has tried to copy ${items[index]} from ${itemSrcPath}`
+          message: `${user.id} has tried to copy ${itemName} from ${itemSrcPath}`
         },
         client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
       });
@@ -61,7 +61,7 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
     if(!isPathSecure(itemDestPath) || !isPathHasBase(rootPath, itemDestPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} has tried to copy ${items[index]} into ${itemDestPath}`
+          message: `${user.id} has tried to copy ${itemName} into ${itemDestPath}`
         },
         client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
       });
@@ -70,9 +70,9 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
     if(fsSync.existsSync(itemDestPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} has tried to copy item that alredy exist ${itemSrcPath} -> ${itemDestPath}`
+          message: `${user.id} has tried to copy item that alredy exist ${itemDestPath}`
         },
-        client: HTTP_ERRORS.CONFLICT("Item alredy exist in this directory!")
+        client: HTTP_ERRORS.CONFLICT("Item with the same name alredy exist!")
       });
     }
 

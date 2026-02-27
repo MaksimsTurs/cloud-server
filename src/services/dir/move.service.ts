@@ -12,11 +12,11 @@ import CaughtError from "../../utils/Caught-Error.util";
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function move(user: User, body: MoveDirReqBody): Promise<void> {
-  const { from, into, items } = body;
+  const { itemNames } = body;
 
   const rootPath: string = path.normalize(user.root_path);
-  const fromPath: string = path.resolve(rootPath, path.normalize(from));
-  const intoPath: string = path.resolve(rootPath, path.normalize(into));
+  const fromPath: string = path.resolve(rootPath, path.normalize(body.fromPath));
+  const intoPath: string = path.resolve(rootPath, path.normalize(body.intoPath));
 
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
@@ -45,9 +45,10 @@ export default async function move(user: User, body: MoveDirReqBody): Promise<vo
     });
   }
 
-  for(let index: number = 0; index < items.length; index++) {
-    const itemSrcPath: string = path.resolve(fromPath, path.normalize(items[index]));
-    const itemDestPath: string = path.resolve(intoPath, path.normalize(items[index]));
+  for(let index: number = 0; index < itemNames.length; index++) {
+    const itemName: string = itemNames[index];
+    const itemSrcPath: string = path.resolve(fromPath, path.normalize(itemName));
+    const itemDestPath: string = path.resolve(intoPath, path.normalize(itemName));
     
     if(!isPathSecure(itemSrcPath) || !isPathHasBase(rootPath, itemSrcPath)) {
       throw new CaughtError({
