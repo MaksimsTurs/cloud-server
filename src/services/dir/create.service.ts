@@ -1,4 +1,5 @@
-import { User } from "../../index.type";
+import type { User } from "../../index.type";
+import type { CreateDirReqBody } from "../../routes/dir/dir.type";
 
 import path from "node:path/posix";
 import fsSync from "node:fs";
@@ -10,7 +11,7 @@ import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
-export default async function create(user: User, body): Promise<void> {
+export default async function create(user: User, body: CreateDirReqBody): Promise<void> {
   const { name, whichPath } = body;
 
   const rootPath: string = path.normalize(user.root_path);
