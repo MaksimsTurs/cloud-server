@@ -58,16 +58,17 @@ function fileName(
 };
 
 function fileFilter(
-  _req: Request, 
+  req: Request, 
   file: Express.Multer.File, 
   callback: FileFilterCallback
 ): void {
   const extention: string = path.extname(file.fieldname);
+  const mimeType: string = file.mimetype;
 
-  if(!isSupportedFileFormat(extention)) {
+  if(!isSupportedFileFormat(extention, mimeType)) {
     callback(new CaughtError({
       server: {
-        message: `Someone try to upload unsupported file format ${extention}`,
+        message: `${req.socket.remoteAddress} try to upload unsupported file format "${extention}"`,
       },
       client: HTTP_ERRORS.BAD_REQUEST(`${extention} is unsupported file format!`)
     }));
