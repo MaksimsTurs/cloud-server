@@ -23,7 +23,9 @@ server
   .use(express.urlencoded({ extended: true }))
   .use(cookieParser())
   .post("/user/log-up", ...userRoute.logUp)
+  .get("/user/log-out", ...userRoute.logOut)
   .get("/user/init", ...userRoute.init)
+
   .get("/dir/read", ...dirRoute.read)
   .post("/dir/copy", ...dirRoute.copy)
   .post("/dir/move", ...dirRoute.move)

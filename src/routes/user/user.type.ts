@@ -20,3 +20,7 @@ export type UserLogUpResBody = {
     access: string
   }
 };
+
+export type UserLogOutResLocals = {
+  userId: string
+};
