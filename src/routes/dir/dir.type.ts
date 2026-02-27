@@ -47,3 +47,11 @@ export type CreateDirReqBody = {
   name: string
   whichPath: string
 };
+
+export type UploadDirResLocals = {
+  userId: string
+};
+
+export type UploadDirReqBody = {
+  uploadPath: string
+};

@@ -7,6 +7,7 @@ import copy from "./copy.route";
 import move from "./move.route";
 import remove from "./remove.route";
 import create from "./create.route";
+import upload from "./upload.route";
 
 import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
 
@@ -44,6 +45,13 @@ export default {
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
     create,
+    handleError
+  ],
+  upload: [
+    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD),
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    auth,
+    upload,
     handleError
   ]
 } as const;
