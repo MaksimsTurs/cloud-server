@@ -13,7 +13,7 @@ import fsAsync from "node:fs/promises";
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function create(data: UserLogUpReqBody): Promise<User> {
-  if (await userRepo.isExist("email", data.email)) {
+  if(await userRepo.isExist("email", data.email)) {
     throw new CaughtError({
       server: {
         message: "User with the same email try to create new account"
