@@ -1,8 +1,8 @@
 import type { User } from "../index.type";
 
-import BaseRepository from "./Base.repo";
+import SQLRepository from "./SQL.repo";
 
-class UserRepository extends BaseRepository<User> {
+class UserRepository extends SQLRepository<User> {
   constructor() {
     super("t_users");
   };

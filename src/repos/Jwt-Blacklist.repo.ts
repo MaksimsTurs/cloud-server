@@ -1,8 +1,8 @@
 import type { BlacklistedJwt } from "../index.type";
 
-import BaseRepository from "./Base.repo";
+import SQLRepository from "./SQL.repo";
 
-class JwtBlackListRepository extends BaseRepository<BlacklistedJwt> {
+class JwtBlackListRepository extends SQLRepository<BlacklistedJwt> {
   constructor() {
     super("t_jwt_blacklist");
   };
