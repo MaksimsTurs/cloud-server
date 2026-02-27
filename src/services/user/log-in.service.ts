@@ -16,7 +16,7 @@ export default async function logIn(user: User, data: UserLogInReqBody): Promise
   if(!passwordsMatch) {
     throw new CaughtError({
       server: {
-        message: `${user.id} tryed to log in`
+        message: `Unknown user has tried to log in as user ${user.id}`
       },
       client: HTTP_ERRORS.BAD_REQUEST("Password is not correct!")
     });

@@ -10,7 +10,7 @@ import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 import COOKIE from "../../const/COOKIE.const";
 
 export default async function logOut(
-  _req: Request,
+  req: Request,
   res: Response<unknown, UserLogOutResLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
@@ -18,14 +18,14 @@ export default async function logOut(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to create new directory`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to log out`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no permission to create new directory!")
+      client: HTTP_ERRORS.FORBIDDEN("User not found!")
     });
   }
 
   await userService.logOut(user);
 
-  res.cookie(COOKIE.ACCESS_TOKEN_KEY, "", COOKIE.OPTIONS);
+  res.clearCookie(COOKIE.ACCESS_TOKEN_KEY, COOKIE.OPTIONS);
   res.sendStatus(200);
 };

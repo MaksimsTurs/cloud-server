@@ -21,9 +21,9 @@ export default async function read(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to fetch ${req.query.dir} directory`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to fetch ${req.query.dir} directory items`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to read this directory!")
     });
   }
 

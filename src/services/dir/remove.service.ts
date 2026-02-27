@@ -20,18 +20,18 @@ export default async function remove(user: User, body: RemoveDirReqBody): Promis
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} have unsecure root path ${rootPath}`
+        message: `${user.id} has tried to remove items from a suspicious root directory ${rootPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not remove items from this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not remove this items!")
     });
   }
 
   if(!isPathSecure(fromPath) || !isPathHasBase(rootPath, fromPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to remove items from unsecure directory ${fromPath}`
+        message: `${user.id} has tried to remove items from a suspicious directory ${fromPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not remove items from this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not remove this items!")
     });
   }
 
@@ -41,21 +41,20 @@ export default async function remove(user: User, body: RemoveDirReqBody): Promis
     if(!isPathSecure(itemPath) || !isPathHasBase(rootPath, itemPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying remove unsecure path ${itemPath}`
+          message: `${user.id} has tried to remove suspicious item ${itemPath}`
         },
-        client: HTTP_ERRORS.FORBIDDEN("You can not remove items!")
+        client: HTTP_ERRORS.FORBIDDEN("You can not remove this items!")
       });
     }
 
     if(!fsSync.existsSync(itemPath)) {
       throw new CaughtError({
         server: {
-          message: `Can not remove not existing item ${itemPath}`
+          message: `${user.id} has tried to remove items that not exist ${itemPath}`
         },
-        client: HTTP_ERRORS.CONFLICT("Can not remove not existing item!")
+        client: HTTP_ERRORS.CONFLICT("You can not remove item that not exist!")
       });
     }
-
 
     await fsAsync.rm(itemPath, { recursive: true });
   }

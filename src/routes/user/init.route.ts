@@ -13,10 +13,10 @@ export default async function init(_req: Request, res: Response<InitUserResBody,
 
   if(!user) {
     throw new CaughtError({
-      client: HTTP_ERRORS.NOT_FOUND("User not found!"),
       server: {
-        message: `Can not find user with id ${res.locals.userId}`
-      }
+        message: `Can not find user with ${res.locals.userId} id`
+      },
+      client: HTTP_ERRORS.NOT_FOUND("User not found!"),
     });
   }
 

@@ -21,27 +21,27 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} have unsecure root path ${rootPath}`
+        message: `${user.id} has tried to copy items from a suspicious root directory ${rootPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not copy items into this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
     });
   }
 
   if(!isPathSecure(fromPath) || !isPathHasBase(rootPath, fromPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying copy items from unsecure path ${fromPath}`
+        message: `${user.id} has tried to copy items from a suspicious directory ${fromPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not copy items from this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
     });
   }
 
   if(!isPathSecure(intoPath) || !isPathHasBase(rootPath, intoPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying copy items into unsecure path ${intoPath}`
+        message: `${user.id} has tried to copy items into suspicious directory ${intoPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not copy items into this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
     });
   }
 
@@ -52,27 +52,27 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
     if(!isPathSecure(itemSrcPath) || !isPathHasBase(rootPath, itemSrcPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying copy from ${itemSrcPath}`
+          message: `${user.id} has tried to copy ${items[index]} from ${itemSrcPath}`
         },
-        client: HTTP_ERRORS.FORBIDDEN("You can not copy items into this directory!")
+        client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
       });
     }
 
     if(!isPathSecure(itemDestPath) || !isPathHasBase(rootPath, itemDestPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying copy into unsecure path ${itemDestPath}`
+          message: `${user.id} has tried to copy ${items[index]} into ${itemDestPath}`
         },
-        client: HTTP_ERRORS.FORBIDDEN("You can not copy items into this directory!")
+        client: HTTP_ERRORS.FORBIDDEN("You can not copy this items!")
       });
     }
 
     if(fsSync.existsSync(itemDestPath)) {
       throw new CaughtError({
         server: {
-          message: `Item with name ${itemDestPath} alredy exist`
+          message: `${user.id} has tried to copy item that alredy exist ${itemSrcPath} -> ${itemDestPath}`
         },
-        client: HTTP_ERRORS.CONFLICT("Item in this directory with the same name alredy exist!")
+        client: HTTP_ERRORS.CONFLICT("Item alredy exist in this directory!")
       });
     }
 

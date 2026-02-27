@@ -1,4 +1,4 @@
-import type { Dir } from "node:fs";
+import type { Dir, Stats } from "node:fs";
 import type { DirItem, User } from "../../index.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
@@ -13,51 +13,39 @@ import fsAsync from "node:fs/promises";
 
 export default async function read(user: User, dirPath: string): Promise<DirItem[]> {
   const items: DirItem[] = [];
-
-  let fullPath: string = "";
+  const fullPath: string = path.resolve(path.normalize(user.root_path), path.normalize(dirPath));
 
   if(!isPathSecure(user.root_path)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} have unsecure root path ${user.root_path}`
+        message: `${user.id} has tried to read items from a suspicious root directory ${user.root_path}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
     });
   }
 
   if(!isPathSecure(dirPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to open unsecure directory ${dirPath}`
+        message: `${user.id} has tried to read items from a suspicious directory ${dirPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
     });
   }
 
-  fullPath = path.resolve(path.normalize(user.root_path), path.normalize(dirPath));
-
-  if(!isPathSecure(fullPath)) {
+  if(!isPathSecure(fullPath) || !isPathHasBase(user.root_path, fullPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to access unsecure directory ${fullPath}`
+        message: `${user.id} has tried to read items from a suspicious directory ${fullPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
-    });
-  }
-
-  if(!isPathHasBase(user.root_path, fullPath)) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} trying to access directory without base path ${user.root_path} - ${fullPath}`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
     });
   }
 
   const dirents: Dir = await fsAsync.opendir(fullPath);
     
   for await(let dirent of dirents) {
-    const direntPath: string = `${dirPath}/${dirent.name}`;
+    const direntPath: string = (`${dirPath}/${dirent.name}`);
 
     if(dirent.isDirectory()) {
       items.push({
@@ -66,7 +54,7 @@ export default async function read(user: User, dirPath: string): Promise<DirItem
         type: DIR_ITEM_TYPES.DIR
       });
     } else if(dirent.isFile()) {
-      const itemStat = await fsAsync.lstat(direntPath);
+      const itemStat: Stats = await fsAsync.lstat(direntPath);
       
       items.push({
         name: dirent.name,

@@ -4,6 +4,7 @@ import type { CreateDirLocals, CreateDirReqBody } from "./dir.type";
 
 import userService from "../../services/user/user.service";
 import dirService from "../../services/dir/dir.service";
+
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
@@ -17,7 +18,7 @@ export default async function create(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to create new directory`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to create new directory`
       },
       client: HTTP_ERRORS.FORBIDDEN("You have no permission to create new directory!")
     });

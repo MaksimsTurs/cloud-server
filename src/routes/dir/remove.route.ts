@@ -18,9 +18,9 @@ export default async function remove(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to remove directory items`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to remove directory items`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to remove items!")
     });
   }
 

@@ -20,9 +20,9 @@ export default async function upload(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to upload files`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to upload files`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not upload files!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to upload files!")
     });
   }
 

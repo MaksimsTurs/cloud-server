@@ -28,7 +28,7 @@ export default async function upload(
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to upload files into unsecure root directory ${rootPath}`
+        message: `${user.id} has tried to upload files to a suspicious root directory ${rootPath}`
       },
       client: HTTP_ERRORS.FORBIDDEN("You can not upload into this directory!")
     });
@@ -37,7 +37,7 @@ export default async function upload(
   if(!isPathSecure(uploadFullPath) || !isPathHasBase(rootPath, uploadFullPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to upload files into unsecure directory ${uploadFullPath}`
+        message: `${user.id} has tried to upload files into suspicious directory ${uploadFullPath}`
       },
       client: HTTP_ERRORS.FORBIDDEN("You can not upload into this directory!")
     });
@@ -48,19 +48,19 @@ export default async function upload(
     const fileType: FileTypeResult | undefined = await fileTypeFromFile(file.path);
     const fileDistPath: string = path.resolve(uploadFullPath, path.normalize(file.fieldname));
    
-    if(fileType && !isSupportedFileFormat(fileType.ext)) {
+    if(fileType && !isSupportedFileFormat(fileType.ext, fileType.mime)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying to upload file of unsupported format ${fileType.ext} ${fileType.mime}`
+          message: `${user.id} has tried to upload file with unsupported format ${fileType.ext} ${fileType.mime}`
         },
-        client: HTTP_ERRORS.BAD_REQUEST(`${fileType.ext} is unsupported file format"`)
+        client: HTTP_ERRORS.BAD_REQUEST(`${fileType.ext} is unsupported file format!`)
       });
     }
 
     if(!isPathSecure(fileDistPath) || !isPathHasBase(rootPath, fileDistPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying to upload files into unsecure directory ${uploadFullPath}`
+          message: `${user.id} has tried to upload file with suspicious dist path ${fileDistPath}`
         },
         client: HTTP_ERRORS.FORBIDDEN("You can not upload into this directory!")
       });
@@ -69,7 +69,7 @@ export default async function upload(
     if(fsSync.existsSync(fileDistPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} tryng to upload file that alredy exist ${fileDistPath}`
+          message: `${user.id} has tried to upload file that alredy exist ${fileDistPath}`
         },
         client: HTTP_ERRORS.CONFLICT(`${file.fieldname} alredy exist!`)
       });

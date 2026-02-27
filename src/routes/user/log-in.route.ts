@@ -18,7 +18,7 @@ export default async function logIn(
   if(!user) {
    throw new CaughtError({
       server: {
-        message: "Can not find user"
+        message: "Can not find user with specific email"
       },
       client: HTTP_ERRORS.NOT_FOUND("User with this email does not exist!")
     });

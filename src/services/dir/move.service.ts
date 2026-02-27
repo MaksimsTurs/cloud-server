@@ -21,27 +21,27 @@ export default async function move(user: User, body: MoveDirReqBody): Promise<vo
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} have unsecure root path ${rootPath}`
+        message: `${user.id} has tried to move items into a suspicious root directory ${rootPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not move items into this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not move this items!")
     });
   }
 
   if(!isPathSecure(fromPath) || !isPathHasBase(rootPath, fromPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying copy items from unsecure path ${fromPath}`
+        message: `${user.id} has tried to move items from a suspicious directory ${fromPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not move items from this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not move this items!")
     });
   }
 
   if(!isPathSecure(intoPath) || !isPathHasBase(rootPath, intoPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying move items into unsecure path ${intoPath}`
+        message: `${user.id} has tried to move items into a suspicious directory ${intoPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not move items into this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You can not move this items!")
     });
   }
 
@@ -52,27 +52,27 @@ export default async function move(user: User, body: MoveDirReqBody): Promise<vo
     if(!isPathSecure(itemSrcPath) || !isPathHasBase(rootPath, itemSrcPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying move from ${itemSrcPath}`
+          message: `${user.id} has tried to move item from suspicious src path ${itemSrcPath}`
         },
-        client: HTTP_ERRORS.FORBIDDEN("You can not move items into this directory!")
+        client: HTTP_ERRORS.FORBIDDEN("You can not move this items!")
       });
     }
 
     if(!isPathSecure(itemDestPath) || !isPathHasBase(rootPath, itemDestPath)) {
       throw new CaughtError({
         server: {
-          message: `${user.id} trying move into unsecure path ${itemDestPath}`
+          message: `${user.id} has tried to move item into suspicious dest path ${itemDestPath}`
         },
-        client: HTTP_ERRORS.FORBIDDEN("You can not move items into this directory!")
+        client: HTTP_ERRORS.FORBIDDEN("You can not move this items!")
       });
     }
 
     if(fsSync.existsSync(itemDestPath)) {
       throw new CaughtError({
         server: {
-          message: `Item with name ${itemDestPath} alredy exist`
+          message: `${user.id} has tried to move item ${itemSrcPath} that alredy exist ${itemDestPath}`
         },
-        client: HTTP_ERRORS.CONFLICT("Item in this directory with the same name alredy exist!")
+        client: HTTP_ERRORS.CONFLICT("Item alredy exist in this directory!")
       });
     }
 

@@ -18,9 +18,9 @@ export default async function move(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to move directory items`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to move directory items`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to move items!")
     });
   }
 

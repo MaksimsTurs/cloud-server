@@ -18,9 +18,9 @@ export default async function copy(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Undefined user try to copy directory items`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to copy directory items`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no access to this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to copy items!")
     });
   }
 

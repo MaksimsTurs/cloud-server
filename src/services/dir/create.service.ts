@@ -21,25 +21,25 @@ export default async function create(user: User, body: CreateDirReqBody): Promis
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} have unsecure root path ${user.root_path}`
+        message: `${user.id} has tried to create new directory into a suspicious root directory ${user.root_path}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not create new directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to create new directory!")
     });
   }
 
   if(!isPathSecure(fullPath) || !isPathHasBase(rootPath, fullPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to create new item ${fullPath}`
+        message: `${user.id} has tried to create new directory with suspicious full path ${fullPath}`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You can not create new directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no permission to create new directory!")
     });
   }
 
   if(fsSync.existsSync(fullPath)) {
     throw new CaughtError({
       server: {
-        message: `${user.id} trying to create item with busy name`
+        message: `${user.id} has tried to create new directory that alredy exist ${fullPath}`
       },
       client: HTTP_ERRORS.CONFLICT("Directory with the same name alredy exist!")
     });
