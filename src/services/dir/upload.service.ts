@@ -10,7 +10,6 @@ import CaughtError from "../../utils/Caught-Error.util";
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
 
-import fsSync from "node:fs";
 import fsAsync from "node:fs/promises";
 import path from "node:path/posix";
 import { fileTypeFromFile } from "file-type";
@@ -63,15 +62,6 @@ export default async function upload(
           message: `${user.id} has tried to upload file with suspicious dist path ${fileDistPath}`
         },
         client: HTTP_ERRORS.FORBIDDEN("You can not upload into this directory!")
-      });
-    }
-
-    if(fsSync.existsSync(fileDistPath)) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to upload file that alredy exist ${fileDistPath}`
-        },
-        client: HTTP_ERRORS.CONFLICT(`${file.fieldname} alredy exist!`)
       });
     }
 

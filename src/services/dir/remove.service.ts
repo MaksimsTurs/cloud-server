@@ -1,9 +1,8 @@
 import type { User } from "../../index.type";
 import type { RemoveDirReqBody } from "../../routes/dir/dir.type";
 
-import path from "node:path/posix";
+import path from "node:path";
 import fsAsync from "node:fs/promises";
-import fsSync from "node:fs";
 
 import isPathSecure from "../../utils/is-path-secure.util";
 import isPathHasBase from "../../utils/is-path-has-base.util";
@@ -48,15 +47,6 @@ export default async function remove(user: User, body: RemoveDirReqBody): Promis
       });
     }
 
-    if(!fsSync.existsSync(itemFullPath)) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to remove items that not exist ${itemFullPath}`
-        },
-        client: HTTP_ERRORS.CONFLICT("You can not remove item that not exist!")
-      });
-    }
-
-    await fsAsync.rm(itemFullPath, { recursive: true });
+    await fsAsync.rm(itemFullPath, { recursive: true, force: true });
   }
 };

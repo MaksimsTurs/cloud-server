@@ -1,8 +1,7 @@
 import type { User } from "../../index.type";
 import type { CreateDirReqBody } from "../../routes/dir/dir.type";
 
-import path from "node:path/posix";
-import fsSync from "fs";
+import path from "node:path";
 import fsAsync from "fs/promises";
 
 import isPathSecure from "../../utils/is-path-secure.util";
@@ -33,15 +32,6 @@ export default async function create(user: User, body: CreateDirReqBody): Promis
         message: `${user.id} has tried to create new directory with suspicious full path ${dirPath}`
       },
       client: HTTP_ERRORS.FORBIDDEN("You have no permission to create new directory!")
-    });
-  }
-
-  if(fsSync.existsSync(dirPath)) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to create new directory that alredy exist ${dirPath}`
-      },
-      client: HTTP_ERRORS.CONFLICT("Item with the same name alredy exist!")
     });
   }
 

@@ -1,8 +1,7 @@
 import type { User } from "../../index.type";
 import type { CopyDirReqBody } from "../../routes/dir/dir.type";
 
-import path from "node:path/posix";
-import fsSync from "fs";
+import path from "node:path";
 import fsAsync from "fs/promises";
 
 import isPathSecure from "../../utils/is-path-secure.util";
@@ -16,6 +15,7 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
   const rootPath: string = path.normalize(user.root_path);
   const fromPath: string = path.resolve(rootPath, path.normalize(body.fromPath));
   const intoPath: string = path.resolve(rootPath, path.normalize(body.intoPath));
+
 
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
@@ -67,15 +67,6 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
       });
     }
 
-    if(fsSync.existsSync(itemDestPath)) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to copy item that alredy exist ${itemDestPath}`
-        },
-        client: HTTP_ERRORS.CONFLICT("Item with the same name alredy exist!")
-      });
-    }
-
-    await fsAsync.cp(itemSrcPath, itemDestPath);
+    await fsAsync.cp(itemSrcPath, itemDestPath, { force: true });
   }
 };

@@ -1,9 +1,8 @@
 import type { User } from "../../index.type";
 import type { MoveDirReqBody } from "../../routes/dir/dir.type";
 
-import path from "node:path/posix";
+import path from "node:path";
 import fsAsync from "node:fs/promises";
-import fsSync from "node:fs";
 
 import isPathSecure from "../../utils/is-path-secure.util";
 import isPathHasBase from "../../utils/is-path-has-base.util";
@@ -65,15 +64,6 @@ export default async function move(user: User, body: MoveDirReqBody): Promise<vo
           message: `${user.id} has tried to move item into suspicious dest path ${itemDestPath}`
         },
         client: HTTP_ERRORS.FORBIDDEN("You can not move this items!")
-      });
-    }
-
-    if(fsSync.existsSync(itemDestPath)) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to move item ${itemSrcPath} that alredy exist ${itemDestPath}`
-        },
-        client: HTTP_ERRORS.CONFLICT("Item alredy exist in this directory!")
       });
     }
 
