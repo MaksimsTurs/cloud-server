@@ -7,7 +7,7 @@ import { verifyAccessToken } from "../utils/jwt/jwt.util";
 
 import COOKIE from "../const/COOKIE.const";
 import HTTP_ERRORS from "../const/HTTP-ERRORS.const";
-import VALIDATIONSCHEMES from "../const/VALIDATION-SCHEMES.const";
+import VALIDATION_SCHEMES from "../const/VALIDATION-SCHEMES.const";
 
 export default async function auth(req: Request, res: Response, next: NextFunction): Promise<void> {
   const token: string | undefined = req.cookies[COOKIE.ACCESS_TOKEN_KEY];
@@ -17,7 +17,7 @@ export default async function auth(req: Request, res: Response, next: NextFuncti
     throw new CaughtError({ client: HTTP_ERRORS.UNAUTHORIZED() });
   }
 
-  VALIDATIONSCHEMES.UNTRUSTED_JWT_PAYLOAD.validate(payload);
+  VALIDATION_SCHEMES.JWT_PAYLOAD.validate(payload);
   res.locals.userId = payload.id;
 
   next();

@@ -16,7 +16,6 @@ export default async function copy(user: User, body: CopyDirReqBody): Promise<vo
   const fromPath: string = path.resolve(rootPath, path.normalize(body.fromPath));
   const intoPath: string = path.resolve(rootPath, path.normalize(body.intoPath));
 
-
   if(!isPathSecure(rootPath)) {
     throw new CaughtError({
       server: {

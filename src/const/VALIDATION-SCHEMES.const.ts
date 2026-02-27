@@ -17,7 +17,7 @@ export default {
       .string()
       .trim()
       .escape(),
-    whichPath: vine
+    inWhichPath: vine
       .string()
       .trim()
       .escape()
@@ -29,41 +29,41 @@ export default {
       .escape()
   }),
   DIR_REMOVE: vine.create({
-    from: vine
+    fromPath: vine
       .string()
       .trim()
       .escape(),
-    items: vine
+    itemNames: vine
       .array(vine
             .string()
             .trim()
             .escape())
     }),
   DIR_MOVE: vine.create({
-    from: vine
+    fromPath: vine
       .string()
       .trim()
       .escape(),
-    into: vine
+    intoPath: vine
       .string()
       .trim()
       .escape(),
-    items: vine
+    itemNames: vine
       .array(vine
             .string()
             .trim()
             .escape())
     }),
   DIR_COPY: vine.create({
-    from: vine
+    fromPath: vine
       .string()
       .trim()
       .escape(),
-    into: vine
+    intoPath: vine
       .string()
       .trim()
       .escape(),
-    items: vine
+    itemNames: vine
       .array(vine
             .string()
             .trim()
