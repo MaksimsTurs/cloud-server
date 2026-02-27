@@ -90,6 +90,19 @@ export default {
       .minLength(12)
       .sameAs("password")
   }),
+  LOG_IN: vine.create({
+    email: vine
+      .string()
+      .trim()
+      .escape()
+      .maxLength(254)
+      .email(),
+    password: vine
+      .string()
+      .trim()
+      .escape()
+      .minLength(12)
+  }),
   // Middleware route schemes
   JWT_PAYLOAD: vine.create({
     id: vine

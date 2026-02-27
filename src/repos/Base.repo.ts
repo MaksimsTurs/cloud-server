@@ -14,9 +14,19 @@ class BaseRepository<T = unknown> {
     await sql`INSERT INTO ${sql(this.name)} ${sql(data as any, keys)}`;
   };
 
+  public async getBy(column: string, value: any): Promise<T | undefined> {
+    const res: T | undefined = (await sql`SELECT * FROM ${sql(this.name)} WHERE ${sql(column)} = ${value} LIMIT 1`).at(-1) as T | undefined;
+    return res;
+  };
+
   public async getById(id: string): Promise<T | undefined> {
     const res: T | undefined = (await sql`SELECT * FROM ${sql(this.name)} WHERE id = ${id} LIMIT 1`).at(-1) as T | undefined;
     return res;
+  };
+
+  public async updateById(id: string, data: Partial<T>): Promise<void> {
+    const keys: string[] = Object.keys(data as any);
+    await sql`UPDATE ${sql(this.name)} SET ${sql(data as any, keys)} WHERE id = ${id}`;
   };
 
   public async isExist(column: string, value: any): Promise<boolean> {

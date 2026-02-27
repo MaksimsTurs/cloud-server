@@ -24,3 +24,15 @@ export type UserLogUpResBody = {
 export type UserLogOutResLocals = {
   userId: string
 };
+
+export type UserLogInReqBody = {
+  email: string
+  password: string
+};
+
+export type UserLogInResBody = {
+  user: string
+  tokens: {
+    access: string
+  }
+};

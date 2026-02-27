@@ -1,11 +1,15 @@
-import create from "./create.service";
-import getById from "./get-by-id.service";
 import logOut from "./log-out.service";
+import logIn from "./log-in.service";
+import logUp from "./log-up.service";
+import getById from "./get-by-id.service";
+import getBy from "./get-by.service";
 
 const userService = {
-  create,
+  logUp,
+  logOut,
+  logIn,
   getById,
-  logOut
+  getBy
 } as const;
 
 export default userService;
