@@ -1,9 +1,9 @@
-import type { User } from "../../index.type";
+import type { User, UserTokens } from "../../index.type";
 import type { UserLogUpReqBody } from "../../routes/user/user.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
 import generateId from "../../utils/generate-id.util";
-import { generateAccessToken } from "../../utils/jwt/jwt.util";
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt/jwt.util";
 
 import userRepo from "../../repos/User.repo";
 
@@ -12,7 +12,7 @@ import argon2 from "argon2";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
-export default async function create(data: UserLogUpReqBody): Promise<User> {
+export default async function create(data: UserLogUpReqBody): Promise<User & UserTokens> {
   if(await userRepo.isExist("email", data.email)) {
     throw new CaughtError({
       server: {
@@ -24,17 +24,17 @@ export default async function create(data: UserLogUpReqBody): Promise<User> {
 
   const hash: string = await argon2.hash(data.password);
   const id: string = generateId();
-  const token: string = generateAccessToken({ id });
+  const accessToken: string = generateAccessToken({ id });
+  const refreshToken: string = generateRefreshToken({ id });
   const user: User = {
     id,
-    token,
     password: hash,
     email: data.email,
     root_path: `${process.env.PROJECT_BASE_PATH}/${id}`
   };
-  
+
   await fsAsync.mkdir(user.root_path);
   await userRepo.insert(user);
 
-  return user;
+  return {...user, accessToken, refreshToken };
 };

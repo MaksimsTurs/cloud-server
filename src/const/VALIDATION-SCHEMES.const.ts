@@ -110,9 +110,11 @@ export default {
       .uuid({ version: [4] })
   }),
   AUTH: vine.create({
+    [COOKIE.REFRESH_TOKEN_KEY]: vine
+      .string()
+      .jwt(),
     [COOKIE.ACCESS_TOKEN_KEY]: vine
       .string()
       .jwt()
-      .optional()
   }),
 };

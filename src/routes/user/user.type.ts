@@ -3,9 +3,9 @@ export type InitUserLocals = {
 };
 
 export type InitUserResBody = {
-  user: string
   tokens: {
     access: string
+    refresh: string
   }
 };
 
@@ -18,6 +18,7 @@ export type UserLogUpReqBody = {
 export type UserLogUpResBody = {
   tokens: {
     access: string
+    refresh: string
   }
 };
 
@@ -31,8 +32,8 @@ export type UserLogInReqBody = {
 };
 
 export type UserLogInResBody = {
-  user: string
   tokens: {
     access: string
+    refresh: string
   }
 };

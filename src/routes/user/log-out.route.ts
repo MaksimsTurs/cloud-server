@@ -20,12 +20,13 @@ export default async function logOut(
       server: {
         message: `Unknown user ${req.socket.remoteAddress} has tried to log out`
       },
-      client: HTTP_ERRORS.FORBIDDEN("User not found!")
+      client: HTTP_ERRORS.NOT_FOUND("User not found!")
     });
   }
 
   await userService.logOut(user);
 
-  res.clearCookie(COOKIE.ACCESS_TOKEN_KEY, COOKIE.OPTIONS);
+  res.clearCookie(COOKIE.ACCESS_TOKEN_KEY, COOKIE.ACCESS_OPTIONS);
+  res.clearCookie(COOKIE.REFRESH_TOKEN_KEY, COOKIE.REFRESH_OPTIONS);
   res.sendStatus(200);
 };

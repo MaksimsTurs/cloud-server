@@ -7,8 +7,9 @@ import CaughtError from "../../utils/Caught-Error.util";
 import userService from "../../services/user/user.service";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
+import COOKIE from "../../const/COOKIE.const";
 
-export default async function init(_req: Request, res: Response<InitUserResBody, InitUserLocals>): Promise<void> {
+export default async function init(req: Request, res: Response<InitUserResBody, InitUserLocals>): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
 
   if(!user) {
@@ -21,9 +22,9 @@ export default async function init(_req: Request, res: Response<InitUserResBody,
   }
 
   res.status(200).send({
-    user: user.id,
     tokens: {
-      access: user.token, 
-    },
+      access: req.cookies[COOKIE.ACCESS_TOKEN_KEY],
+      refresh: req.cookies[COOKIE.REFRESH_TOKEN_KEY]
+    }
   });
 };

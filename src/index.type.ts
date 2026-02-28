@@ -1,9 +1,13 @@
 export type User = {
   id: string
-  token: string
   password: string
   email: string
   root_path: string
+};
+
+export type UserTokens = {
+  accessToken: string
+  refreshToken: string
 };
 
 export type BlacklistedJwt = {

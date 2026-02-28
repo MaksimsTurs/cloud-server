@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { User } from "../../index.type";
+import type { User, UserTokens } from "../../index.type";
 import type { UserLogInReqBody, UserLogInResBody } from "./user.type";
 
 import userService from "../../services/user/user.service";
@@ -13,7 +13,7 @@ export default async function logIn(
   req: Request<unknown, unknown, UserLogInReqBody>,
   res: Response<UserLogInResBody>
 ): Promise<void> {
-  let user: User | undefined = await userService.getBy("email", req.body.email);
+  const user: User | undefined = await userService.getBy("email", req.body.email);
 
   if(!user) {
    throw new CaughtError({
@@ -24,13 +24,14 @@ export default async function logIn(
     });
   }
 
-  user = await userService.logIn(user, req.body);
+  const userData: User & UserTokens = await userService.logIn(user, req.body);
 
-  res.cookie(COOKIE.ACCESS_TOKEN_KEY, user?.token, COOKIE.OPTIONS);
-  res.status(200).send({
-    user: user!.id,
+  res.cookie(COOKIE.ACCESS_TOKEN_KEY, userData.accessToken, COOKIE.ACCESS_OPTIONS);
+  res.cookie(COOKIE.REFRESH_TOKEN_KEY, userData.refreshToken, COOKIE.REFRESH_OPTIONS);
+  res.status(200).send({ 
     tokens: {
-      access: user!.token
+      access: userData.accessToken,
+      refresh: userData.refreshToken
     }
   });
 };

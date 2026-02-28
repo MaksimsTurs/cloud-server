@@ -1,9 +1,11 @@
 import type { JwtTokenPaylaod } from "./jwt.type";
 
+import type { SignOptions } from "jsonwebtoken";
+
 import jsonwebtoken from "jsonwebtoken";
 
-function generateToken(payload: string, secret: string): string {
-  return jsonwebtoken.sign(payload, secret, { expiresIn: "7 days" });
+function generateToken(payload: string, secret: string, options: SignOptions): string {
+  return jsonwebtoken.sign(payload, secret, options);
 };
 
 function verifyToken<P = unknown>(token: string = "", secret: string): JwtTokenPaylaod<P> | undefined {
@@ -15,11 +17,13 @@ function verifyToken<P = unknown>(token: string = "", secret: string): JwtTokenP
 };
 
 export function generateAccessToken(payload: any): string {
-  return generateToken(payload, process.env.ACCESS_TOKEN_SECRET as string);
+  const secret: string = process.env.ACCESS_TOKEN_SECRET as string;
+  return generateToken(payload, secret, { expiresIn: "7 days" });
 };
 
 export function generateRefreshToken(payload: any): string {
-  return generateToken(payload, process.env.REFRESH_TOKEN_SECRET as string);
+  const secret: string = process.env.REFRESH_TOKEN_SECRET as string;
+  return generateToken(payload, secret, { expiresIn: "15 minutes" });
 };
 
 export function verifyAccessToken<P = unknown>(token?: string): JwtTokenPaylaod<P> | undefined {
