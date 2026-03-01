@@ -2,7 +2,20 @@ export type User = {
   id: string
   password: string
   email: string
-  root_path: string
+};
+
+export type FileObject = {
+  id: string
+  parent_id: string
+  user_id: string
+  name: string
+};
+
+export type DirObject = {
+  id: string
+  parent_id: string
+  user_id: string
+  name: string
 };
 
 export type UserTokens = {

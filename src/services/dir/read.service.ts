@@ -3,7 +3,8 @@ import type { DirItem, User } from "../../index.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
 import isPathSecure from "../../utils/is-path-secure.util";
-import isPathHasBase from "../../utils/is-path-has-base.util";
+import isPathHasBase from "../../utils//is-path-has-base.util";
+import getUserBasePath from "../../utils/get-user-base-path.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
@@ -22,18 +23,10 @@ export default async function read(user: User, dirPath: string): Promise<DirItem
   }
 
   const items: DirItem[] = [];
-  const dirFullPath: string = path.resolve(path.normalize(user.root_path), path.normalize(dirPath));
+  const basePath: string = getUserBasePath();
+  const dirFullPath: string = path.resolve(basePath, path.normalize(dirPath));
 
-  if(!isPathSecure(user.root_path)) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to read items from a suspicious root directory ${user.root_path}`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
-    });
-  }
-
-  if(!isPathSecure(dirFullPath) || !isPathHasBase(user.root_path, dirFullPath)) {
+  if(!isPathSecure(dirFullPath) || !isPathHasBase(basePath, dirFullPath)) {
     throw new CaughtError({
       server: {
         message: `${user.id} has tried to read items from a suspicious directory ${dirFullPath}`
