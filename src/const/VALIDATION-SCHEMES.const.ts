@@ -15,18 +15,22 @@ export default {
   DIR_CREATE: vine.create({
     name: vine
       .string()
+      .maxLength(64)
       .trim()
       .escape(),
-    inWhichPath: vine
+    parentId: vine
       .string()
       .trim()
       .escape()
+      .uuid({ version: [4] })
+      .optional()
   }),
   DIR_READ: vine.create({
     dir: vine
       .string()
       .trim()
       .escape()
+      .optional()
   }),
   DIR_REMOVE: vine.create({
     fromPath: vine

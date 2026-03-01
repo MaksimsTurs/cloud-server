@@ -39,13 +39,13 @@ export type RemoveDirReqBody = {
   itemNames: string[]
 };
 
-export type CreateDirLocals = {
+export type CreateStorageObjectLocals = {
   userId: string
 };
 
-export type CreateDirReqBody = {
+export type CreateStorageObjectReqBody = {
   name: string
-  inWhichPath: string
+  parentId?: string
 };
 
 export type UploadDirResLocals = {

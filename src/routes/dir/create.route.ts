@@ -1,20 +1,20 @@
 import type { Request, Response } from "express";
-import type { User } from "../../index.type";
-import type { CreateDirLocals, CreateDirReqBody } from "./dir.type";
+import type { StorageObject, User } from "../../index.type";
+import type { CreateStorageObjectLocals, CreateStorageObjectReqBody } from "./dir.type";
 
 import userService from "../../services/user/user.service";
-import dirService from "../../services/dir/dir.service";
+import objectStorageService from "../../services/dir/dir.service";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function create(
-  req: Request<unknown, unknown, CreateDirReqBody>,
-  res: Response<unknown, CreateDirLocals>
+  req: Request<unknown, unknown, CreateStorageObjectReqBody>,
+  res: Response<StorageObject, CreateStorageObjectLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
-  
+
   if(!user) {
     throw new CaughtError({
       server: {
@@ -24,7 +24,7 @@ export default async function create(
     });
   }
 
-  await dirService.create(user, req.body);
-
-  res.sendStatus(200);
+  const storageObject: StorageObject = await objectStorageService.create(user, req.body);
+  
+  res.status(200).send(storageObject);
 };

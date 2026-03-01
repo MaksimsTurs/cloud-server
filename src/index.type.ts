@@ -4,18 +4,12 @@ export type User = {
   email: string
 };
 
-export type FileObject = {
+export type StorageObject = {
   id: string
-  parent_id: string
   user_id: string
-  name: string
-};
-
-export type DirObject = {
-  id: string
   parent_id: string
-  user_id: string
   name: string
+  type: number
 };
 
 export type UserTokens = {
