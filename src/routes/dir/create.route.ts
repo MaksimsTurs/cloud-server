@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { StorageObject, User } from "../../index.type";
-import type { CreateStorageObjectLocals, CreateStorageObjectReqBody } from "./dir.type";
+import type { CreateStorageObjectResLocals, CreateStorageObjectReqBody } from "./dir.type";
 
 import userService from "../../services/user/user.service";
 import objectStorageService from "../../services/dir/dir.service";
@@ -11,7 +11,7 @@ import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function create(
   req: Request<unknown, unknown, CreateStorageObjectReqBody>,
-  res: Response<StorageObject, CreateStorageObjectLocals>
+  res: Response<StorageObject, CreateStorageObjectResLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
 
