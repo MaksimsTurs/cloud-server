@@ -1,22 +1,25 @@
 import type { Request, Response } from "express";
-import type { DirItem, User } from "../../index.type";
-import type { ReadDirReqQueries, ReadDirResBody, ReadDirResLocals } from "./dir.type";
+import type { StorageObject, User } from "../../index.type";
+import type { 
+  GetStorageObjectsResLocals,
+  GetStorageObjectsResBody,
+  GetStorageObjectsReqBody,
+} from "./dir.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
 import userService from "../../services/user/user.service";
+import objectStorageService from "../../services/dir/dir.service";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
-import dirService from "../../services/dir/dir.service";
-
 export default async function read(
-  req: Request<unknown, unknown, unknown, ReadDirReqQueries>, 
-  res: Response<ReadDirResBody, ReadDirResLocals>
+  req: Request<unknown, unknown, GetStorageObjectsReqBody>, 
+  res: Response<GetStorageObjectsResBody, GetStorageObjectsResLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
   
-  let items: DirItem[] = [];
+  let items: StorageObject[] = [];
 
   if(!user) {
     throw new CaughtError({
@@ -27,7 +30,7 @@ export default async function read(
     });
   }
 
-  items = await dirService.read(user, req.query.dir);
+  items = await objectStorageService.read(user, req.body.id);
 
   res.status(200).send(items);
 };

@@ -1,63 +1,12 @@
-import type { Dir, Stats } from "node:fs";
-import type { DirItem, User } from "../../index.type";
+import type { StorageObject, User } from "../../index.type";
 
-import CaughtError from "../../utils/Caught-Error.util";
-import isPathSecure from "../../utils/is-path-secure.util";
-import isPathHasBase from "../../utils//is-path-has-base.util";
-import getUserBasePath from "../../utils/get-user-base-path.util";
+import objectStorageRepo from "../../repos/Object-Storage.repo";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
-import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
+export default async function read(user: User, id?: string): Promise<StorageObject[]> {
+  let parentId: string = id || user.id;
+  let items: StorageObject[] = [];
 
-import path from "node:path";
-import fsAsync from "node:fs/promises";
-
-export default async function read(user: User, dirPath: string): Promise<DirItem[]> {
-  if(!isPathSecure(dirPath)) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to read items from a suspicious directory ${dirPath}`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
-    });
-  }
-
-  const items: DirItem[] = [];
-  const basePath: string = getUserBasePath();
-  const dirFullPath: string = path.resolve(basePath, path.normalize(dirPath));
-
-  if(!isPathSecure(dirFullPath) || !isPathHasBase(basePath, dirFullPath)) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to read items from a suspicious directory ${dirFullPath}`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You can not read this directory!")
-    });
-  }
-
-  const dirents: Dir = await fsAsync.opendir(dirFullPath);
-    
-  for await(let dirent of dirents) {
-    const direntPath: string = (`${dirPath}/${dirent.name}`);
-
-    if(dirent.isDirectory()) {
-      items.push({
-        name: dirent.name,
-        path: direntPath,
-        type: DIR_ITEM_TYPES.DIR
-      });
-    } else if(dirent.isFile()) {
-      const itemStat: Stats = await fsAsync.lstat(direntPath);
-      
-      items.push({
-        name: dirent.name,
-        path: direntPath,
-        type: DIR_ITEM_TYPES.FILE,
-        extention: path.extname(dirent.name),
-        size: itemStat.size
-      })
-    }
-  }
+  items = await objectStorageRepo.getAllObjects(user.id, parentId);
 
   return items;
 };
