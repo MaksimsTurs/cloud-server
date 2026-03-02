@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
-import type { StorageObject, User } from "../../index.type";
+import type { GetAllStorageObjects } from "../../services/dir/object-storage.type";
+import type { User } from "../../index.type";
 import type { 
   GetStorageObjectsResLocals,
   GetStorageObjectsResBody,
@@ -19,8 +20,6 @@ export default async function read(
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
   
-  let items: StorageObject[] = [];
-
   if(!user) {
     throw new CaughtError({
       server: {
@@ -30,7 +29,7 @@ export default async function read(
     });
   }
 
-  items = await objectStorageService.read(user, req.body.id);
+  const storageObject: GetAllStorageObjects = await objectStorageService.getAllObjects(user, req.body.id);
 
-  res.status(200).send(items);
+  res.status(200).send(storageObject);
 };

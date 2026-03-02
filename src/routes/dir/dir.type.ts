@@ -1,14 +1,17 @@
-import type { DirItem } from "../../index.type";
+import type { StorageObject } from "../../index.type";
 
-export type ReadDirResLocals = {
+export type GetStorageObjectsResLocals = {
   userId: string
 };
 
-export type ReadDirReqQueries = {
-  dir: string
+export type GetStorageObjectsResBody = {
+  parent: StorageObject
+  items: StorageObject[]
 };
 
-export type ReadDirResBody = DirItem[];
+export type GetStorageObjectsReqBody = {
+  id?: string
+};
 
 export type CopyDirResLocals = {
   userId: string
@@ -39,7 +42,7 @@ export type RemoveDirReqBody = {
   itemNames: string[]
 };
 
-export type CreateStorageObjectLocals = {
+export type CreateStorageObjectResLocals = {
   userId: string
 };
 

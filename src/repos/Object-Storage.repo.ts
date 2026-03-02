@@ -11,9 +11,17 @@ class ObjectStorageRepository extends SQLRepository<StorageObject> {
 
   public async getAllObjects(userId: string, parentId: string): Promise<StorageObject[]> {
     const res = await sql<StorageObject[]>`
-      SELECT * FROM ${sql(this.table)}
-      WHERE user_id = ${userId} AND
-            parent_id = ${parentId}
+      SELECT * FROM(
+        SELECT * FROM ${sql(this.table)}
+        WHERE id = ${parentId} AND
+              user_id = ${userId}
+
+        UNION ALL
+
+        SELECT * FROM ${sql(this.table)}
+        WHERE parent_id = ${parentId} AND
+              user_id = ${userId}
+      )
     `;
     return res;
   };
