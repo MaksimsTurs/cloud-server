@@ -37,3 +37,7 @@ export type UserLogInResBody = {
     refresh: string
   }
 };
+
+export type UserRefreshTokenResLocals = {
+  userId: string
+};

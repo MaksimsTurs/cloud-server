@@ -12,6 +12,7 @@ import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
 import auth from "../../middlewares/auth.middleware";
+import refreshToken from "./refresh-token.route";
 
 const userRouter: Router = express.Router();
 
@@ -39,6 +40,13 @@ export default function initUserRouter(): Router {
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
     init,
+    handleError
+  );
+
+  userRouter.get("/refresh-token", 
+    validate("cookies", VALIDATION_SCHEMES.REFRESH_TOKEN),
+    auth,
+    refreshToken,
     handleError
   );
 
