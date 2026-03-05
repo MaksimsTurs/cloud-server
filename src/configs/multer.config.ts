@@ -7,8 +7,11 @@ import path from "node:path/posix";
 
 import HTTP_ERRORS from "../const/HTTP-ERRORS.const";
 
+import { serverConfigs } from "../index";
+
 import CaughtError from "../utils/Caught-Error.util";
 import isSupportedFileFormat from "../utils/is-unsupported-file-format.util";
+import generateId from "../utils/generate-id.util";
 
 type MulterStorageCreationCallback = (error: Error | null, path: string) => void;
 
@@ -34,18 +37,16 @@ function fileDestination(
   _file: Express.Multer.File, 
   callback: MulterStorageCreationCallback
 ): void {
-  const tmpPath: string = process.env.TMP_PATH as string;
-
-  if(!fsSync.existsSync(tmpPath)) {
-    fsSync.mkdir(tmpPath, (error): void => {
+  if(!fsSync.existsSync(serverConfigs.BASE_UPLOAD_TMP_PATH)) {
+    fsSync.mkdir(serverConfigs.BASE_UPLOAD_TMP_PATH, (error): void => {
       if(error) {
         callback(error, "");
       } else {
-        callback(null, tmpPath);
+        callback(null, serverConfigs.BASE_UPLOAD_TMP_PATH);
       }
     });
   } else {
-    callback(null, tmpPath);
+    callback(null, serverConfigs.BASE_UPLOAD_TMP_PATH);
   }
 };
 
@@ -54,7 +55,7 @@ function fileName(
   file: Express.Multer.File, 
   callback: MulterStorageCreationCallback
 ): void {
-  callback(null, file.fieldname);
+  callback(null, `${generateId()}${path.extname(file.fieldname)}`);
 };
 
 function fileFilter(
