@@ -9,7 +9,7 @@ class ObjectStorageRepository extends SQLRepository<StorageObject> {
     super("t_storage_objects");
   };
 
-  public async getAllObjects(userId: string, parentId: string): Promise<StorageObject[]> {
+  public async getAll(userId: string, parentId: string): Promise<StorageObject[]> {
     const res = await sql<StorageObject[]>`
       SELECT * FROM(
         SELECT * FROM ${sql(this.table)}
