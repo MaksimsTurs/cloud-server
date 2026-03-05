@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { JwtAuthPayload} from "../index.type";
+import type { UserJwtPayload } from "../index.type";
 import type { JwtTokenPaylaod } from "../utils/jwt/jwt.type";
 
 import CaughtError from "../utils/Caught-Error.util";
@@ -11,7 +11,7 @@ import VALIDATION_SCHEMES from "../const/VALIDATION-SCHEMES.const";
 
 export default async function auth(req: Request, res: Response, next: NextFunction): Promise<void> {
   const token: string | undefined = req.cookies[COOKIE.ACCESS_TOKEN_KEY];
-  const payload: JwtTokenPaylaod<JwtAuthPayload> | undefined = verifyAccessToken<JwtAuthPayload>(token);
+  const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyAccessToken<UserJwtPayload>(token);
   
   if(!payload) {
     throw new CaughtError({ client: HTTP_ERRORS.UNAUTHORIZED() });
