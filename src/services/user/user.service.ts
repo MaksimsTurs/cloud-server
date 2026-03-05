@@ -1,17 +1,19 @@
-import logOut from "./log-out.service";
-import logIn from "./log-in.service";
-import logUp from "./log-up.service";
+import create from "./create.service";
+import save from "./save.service";
+import verify from "./verify.service";
 import getById from "./get-by-id.service";
-import getBy from "./get-by.service";
+import getOne from "./get-one.service";
 import refreshToken from "./refresh-token.service";
+import init from "./init.service";
 
 const userService = {
-  logUp,
-  logOut,
-  logIn,
+  create,
+  save,
+  verify,
   getById,
-  getBy,
-  refreshToken
+  getOne,
+  refreshToken,
+  init
 } as const;
 
 export default userService;
