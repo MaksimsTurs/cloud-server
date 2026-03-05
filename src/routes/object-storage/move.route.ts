@@ -1,17 +1,17 @@
 import type { Request, Response } from "express";
-import type { MoveDirReqBody, MoveDirResLocals } from "./dir.type";
+import type { ObjectStorageMoveObjectsReqBody, ObjectStorageMoveObjectsResLocals } from "./object-storage-route.type";
 import type { User } from "../../index.type";
 
 import userService from "../../services/user/user.service";
-import dirService from "../../services/dir/dir.service";
+import objectStorageService from "../../services/object-storage/object-storage.service";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function move(
-  req: Request<unknown, unknown, MoveDirReqBody>, 
-  res: Response<unknown, MoveDirResLocals>
+  req: Request<unknown, unknown, ObjectStorageMoveObjectsReqBody>, 
+  res: Response<unknown, ObjectStorageMoveObjectsResLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
   
@@ -24,7 +24,7 @@ export default async function move(
     });
   }
 
-  await dirService.move(user, req.body);
+  await objectStorageService.move(user, req.body);
 
   res.sendStatus(200);
 };

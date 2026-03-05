@@ -1,17 +1,17 @@
 import type { Request, Response } from "express";
-import type { CopyDirReqBody, CopyDirResLocals } from "./dir.type";
+import type { ObjectStorageCopyReqBody, ObjectStorageCopyResLocals } from "./object-storage-route.type";
 import type { User } from "../../index.type";
 
 import userService from "../../services/user/user.service";
-import dirService from "../../services/dir/dir.service";
+import objectStorageService from "../../services/object-storage/object-storage.service";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function copy(
-  req: Request<unknown, unknown, CopyDirReqBody>, 
-  res: Response<unknown, CopyDirResLocals>
+  req: Request<unknown, unknown, ObjectStorageCopyReqBody>, 
+  res: Response<unknown, ObjectStorageCopyResLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
   
@@ -24,7 +24,7 @@ export default async function copy(
     });
   }
 
-  await dirService.copy(user, req.body);
+  await objectStorageService.copy(user, req.body);
 
   res.sendStatus(200);
 };

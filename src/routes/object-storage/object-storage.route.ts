@@ -3,7 +3,9 @@ import type { Multer } from "multer";
 
 import express from "express";
 
-import read from "./read.route";
+import getAll from "./get-all.route";
+import getById from "./get-by-id.route";
+import preview from "./preview.route";
 import copy from "./copy.route";
 import move from "./move.route";
 import remove from "./remove.route";
@@ -18,12 +20,25 @@ import handleError from "../../middlewares/handle-errors.middleware";
 
 const dirRouter: Router = express.Router();
 
-export default function initDirRouter(uploader: Multer): Router {
-  dirRouter.get("/read",     
+export default function initObjectStorageRouter(uploader: Multer): Router {
+  dirRouter.post("/get/all",     
     validate("query", VALIDATION_SCHEMES.DIR_READ),
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     auth,
-    read,
+    getAll,
+    handleError
+  );
+
+  dirRouter.get("/get/:id",
+    validate("params", VALIDATION_SCHEMES.DIR_READ_OBJECT),
+    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    auth,
+    getById,
+    handleError
+  );
+
+  dirRouter.get("/preview/:id",
+    preview,
     handleError
   );
 

@@ -1,21 +1,21 @@
 import type { Request, Response } from "express";
-import type { DirItem, User } from "../../index.type";
-import type { UploadDirReqBody, UploadDirResLocals } from "./dir.type";
+import type { StorageObject, User } from "../../index.type";
+import type { ObjectStorageUploadReqBody, ObjectStorageUploadResLocals } from "./object-storage-route.type";
 
 import userService from "../../services/user/user.service";
-import dirService from "../../services/dir/dir.service";
+import dirService from "../../services/object-storage/object-storage.service";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 export default async function upload(
-  req: Request<unknown, unknown, UploadDirReqBody>,
-  res: Response<DirItem[], UploadDirResLocals>
+  req: Request<unknown, unknown, ObjectStorageUploadReqBody>,
+  res: Response<StorageObject[], ObjectStorageUploadResLocals>
 ): Promise<void> {
   const user: User | undefined = await userService.getById(res.locals.userId);
 
-  let items: DirItem[] = [];
+  let items: StorageObject[] = [];
 
   if(!user) {
     throw new CaughtError({
@@ -27,7 +27,7 @@ export default async function upload(
   }
 
   if(req.files) {
-    items = await dirService.upload(user, req.body, req.files as Express.Multer.File[]);
+    items = await dirService.upload(user, req.body.parentId, req.files as Express.Multer.File[]);
   }
 
   res.status(200).send(items);
