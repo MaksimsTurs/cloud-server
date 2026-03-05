@@ -4,20 +4,17 @@ import COOKIE from "./COOKIE.const";
 
 vine.convertEmptyStringsToNull = true;
 
+const UUIDScheme = vine
+  .string()
+  .trim()
+  .escape()
+  .uuid({ version: [4] });
 const StorageObjectScheme = vine.object({
-  id: vine
-    .string()
-    .trim()
-    .uuid({ version: [4] }),
-  user_id: vine
-    .string()
-    .trim()
-    .uuid({ version: [4] }),
-  parent_id: vine
-    .string()
-    .trim()
-    .uuid({ version: [4] })
-    .optional(),
+  id: UUIDScheme,
+  user_id: UUIDScheme,
+  parent_id: UUIDScheme
+    .clone()
+    .optional(), 
  name: vine
     .string()
     .trim()
@@ -36,11 +33,6 @@ const EmailScheme = vine
   .escape()
   .maxLength(254)
   .email();
-const UUIDScheme = vine
-  .string()
-  .trim()
-  .escape()
-  .uuid({ version: [4] });
 const JwtScheme = vine
   .string()
   .jwt();
