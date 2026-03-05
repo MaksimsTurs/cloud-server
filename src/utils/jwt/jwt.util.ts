@@ -33,16 +33,3 @@ export function verifyAccessToken<P = unknown>(token?: string): JwtTokenPaylaod<
 export function verifyRefreshToken<P = unknown>(token?: string): JwtTokenPaylaod<P> | undefined {
   return verifyToken(token, process.env.REFRESH_TOKEN_SECRET!);
 };
-
-export function isBlackListed(_token: string): boolean {
-  // TODO: Implement...
-  return false;
-};
-
-export function addTokenToBlackList(_token: string): void {
-  // TODO: Implement...
-};
-
-export function removeTokenFromBlackList(_token: string): void {
-  // TODO: Implement...
-};
