@@ -37,8 +37,6 @@ export default function initUserRouter(): Router {
   );
 
   userRouter.get("/init",     
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
-    auth,
     init,
     handleError
   );

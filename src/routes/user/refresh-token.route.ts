@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { UserRefreshTokenResLocals } from "./user.type";
+import type { UserRefreshTokenResLocals } from "./user-route.type";
 import type { User } from "../../index.type";
 
 import userService from "../../services/user/user.service";
@@ -18,7 +18,7 @@ export default async function refreshToken(
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Unknown user ${req.socket.remoteAddress} has tried to log out`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to refresh refresh token`
       },
       client: HTTP_ERRORS.NOT_FOUND("User not found!")
     });

@@ -1,30 +1,18 @@
 import type { Request, Response } from "express";
-import type { User } from "../../index.type";
-import type { InitUserLocals, InitUserResBody } from "./user.type";
-
-import CaughtError from "../../utils/Caught-Error.util";
+import type { UserTokens } from "../../index.type";
+import type { InitUserResBody } from "./user-route.type";
 
 import userService from "../../services/user/user.service";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 import COOKIE from "../../const/COOKIE.const";
 
-export default async function init(req: Request, res: Response<InitUserResBody, InitUserLocals>): Promise<void> {
-  const user: User | undefined = await userService.getById(res.locals.userId);
+export default async function init(
+  req: Request, 
+  res: Response<InitUserResBody>
+): Promise<void> {
+  const tokens: UserTokens = await userService.init(req.cookies);
 
-  if(!user) {
-    throw new CaughtError({
-      server: {
-        message: `Can not find user with ${res.locals.userId} id`
-      },
-      client: HTTP_ERRORS.NOT_FOUND("User not found!"),
-    });
-  }
-
-  res.status(200).send({
-    tokens: {
-      access: req.cookies[COOKIE.ACCESS_TOKEN_KEY],
-      refresh: req.cookies[COOKIE.REFRESH_TOKEN_KEY]
-    }
-  });
+  res.cookie(COOKIE.ACCESS_TOKEN_KEY, tokens.access, COOKIE.ACCESS_OPTIONS);
+  res.cookie(COOKIE.REFRESH_TOKEN_KEY, tokens.refresh, COOKIE.REFRESH_OPTIONS);
+  res.status(200).send({ tokens });
 };

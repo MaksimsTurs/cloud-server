@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { User } from "../../index.type";
-import type { UserLogOutResLocals } from "./user.type";
+import type { UserLogOutResLocals } from "./user-route.type";
 
 import userService from "../../services/user/user.service";
 
@@ -23,8 +23,6 @@ export default async function logOut(
       client: HTTP_ERRORS.NOT_FOUND("User not found!")
     });
   }
-
-  await userService.logOut(user);
 
   res.clearCookie(COOKIE.ACCESS_TOKEN_KEY, COOKIE.ACCESS_OPTIONS);
   res.clearCookie(COOKIE.REFRESH_TOKEN_KEY, COOKIE.REFRESH_OPTIONS);
