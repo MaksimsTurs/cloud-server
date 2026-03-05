@@ -1,7 +1,6 @@
 export default new Set([
   "application/x-msdownload",
   "application/octet-stream",
-  "application/x-msdownload",
   "application/x-msi",
   "application/vnd.microsoft.portable-executable",
   "application/java-archive",
