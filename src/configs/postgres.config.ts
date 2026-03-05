@@ -2,20 +2,15 @@ import type { Sql } from "postgres";
 
 import postgres from "postgres";
 
-import { logger } from "../index";
+import { serverConfigs } from "../index";
 
 export default function connectToPostgres(): Sql {
-  logger.terminal.info("Connecting to Postgres");
-  
   return postgres({
-    host: process.env.POSTGRES_HOST as string,
-    port: parseInt(process.env.POSTGRES_PORT as string),
-    user: process.env.POSTGRES_USER as string,
-    database: process.env.POSTGRES_DATABASE as string,
-    password: process.env.POSTGRES_PASSWORD as string,
-    ssl: {
-      rejectUnauthorized: true,
-      ca: process.env.POSTGRES_CA_CERTIFICATE as string
-    }
+    host: serverConfigs.POSTGRES_HOST,
+    port: serverConfigs.POSTGRES_PORT,
+    user: serverConfigs.POSTGRES_USER,
+    database: serverConfigs.POSTGRES_DATABASE,
+    password: serverConfigs.POSTGRES_PASSWORD,
+    ssl: { rejectUnauthorized: true, ca: serverConfigs.POSTGRES_CA_CERTIFICATE }
   });
 };
