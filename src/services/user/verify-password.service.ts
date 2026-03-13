@@ -1,8 +1,6 @@
 import type { User } from "../../index.type";
-import type { UserServiceVerifyReturn } from "./user-service.type";
 import type { UserLogInReqBody } from "../../routes/user/user-route.type";
 
-import { generateAccessToken, generateRefreshToken } from "../../utils/jwt/jwt.util";
 import CaughtError from "../../utils/Caught-Error.util";
 
 import argon from "argon2";
@@ -11,7 +9,7 @@ import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
 
 import userRepo from "../../repos/User.repo";
 
-export default async function verify(data: UserLogInReqBody): Promise<UserServiceVerifyReturn> {
+export default async function verifyPassword(data: UserLogInReqBody): Promise<User> {
   const user: User | undefined = await userRepo.getOne({ email: data.email });
   
   if(!user) {
@@ -34,14 +32,5 @@ export default async function verify(data: UserLogInReqBody): Promise<UserServic
     });
   }
 
-  const accessToken: string = generateAccessToken({ id: user.id });
-  const refreshToken: string = generateRefreshToken({ id: user.id });
-
-  return {
-    user,
-    tokens: { 
-      access: accessToken, 
-      refresh: refreshToken 
-    }
-  };
+  return user;
 };
