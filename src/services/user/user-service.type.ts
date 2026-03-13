@@ -7,8 +7,3 @@ export type UserServiceCreateReturn = {
 };
 
 //###################################################
-
-export type UserServiceVerifyReturn = {
-  user: User
-  tokens: UserTokens
-};

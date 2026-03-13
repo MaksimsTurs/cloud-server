@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import type { UserLogInReqBody, UserLogInResBody } from "./user-route.type";
-import type { UserServiceVerifyReturn } from "../../services/user/user-service.type";
+import type { User, UserTokens } from "../../index.type";
 
 import userService from "../../services/user/user.service";
 
@@ -10,7 +10,8 @@ export default async function logIn(
   req: Request<unknown, unknown, UserLogInReqBody>,
   res: Response<UserLogInResBody>
 ): Promise<void> {
-  const { tokens }: UserServiceVerifyReturn = await userService.verify(req.body);
+  const user: User = await userService.verifyPassowrd(req.body);
+  const tokens: UserTokens = userService.generateTokens(user.id);
 
   res.cookie(COOKIE.ACCESS_TOKEN_KEY, tokens.access, COOKIE.ACCESS_OPTIONS);
   res.cookie(COOKIE.REFRESH_TOKEN_KEY, tokens.refresh, COOKIE.REFRESH_OPTIONS);
