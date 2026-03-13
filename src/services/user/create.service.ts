@@ -28,16 +28,17 @@ export default async function create(data: UserLogUpReqBody): Promise<UserServic
   const id: string = generateId();
   const accessToken: string = generateAccessToken({ id });
   const refreshToken: string = generateRefreshToken({ id });
-  const dirPath: string = `${serverConfigs.BASE_USERS_PATH}/${id}`;
+  const workDir: string = `${serverConfigs.BASE_USERS_PATH}/${id}`;
   const user: User = {
     id,
     password: hash,
     email: data.email,
+    is_verified: false
   };
 
   return {
-    data: user,
-    tokens: { access: accessToken, refresh: refreshToken },
-    dirPath
+    user,
+    workDir,
+    tokens: { access: accessToken, refresh: refreshToken }
   };
 };

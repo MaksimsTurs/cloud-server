@@ -12,6 +12,12 @@ export type UserLogUpResBody = {
 
 //#########################################################
 
+export type UserConfirmQuery = {
+  token: string
+};
+
+//#########################################################
+
 export type UserLogInReqBody = {
   email: string
   password: string

@@ -5,6 +5,8 @@ import getById from "./get-by-id.service";
 import getOne from "./get-one.service";
 import refreshToken from "./refresh-token.service";
 import init from "./init.service";
+import sendConfirmEmail from "./send-confirm-email.service";
+import confirmEmail from "./confirm-email.service";
 
 const userService = {
   create,
@@ -13,7 +15,9 @@ const userService = {
   getById,
   getOne,
   refreshToken,
-  init
+  init,
+  sendConfirmEmail,
+  confirmEmail
 } as const;
 
 export default userService;

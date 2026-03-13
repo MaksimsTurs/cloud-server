@@ -31,6 +31,13 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.REFRESH_TOKEN_SECRET must be defined!");
   }
 
+
+  if(isUndefined(process.env.EMAIL_CONFORMATION_SECRET) || 
+     isNull(process.env.EMAIL_CONFORMATION_SECRET) ||
+     isStrEmpty(process.env.EMAIL_CONFORMATION_SECRET)) {
+    throw new TypeError("process.env.EMAIL_CONFORMATION_SECRET must be defined!");
+  }
+
   if(isUndefined(process.env.PORT) ||
      isNull(process.env.PORT) ||
      isStrEmpty(process.env.PORT)) {
@@ -87,6 +94,7 @@ export default function defineServerConfig() {
     
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+    EMAIL_CONFORMATION_SECRET: process.env.EMAIL_CONFORMATION_SECRET,
 
     PORT: parseInt(process.env.PORT),
 

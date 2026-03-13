@@ -6,19 +6,20 @@ import logUp from "./log-up.route";
 import logOut from "./log-out.route";
 import logIn from "./log-in.route";
 import init from "./init.route";
-
-import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
+import confirm from "./confirm.route";
 
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
 import auth from "../../middlewares/auth.middleware";
 import refreshToken from "./refresh-token.route";
 
+import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
+
 const userRouter: Router = express.Router();
 
 export default function initUserRouter(): Router {
-  userRouter.post("/log-up", 
-    validate("body", VALIDATION_SCHEMES.LOG_UP), 
+  userRouter.post("/log-up",
+    validate("body", VALIDATION_SCHEMES.LOG_UP),
     logUp, 
     handleError
   );
@@ -38,6 +39,12 @@ export default function initUserRouter(): Router {
 
   userRouter.get("/init",     
     init,
+    handleError
+  );
+
+  userRouter.get("/confirm",
+    validate("query", VALIDATION_SCHEMES.CONFIRM_EMAIL),
+    confirm,
     handleError
   );
 

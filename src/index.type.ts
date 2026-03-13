@@ -2,6 +2,7 @@ export type User = {
   id: string
   password: string
   email: string
+  is_verified: boolean
 };
 
 export type UserTokens = {

@@ -4,7 +4,7 @@ import fsAsync from "fs/promises";
 
 import userRepo from "../../repos/User.repo";
 
-export default async function save(user: UserServiceCreateReturn): Promise<void> {
-  await fsAsync.mkdir(user.dirPath);
-  await userRepo.insertOne(user.data);
+export default async function save(data: UserServiceCreateReturn): Promise<void> {
+  await fsAsync.mkdir(data.workDir);
+  await userRepo.insertOne(data.user);
 };

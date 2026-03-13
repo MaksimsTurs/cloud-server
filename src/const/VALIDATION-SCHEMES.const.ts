@@ -31,7 +31,6 @@ const EmailScheme = vine
   .string()
   .trim()
   .escape()
-  .maxLength(254)
   .email();
 const JwtScheme = vine
   .string()
@@ -84,6 +83,9 @@ export default {
     confirmPassword: PasswordScheme
       .clone()
       .sameAs("password") 
+  }),
+  CONFIRM_EMAIL: vine.create({
+    token: JwtScheme
   }),
   // Middleware route schemes
   JWT_PAYLOAD: vine.create({

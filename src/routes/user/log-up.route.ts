@@ -13,18 +13,19 @@ export default async function logup(
   req: Request<unknown, unknown, UserLogUpReqBody>, 
   res: Response<UserLogUpResBody, any>
 ): Promise<void> {
-  const user: UserServiceCreateReturn = await userService.create(req.body);
+  const data: UserServiceCreateReturn = await userService.create(req.body);
   const storageObject: StorageObject = await objectStorageService.create({
-    id: user.data.id,
+    id: data.user.id,
+    user_id: data.user.id,
     name: "root",
     type: DIR_ITEM_TYPES.DIR,
-    user_id: user.data.id,
   });
 
-  await userService.save(user);
+  await userService.sendConfirmEmail(data.user);
+  await userService.save(data);
   await objectStorageService.save(storageObject);
 
-  res.cookie(COOKIE.ACCESS_TOKEN_KEY, user.tokens.access, COOKIE.ACCESS_OPTIONS);
-  res.cookie(COOKIE.REFRESH_TOKEN_KEY, user.tokens.refresh, COOKIE.REFRESH_OPTIONS);
-  res.status(200).send({ tokens: user.tokens });
+  res.cookie(COOKIE.ACCESS_TOKEN_KEY, data.tokens.access, COOKIE.ACCESS_OPTIONS);
+  res.cookie(COOKIE.REFRESH_TOKEN_KEY, data.tokens.refresh, COOKIE.REFRESH_OPTIONS);
+  res.status(200).send({ tokens: data.tokens });
 };
