@@ -11,36 +11,34 @@ import VALIDATION_SCHEMES from "../const/VALIDATION-SCHEMES.const";
 
 import userService from "../services/user/user.service";
 
-export default async function auth(req: Request, res: Response, next: NextFunction): Promise<void> {
+export default async function isAuthorized(req: Request, res: Response, next: NextFunction): Promise<void> {
   const token: string | undefined = req.cookies[COOKIE.ACCESS_TOKEN_KEY];
-  const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyAccessToken<UserJwtPayload>(token);
   
+  if(!token) {
+    throw new CaughtError({ client: HTTP_ERRORS.UNAUTHORIZED() });
+  }
+
+  const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyAccessToken<UserJwtPayload>(token);
+
   if(!payload) {
     throw new CaughtError({ client: HTTP_ERRORS.UNAUTHORIZED() });
   }
 
+  VALIDATION_SCHEMES.JWT_PAYLOAD.validate(payload);
+
+  // Unauthenticated, unauthorized and unverified users does not have access to 
+  // API.
   const user: User | undefined = await userService.getById(payload.id);
-  
+
   if(!user) {
     throw new CaughtError({
       server: {
-        message: `Unknown user ${req.socket.remoteAddress} has tried to get ${req.query.dir} directory items`
+        message: `Unknown user ${req.socket.remoteAddress} has tried to acsess ${req.path} path`
       },
-      client: HTTP_ERRORS.FORBIDDEN("You have no permission to read this directory!")
+      client: HTTP_ERRORS.FORBIDDEN("You have no access to this functionality!")
     });
   }
 
-  if(!user.is_verified) {
-    throw new CaughtError({
-      server: {
-        message: `not verified user ${user.id} has tried to access ${req.path} route`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You should confirm you password first!")
-    });
-  }
-
-  VALIDATION_SCHEMES.JWT_PAYLOAD.validate(payload);
-  res.locals.userId = payload.id;
-
+  res.locals.user = user;
   next();
 };
