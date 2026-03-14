@@ -15,7 +15,7 @@ const StorageObjectScheme = vine.object({
   parent_id: UUIDScheme
     .clone()
     .optional(), 
- name: vine
+  name: vine
     .string()
     .trim()
     .escape(),
@@ -70,11 +70,11 @@ export default {
     parentId: UUIDScheme,
     items: vine.record(StorageObjectScheme)
   }),
+  // User route schemes
   LOG_IN: vine.create({
     email: EmailScheme, 
     password: PasswordScheme 
   }),
-  // User route schemes
   LOG_UP: vine.create({
     email: EmailScheme,
     password: PasswordScheme
@@ -83,6 +83,16 @@ export default {
     confirmPassword: PasswordScheme
       .clone()
       .sameAs("password") 
+  }),
+  REQUEST_RESET_PASSWORD: vine.create({
+    email: EmailScheme
+  }),
+  RESET_PASSWORD: vine.create({
+    password: PasswordScheme,
+    token: JwtScheme
+  }),
+  REQUEST_CONFIRM_EMAIL: vine.create({
+    [COOKIE.ACCESS_TOKEN_KEY]: JwtScheme
   }),
   CONFIRM_EMAIL: vine.create({
     token: JwtScheme
