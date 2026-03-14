@@ -1,18 +1,25 @@
 import type { Request, Response } from "express";
-import type { UserTokens } from "../../index.type";
-import type { InitUserResBody } from "./user-route.type";
 
-import userService from "../../services/user/user.service";
+import { generateRefreshToken } from "../../utils/jwt/jwt.util";
 
 import COOKIE from "../../const/COOKIE.const";
 
 export default async function init(
   req: Request, 
-  res: Response<InitUserResBody>
+  res: Response
 ): Promise<void> {
-  const tokens: UserTokens = await userService.init(req.cookies);
+  const access: string = req.cookies[COOKIE.ACCESS_TOKEN_KEY];
+  const refresh: string = generateRefreshToken({ id: res.locals.user.id });
 
-  res.cookie(COOKIE.ACCESS_TOKEN_KEY, tokens.access, COOKIE.ACCESS_OPTIONS);
-  res.cookie(COOKIE.REFRESH_TOKEN_KEY, tokens.refresh, COOKIE.REFRESH_OPTIONS);
-  res.status(200).send({ tokens });
+  res.cookie(COOKIE.ACCESS_TOKEN_KEY, access, COOKIE.ACCESS_OPTIONS);
+  res.cookie(COOKIE.REFRESH_TOKEN_KEY, refresh, COOKIE.REFRESH_OPTIONS);
+  res.status(200).send({
+    tokens: {
+      access,
+      refresh
+    },
+    user: {
+      is_verified: res.locals.user.is_verified
+    }
+  });
 };
