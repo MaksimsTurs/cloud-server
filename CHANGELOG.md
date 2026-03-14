@@ -1,36 +1,23 @@
-## Fixes
-fix: imports
-fix(utils/jwt): types imports
+## Fix
 fix: typescript errors
 
 ## Features
-feat(index): create of server config
-feat(service/user): add authorization and re-generation of refresh token and intergation with object storage
-feat(route/user): add authorization and re-generation of refresh token and intergation with object storage
-feat: add more queries, rename some queries and add some typesafety
-feat: add query to get parent and all their childrens
-feat: add utility module to join multiple mysql conditions
-feat: add utility module with validation functions
-feat: add constnant with collection of unsupported file extentions and mime types
-feat: integrate refresh token with create dir service
-feat: integrate authorization with refresh token with read dir service
-feat: add refresh token regeneration
-feat: add virtual directory creation
-feat: add repositories for file and directory objects
-feat: issue refresh token on user log in and log up
+
+feat: add services for new features
+feat: add routes for new features
+feat: add env variables for new features
+feat: add validation for new features
+feat: add password reseting
+feat: add email confirmation after registration
 
 ## Refactor
-refactor(service/dir): migrate filesystem implementation to virtual storage and rename related modules and types
-refactor(route/dir): migrate filesystem implementation to virtual storage and rename related modules and types
-refactor: rename types for consistency
-refactor: replace custom argon2i hash generator with argon2 library
-refactor: replace getUserBasePath with server config variables
-refactor: move identical schemas into variables
-refactor: move identical schemas into variables
-refactor: replace direct env variable access with server config
-refactor: replace direct env variable access with server config
-refactor: replace direct env variable access with server config
-refactor: add function to collect all enviroment variables
-refactor: replace getCorsOrigin with server config variables
-refactor: rootPath is not saved in db anymore
-refactor: add a items parent to response value of get all storage objects route
+
+refactor: remove redundant services
+refactor: small changes
+refactor: rename refresh-token into regenerate-refresh-token
+refactor: remove getById service call
+refactor: remove verify service call
+refactor: remove init service call
+refactor: split verify module into two modules, one for user password verification and one for user tokens generation
+refactor: replace auth with two middlewares for user authorization and verification check
+refactor: replace single token generation calls with user service for tokens generation
