@@ -27,5 +27,10 @@ export default async function logup(
 
   res.cookie(COOKIE.ACCESS_TOKEN_KEY, data.tokens.access, COOKIE.ACCESS_OPTIONS);
   res.cookie(COOKIE.REFRESH_TOKEN_KEY, data.tokens.refresh, COOKIE.REFRESH_OPTIONS);
-  res.status(200).send({ tokens: data.tokens });
+  res.status(200).send({ 
+    tokens: data.tokens,
+    user: {
+      is_verified: data.user.is_verified
+    }
+  });
 };
