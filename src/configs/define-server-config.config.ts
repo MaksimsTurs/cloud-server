@@ -31,10 +31,15 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.REFRESH_TOKEN_SECRET must be defined!");
   }
 
-
   if(isUndefined(process.env.EMAIL_CONFORMATION_SECRET) || 
      isNull(process.env.EMAIL_CONFORMATION_SECRET) ||
      isStrEmpty(process.env.EMAIL_CONFORMATION_SECRET)) {
+    throw new TypeError("process.env.EMAIL_CONFORMATION_SECRET must be defined!");
+  }
+
+  if(isUndefined(process.env.RESET_PASSWORD_SECRET) || 
+     isNull(process.env.RESET_PASSWORD_SECRET) ||
+     isStrEmpty(process.env.RESET_PASSWORD_SECRET)) {
     throw new TypeError("process.env.EMAIL_CONFORMATION_SECRET must be defined!");
   }
 
@@ -86,15 +91,31 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.POSTGRES_CA_CERTIFICATE must be defined!");
   }
 
+  if(process.env.MODE === "prod" && 
+     (isUndefined(process.env.PROD_BASE_CLIENT_URL) || 
+     isNull(process.env.PROD_BASE_CLIENT_URL) ||
+     isStrEmpty(process.env.PROD_BASE_CLIENT_URL))) {
+    throw new TypeError("process.env.PROD_BASE_URL must be defined!");
+  }
+
+  if(process.env.MODE === "dev" &&
+     (isUndefined(process.env.DEV_BASE_CLIENT_URL) || 
+     isNull(process.env.DEV_BASE_CLIENT_URL) ||
+     isStrEmpty(process.env.DEV_BASE_CLIENT_URL))) {
+    throw new TypeError("process.env.DEV_BASE_URL must be defined!");
+  }
+
   return {
     MODE: process.env.MODE,
 
     BASE_USERS_PATH: process.env.BASE_USERS_PATH,
     BASE_UPLOAD_TMP_PATH: process.env.BASE_UPLOAD_TMP_PATH,
-    
+    BASE_CLIENT_URL: (process.env.MODE === "dev" ? process.env.DEV_BASE_CLIENT_URL : process.env.PROD_BASE_CLIENT_URL) as string,
+
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
     EMAIL_CONFORMATION_SECRET: process.env.EMAIL_CONFORMATION_SECRET,
+    RESET_PASSWORD_SECRET: process.env.RESET_PASSWORD_SECRET,
 
     PORT: parseInt(process.env.PORT),
 
