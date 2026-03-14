@@ -16,7 +16,7 @@ export default async function handleError(error: unknown, _req: Request, res: Re
     if(error.options.server) {
       logger.terminal.error(error.options.server.message);
     }
-  } else if(error instanceof ValidationError) {
+  } if(error instanceof ValidationError) {
     if(error.messages[0].field === COOKIE.ACCESS_TOKEN_KEY ||
        error.messages[0].field === COOKIE.REFRESH_TOKEN_KEY) {
       res.status(401).send(HTTP_ERRORS.UNAUTHORIZED());
@@ -27,7 +27,7 @@ export default async function handleError(error: unknown, _req: Request, res: Re
     logger.terminal.error("Validation failed", error.messages);
   } else if(error instanceof Error) {
     res.status(500).send(HTTP_ERRORS.INTERNAL_SERVER_ERROR());
-    logger.terminal.error(error.message);
+    logger.terminal.error(error.message, error.stack);
   } else {
     res.status(500).send(HTTP_ERRORS.INTERNAL_SERVER_ERROR());
     logger.terminal.error("Uncaught server error!");
