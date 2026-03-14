@@ -1,4 +1,4 @@
-import type { UserTokens } from "../../index.type";
+import type { User, UserTokens } from "../../index.type";
 
 export type UserLogUpReqBody = {
   email: string
@@ -7,7 +7,10 @@ export type UserLogUpReqBody = {
 };
 
 export type UserLogUpResBody = {
-  tokens: UserTokens 
+  tokens: UserTokens
+  user: {
+    is_verified: boolean
+  }
 };
 
 //#########################################################
@@ -25,22 +28,48 @@ export type UserLogInReqBody = {
 
 export type UserLogInResBody = {
   tokens: UserTokens
-};
-
-//#########################################################
-
-export type UserLogOutResLocals = {
-  userId: string
+  user: {
+    is_verified: boolean
+  }
 };
 
 //#########################################################
 
 export type UserRefreshTokenResLocals = {
-  userId: string
+  user: {
+    is_verified: boolean
+  }
 };
 
 //#########################################################
 
-export type InitUserResBody = {
+export type UserInitResLocals = {
+  user: User
+};
+
+export type UserInitResBody = {
   tokens: UserTokens
+  user: {
+    is_verified: boolean
+  }
+};
+
+//#########################################################
+
+export type UserRequestConfirmEmailResLocals = {
+  user: User
+};
+
+//#########################################################
+
+export type UserRequestResetPasswordReqBody = {
+  token: string
+  email: string
+};
+
+//#########################################################
+
+export type UserResetPasswordBody = {
+  token: string
+  password: string
 };
