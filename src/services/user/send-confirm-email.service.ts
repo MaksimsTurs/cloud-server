@@ -2,25 +2,24 @@ import type { User } from "../../index.type";
 
 import nodemailer from "nodemailer";
 
-import { generateEmailConformationToken } from "../../utils/jwt/jwt.util";
-import generateConfirmationEmail from "../../utils/generate-confirmation-email.util";
+import { generateEmailConfirmationToken } from "../../utils/jwt/jwt.util";
+import generateConfirmEmail from "../../utils/generate-confirm-email.util";
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
+  host: "smtp.ethereal.email",
   port: 587,
   auth: {
-    user: 'colton36@ethereal.email',
-    pass: 'fgYsF8QEA9rXug8ekB'
+    user: "colton36@ethereal.email",
+    pass: "fgYsF8QEA9rXug8ekB"
   }
 });
 
 export default async function sendConfirmEmail(user: User): Promise<void> {
-  const emailConformationToken: string = generateEmailConformationToken({ id: user.id });
-
+  const token: string = generateEmailConfirmationToken({ id: user.id });
   await transporter.sendMail({
-    from: "test@gmail.com",
     to: user.email,
-    subject: "Confirm Registration",
-    html: generateConfirmationEmail(emailConformationToken)
+    from: "test@gmail.ctoken",
+    subject: "Confirm E - mail",
+    html: generateConfirmEmail(token)
   });
 };

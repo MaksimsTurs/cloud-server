@@ -1,4 +1,4 @@
-export default function generateConfirmationEmail(token: string): string {
+export default function generateConfirmEmail(token: string): string {
   return(
     `
 <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -60,7 +60,7 @@ export default function generateConfirmationEmail(token: string): string {
                                                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-spacing:0px">
                                                             <tr>
                                                                 <td align="left" style="padding:0;Margin:0">
-                                                                    <p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px">Hello Dear user, click Link bellow to confirm you'r registration, After confirmation you will get full access to Website functionality. This Link will expire in 5 minutes.</p>
+                                                                    <p style="Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px">Hello dear user, Click the button below to confirm your registration and get full access to website functionality. This email expired in 5 minutes!</p>
                                                                 </td>
                                                             </tr>
                                                         </table>

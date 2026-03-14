@@ -15,7 +15,11 @@ function verifyToken<P = unknown>(token: string = "", secret: string): JwtTokenP
     return undefined;
   }
 
-  return jsonwebtoken.verify(token, secret) as JwtTokenPaylaod<P>; 
+  try {
+    return jsonwebtoken.verify(token, secret) as JwtTokenPaylaod<P>; 
+  } catch(_) {
+    return undefined;
+  }
 };
 
 export function generateAccessToken(payload: any): string {
@@ -26,18 +30,26 @@ export function generateRefreshToken(payload: any): string {
   return generateToken(payload, serverConfigs.REFRESH_TOKEN_SECRET, { expiresIn: "15 minutes" });
 };
 
-export function generateEmailConformationToken(payload: any): string {
-  return generateToken(payload, serverConfigs.EMAIL_CONFORMATION_SECRET);
+export function generateEmailConfirmationToken(payload: any): string {
+  return generateToken(payload, serverConfigs.EMAIL_CONFORMATION_SECRET, { expiresIn: "5 minutes" });
+};
+
+export function generateResetPasswordToken(payload: any): string {
+  return generateToken(payload, serverConfigs.RESET_PASSWORD_SECRET, { expiresIn: "5 minutes" });
 };
 
 export function verifyAccessToken<P = unknown>(token?: string): JwtTokenPaylaod<P> | undefined {
-  return verifyToken(token, process.env.ACCESS_TOKEN_SECRET!);
+  return verifyToken(token, serverConfigs.ACCESS_TOKEN_SECRET!);
 };
 
 export function verifyRefreshToken<P = unknown>(token?: string): JwtTokenPaylaod<P> | undefined {
-  return verifyToken(token, process.env.REFRESH_TOKEN_SECRET!);
+  return verifyToken(token, serverConfigs.REFRESH_TOKEN_SECRET!);
 };
 
-export function verifyEmailConformationToken<P>(token?: string): JwtTokenPaylaod<P> | undefined {
+export function verifyEmailConfirmToken<P>(token?: string): JwtTokenPaylaod<P> | undefined {
   return verifyToken(token, serverConfigs.EMAIL_CONFORMATION_SECRET);
+};
+
+export function verifyResetPasswordToken<P>(token?: string): JwtTokenPaylaod<P> | undefined {
+  return verifyToken(token, serverConfigs.RESET_PASSWORD_SECRET);
 };
