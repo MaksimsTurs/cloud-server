@@ -10,18 +10,17 @@ import userRepo from "../../repos/User.repo";
 
 import argon from "argon2";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
 import { serverConfigs } from "../../index";
 
 export default async function create(data: UserLogUpReqBody): Promise<UserServiceCreateReturn> {
   if(await userRepo.isExist("email", data.email)) {
-    throw new CaughtError({
-      server: {
-        message: "Unknown user has tried to create account with email that alredy exist"
-      },
-      client: HTTP_ERRORS.CONFLICT("User with the same email exist!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.CONFLICT,
+      "Unknown user has tried to createaccount with email that alredy exist",
+      "User with the same email exist!"
+    );
   }
 
   const id: string = generateId();
