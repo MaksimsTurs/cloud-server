@@ -1,18 +1,18 @@
 import type { FileTypeResult } from "file-type";
-import type { StorageObject, User } from "../../index.type";
+import type { ObjectStorageUploadReqBody } from "../../routes/object-storage/object-storage-route.type";
+import type { StorageObject, StorageObjectProcessOptions, User } from "../../index.type";
 
-import isSupportedFileFormat from "../../utils/is-unsupported-file-format.util";
-import isPathSecure from "../../utils/is-path-secure.util";
-import isPathHasBase from "../../utils/is-path-has-base.util";
+import { isMimeTypeSafe, isExtentionSafe, isPathSafe, isMediaFile } from "../../utils/is.util";
+import ffmpeg from "../../utils/ffmpeg/ffmpeg.util";
 import CaughtError from "../../utils/Caught-Error.util";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
 
 import { serverConfigs } from "../../index";
 
 import fsAsync from "node:fs/promises";
-
+import path from "node:path";
 import { fileTypeFromFile } from "file-type";
 
 import objectStorageRepo from "../../repos/Object-Storage.repo";
@@ -21,56 +21,68 @@ import objectStorageService from "./object-storage.service";
 
 export default async function upload(
   user: User, 
-  parentId: string, 
+  body: ObjectStorageUploadReqBody, 
   files: Express.Multer.File[]
 ): Promise<StorageObject[]> {
+  const parentId: string = body.parentId || user.id;
   const items: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(parentId);
 
   if(!parent) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to upload files into not existing directory!`
-      },
-      client: HTTP_ERRORS.BAD_REQUEST("You can not upload items into not existing directory!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.BAD_REQUEST,
+      `${user.id} has tried to upload files into not existing directory ${parentId}`,
+      "Can not upload files into unknown directory!"
+    );
   }
 
   for(let index: number = 0; index < files.length; index++) {
     const file: Express.Multer.File = files[index];
     const fileType: FileTypeResult | undefined = await fileTypeFromFile(file.path);
+    // TODO Maybe add middleware to parse and validate json that was sended
+    // in form data.
+    const options: StorageObjectProcessOptions | null = JSON.parse(body[index] || "null");
+    const extention: string = fileType?.ext || path.extname(file.originalname);
 
-    if(fileType && !isSupportedFileFormat(fileType.ext, fileType.mime)) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to upload file with suspicious format ${fileType.ext} ${fileType.mime}`
-        },
-        client: HTTP_ERRORS.BAD_REQUEST(`File format ${fileType.mime} is not supported!`)
-      });
+    if(fileType?.mime && (!isExtentionSafe(extention) || !isMimeTypeSafe(fileType.mime))) {
+      throw new CaughtError(
+        HTTP_ERROR_CODES.BAD_REQUEST,
+        `${user.id} has tried to upload unsafe file ext:${extention} mime-type:${file.mimetype}`,
+        `${fileType.ext} files are not supported!`
+      );
     }
 
-    const userDirPath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}`;
-    // TODO Fix this
-    //@ts-ignore
+    const fileBasePath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}`;
     const newObject: StorageObject = await objectStorageService.create({
-      name: file.fieldname,
+      name: options?.name || file.originalname,
       type: DIR_ITEM_TYPES.FILE,
       user_id: user.id,
-      parent_id: parentId
+      parent_id: body.parentId,
+      mime_type: file.mimetype
     });
-    const dstPath: string = `${userDirPath}/${newObject.id}`;
+    const dstPath: string = `${fileBasePath}/${newObject.id}`;
 
-    if(!isPathHasBase(userDirPath, dstPath) || !isPathSecure(dstPath)) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to upload file into suspicious directory ${dstPath}`
-        },
-        client: HTTP_ERRORS.BAD_REQUEST("You can not upload files into this directory!")
-      });
+    if(!isPathSafe(fileBasePath, dstPath)) {
+      throw new CaughtError(
+        HTTP_ERROR_CODES.BAD_REQUEST,
+        `${user.id} has tried to upload file into suspicious directory ${dstPath}`,
+        "You can not upload files into this directory!"
+      );
+    }
+
+    if(isMediaFile(file.mimetype)) {
+      await ffmpeg(file.path)
+        .resize(options?.width, options?.height)
+        .process({ [options?.convertTo || extention]: {...options }})
+        .outputFormatFromExtention(options?.convertTo || extention)
+        .outputFile(dstPath);
+      await fsAsync.rm(file.path);
+    } else {
+      await fsAsync.rename(file.path, dstPath);
     }
 
     await objectStorageService.save(newObject);
-    await fsAsync.rename(file.path, dstPath);
+
     items.push(newObject);
   }
 
