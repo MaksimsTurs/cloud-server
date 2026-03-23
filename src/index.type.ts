@@ -18,6 +18,15 @@ export type StorageObject = {
   id: string
   user_id: string
   parent_id?: string
+  mime_type?: string
   name: string
   type: number
+};
+
+export type StorageObjectProcessOptions = {
+  name?: string
+  convertTo?: string
+  quality?: number
+  width?: number
+  height?: number
 };
