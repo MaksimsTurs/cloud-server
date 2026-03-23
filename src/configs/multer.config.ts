@@ -5,13 +5,13 @@ import multer from "multer";
 import fsSync from "node:fs";
 import path from "node:path/posix";
 
-import HTTP_ERRORS from "../const/HTTP-ERRORS.const";
-
 import { serverConfigs } from "../index";
 
+import { isMimeTypeSafe, isExtentionSafe } from "../utils/is.util";
 import CaughtError from "../utils/Caught-Error.util";
-import isSupportedFileFormat from "../utils/is-unsupported-file-format.util";
 import generateId from "../utils/generate-id.util";
+
+import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
 
 type MulterStorageCreationCallback = (error: Error | null, path: string) => void;
 
@@ -55,7 +55,7 @@ function fileName(
   file: Express.Multer.File, 
   callback: MulterStorageCreationCallback
 ): void {
-  callback(null, `${generateId()}${path.extname(file.fieldname)}`);
+  callback(null, `${generateId()}${path.extname(file.originalname)}`);
 };
 
 function fileFilter(
@@ -66,13 +66,12 @@ function fileFilter(
   const extention: string = path.extname(file.fieldname);
   const mimeType: string = file.mimetype;
 
-  if(!isSupportedFileFormat(extention, mimeType)) {
-    callback(new CaughtError({
-      server: {
-        message: `${req.socket.remoteAddress} try to upload unsupported file format "${extention}"`,
-      },
-      client: HTTP_ERRORS.BAD_REQUEST(`${extention} is unsupported file format!`)
-    }));
+  if(!isMimeTypeSafe(mimeType) || !isExtentionSafe(extention)) {
+    callback(new CaughtError(
+      HTTP_ERROR_CODES.BAD_REQUEST,
+      `${req.socket.remoteAddress} try to upload unsupported file format "${extention}"`,
+      `${extention} is unsupported file format!`
+    ));
   } else {
     callback(null, true);
   }
