@@ -1,23 +1,46 @@
+## Chore
+chore: update project minor version
+chore: update package version
+
 ## Fix
-fix: typescript errors
-
-## Features
-
-feat: add services for new features
-feat: add routes for new features
-feat: add env variables for new features
-feat: add validation for new features
-feat: add password reseting
-feat: add email confirmation after registration
+fix(const/VALIDATION-SCHEMES): DIR_UPLOAD has mutated the UUIDScheme
+fix: parameters type error
+fix(service/object-storage/remove): files was not removed
 
 ## Refactor
+refactor(service/user/send-reset-password-email): migrate to new CaughtError version
+refactor(config/multer): migrate to new CaughtError version
+refactor(repo/SQL): small changes
+refactor(service/user/send-confirm-email): migrate to new CaughtError version
+refactor(service/user/reset-password): migrate to new CaughtError version
+refactor(service/user/create): migrate to new CaughtError version
+refactor(route/user/create): migrate to new CaughtError version
+refactor(route/user/confirm-email): migrate to new CaughtError version
+refactor(service/object-storage/move): removed redundat db request
+refactor(service/object-storage/get-all): removed redundat db request
+refactor(route/user/request-reset-password): removed redundat db request
+refactor(route/user/log-in): removed redundat db request
+refactor(route/object-storage/upload): removed redundat db request
+refactor(route/object-storage/remove): removed redundat db request
+refactor: removed preview route (get-all handle all file types)
+refactor: removed preview route (get-all handle all file types)
+refactor(route/object-storage/move): removed redundat db request
+refactor(route/object-storage/get-all): removed redundat db request
+refactor(route/object-storage/create): removed redundat db request
+refactor(route/object-storage/copy): removed redundat db request
+refactor(route/404): migrate to new CaughtError version
+refactor(middleware/is-verified): migrate to new CaughtError version
+refactor(middleware/is-not-verified): migrate to new CaughtError version
+refactor(middleware/is-authorized): migrate to new CaughtError version
+refactor(middleware/handle-error): migrate to new CaughtError version
+refactor: moved check functions into is.util.ts file
 
-refactor: remove redundant services
-refactor: small changes
-refactor: rename refresh-token into regenerate-refresh-token
-refactor: remove getById service call
-refactor: remove verify service call
-refactor: remove init service call
-refactor: split verify module into two modules, one for user password verification and one for user tokens generation
-refactor: replace auth with two middlewares for user authorization and verification check
-refactor: replace single token generation calls with user service for tokens generation
+## Features
+feat: add mime_type to StorageObject type
+feat: add types for some services
+feat(service/object-storage/copy): return a array of copied items
+feat: replace userId of type string with use of type User
+feat: add file path validation
+feat: add ffmpeg processing for media files
+feat: add constants with HTTP codes for new CaughtError version
+feat: add wrapper for ffmpeg CLI (must be installed on machine)
