@@ -6,7 +6,7 @@ import userService from "../../services/user/user.service";
 
 import CaughtError from "../../utils/Caught-Error.util";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
 export default async function requestResetPassword(
   req: Request<unknown, unknown, UserRequestResetPasswordReqBody>,
@@ -15,12 +15,11 @@ export default async function requestResetPassword(
   const user: User | undefined = await userService.getOne({ email: req.body.email });
 
   if(!user) {
-    throw new CaughtError({
-      server: {
-        message: `Unknown user ${req.socket.remoteAddress} has tried to request reseting of password`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You can not reset the password!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.FORBIDDEN,
+      `Unknown user ${req.socket.remoteAddress} has tried to request reseting of password`,
+      "You can not reset the password!"
+    );
   }
 
   await userService.sendResetPasswordEmail(user);
