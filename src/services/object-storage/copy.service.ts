@@ -1,40 +1,48 @@
 import type { StorageObject, User } from "../../index.type";
 import type { ObjectStorageCopyReqBody } from "../../routes/object-storage/object-storage-route.type";
+import type { ObjectStorageServiceCopyReturn } from "./object-storage-service.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
 import generateId from "../../utils/generate-id.util";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
-
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
-export default async function copy(user: User, body: ObjectStorageCopyReqBody): Promise<void> {
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
+
+export default async function copy(user: User, body: ObjectStorageCopyReqBody): Promise<ObjectStorageServiceCopyReturn> {
   const items: Record<string, StorageObject> = body.items;
+  const itemCopies: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(body.parentId);
 
   if(!parent) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has tried to copy items into not existing directory`
-      },
-      client: HTTP_ERRORS.BAD_REQUEST("You can not copy items into not existing directory!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.BAD_REQUEST,
+      `${user.id} has tried to copy items into not existing directory`,
+      "You can not copy items into not existing directory!"
+    );
   }
 
   for(let name in items) {
     const item: StorageObject = items[name];
     const id: string = generateId();
     const isExist: boolean = !!(await objectStorageRepo.getOne({ parent_id: parent.id, name: item.name }));
+    const itemCopy: StorageObject = {
+      ...item,
+      id,
+      parent_id: body.parentId
+    };
 
     if(isExist) {
-      throw new CaughtError({
-        server: {
-          message: `${user.id} has tried to copy item ${item.name} that already exist in ${parent.id} directory`
-        },
-        client: HTTP_ERRORS.CONFLICT(`Item with the same name already exist!`)
-      });
+      throw new CaughtError(
+        HTTP_ERROR_CODES.CONFLICT,
+        `${user.id} has tried to copy item ${item.name} that already exist in ${parent.id} directory`,
+        "Item with the same name already exist!"
+      );
     }
-
-    await objectStorageRepo.insertOne({...item, id, parent_id: body.parentId });
+  
+    await objectStorageRepo.insertOne(itemCopy);
+    itemCopies.push(itemCopy);
   }
+
+  return itemCopies;
 };
