@@ -1,48 +1,46 @@
 import type { Request, Response } from "express";
-import type { StorageObject, User } from "../../index.type";
+import type { StorageObject } from "../../index.type";
 import type { ObjectStorageGetObjectReqParams, ObjectStorageGetObjectResLocals } from "./object-storage-route.type";
-
-import CaughtError from "../../utils/Caught-Error.util";
 
 import objectStorageService from "../../services/object-storage/object-storage.service";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
-
 import path from "node:path";
-import fsAsync from "fs/promises";
-
-import userService from "../../services/user/user.service";
+import fsAsync from "node:fs/promises";
 
 import { serverConfigs } from "../../index";
+import { isPathSafe } from "../../utils/is.util";
+import CaughtError from "../../utils/Caught-Error.util";
+
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
 export default async function getById(
   req: Request<ObjectStorageGetObjectReqParams>, 
   res: Response<unknown, ObjectStorageGetObjectResLocals>
 ): Promise<void> {
-  const storageObject: StorageObject | undefined = await objectStorageService.getById(req.params.id);
+  const { id } = req.params;
+  const { user } = res.locals;
+  const storageObject: StorageObject | undefined = await objectStorageService.getById(id);
 
   if(!storageObject) {
-    new CaughtError({
-      server: {
-        message: `Can not find item with id ${req.body.id}`
-      },
-      client: HTTP_ERRORS.NOT_FOUND("Item not found!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.NOT_FOUND,
+      `User ${user.id} has tried get not existed file ${id}`,
+      `File ${id} not found!`
+    );
   }
 
-  const user: User | undefined = await userService.getById(storageObject!.user_id);
-  
-  if(!user) {
-    throw new CaughtError({
-      server: {
-        message: `Unknown user ${req.socket.remoteAddress} has tried to get ${storageObject!.id} item`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("You have no permission to view this file!")
-    });
+  const basePath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}`;
+  const filePath: string = path.resolve(basePath, storageObject!.id);
+
+  if(!isPathSafe(basePath, filePath)) {
+    throw new CaughtError(
+      HTTP_ERROR_CODES.BAD_REQUEST,
+      `User ${user.id} has tried get suspicous file ${filePath}`,
+      "You can not get this file!"
+    );
   }
 
-  const filePath: string = path.resolve(serverConfigs.BASE_USERS_PATH, user.id, storageObject!.id);
-  const buffer = await fsAsync.readFile(filePath, { encoding: "utf8" });
+  const buffer: Buffer<ArrayBuffer> = await fsAsync.readFile(filePath);
 
   res.status(200).send({...storageObject, buffer });
 };
