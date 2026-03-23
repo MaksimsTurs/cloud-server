@@ -1,28 +1,20 @@
 type CaughtErrorOptions = {
-  client: {
-    code: number
-    message: string
-  }
-  server?: {
-    message: string
-  }
+  code: number
+  serverMessage?: string
+  clientMessage?: string
 };
 
 class CaughtError extends Error {
-  public options: CaughtErrorOptions = {
-    client: {
-      code: 0,
-      message: ""
-    },
-    server: {
-      message: ""
-    }
-  };
+  public options: CaughtErrorOptions;
 
-  constructor(options: CaughtErrorOptions) {
+  constructor(code: number, serverMessage?: string, clientMessage?: string) {
     super();
 
-    this.options = options;
+    this.options = {
+      code,
+      serverMessage,
+      clientMessage
+    };
   };
 };
 
