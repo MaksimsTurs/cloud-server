@@ -12,6 +12,11 @@ const UUIDScheme = vine
 const StorageObjectScheme = vine.object({
   id: UUIDScheme,
   user_id: UUIDScheme,
+  mime_type: vine
+    .string()
+    .trim()
+    .escape()
+    .optional(),
   parent_id: UUIDScheme
     .clone()
     .optional(), 
@@ -40,6 +45,8 @@ export default {
   // Directory route schemes
   DIR_UPLOAD: vine.create({
     parentId: UUIDScheme
+      .clone()
+      .optional()
   }),
   DIR_CREATE: vine.create({
     name: vine
