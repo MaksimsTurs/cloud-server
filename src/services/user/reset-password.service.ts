@@ -10,18 +10,17 @@ import argon from "argon2";
 
 import { verifyResetPasswordToken } from "../../utils/jwt/jwt.util";
 
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
 export default async function resetPassword(body: UserResetPasswordBody): Promise<void> {
   const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyResetPasswordToken<UserJwtPayload>(body.token);
 
   if(!payload) {
-    throw new CaughtError({
-      server: {
-        message: `Unknown user has tried to reset password`
-      },
-      client: HTTP_ERRORS.FORBIDDEN("Token is not valid!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.BAD_REQUEST,
+      "Unknown user has tried to reset password",
+      "Token is not valid!"
+    );
   }
 
   const hash: string = await argon.hash(body.password);
