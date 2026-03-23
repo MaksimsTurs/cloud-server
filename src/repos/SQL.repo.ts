@@ -26,7 +26,7 @@ class SQLRepository<T extends object> {
 
     const filters: PendingQuery<Row[]>[] = joinSqlQueries(conditions, sql` AND `);
     const res: RowList<T[]> = await sql<T[]>`SELECT * FROM ${sql(this.table)} WHERE ${filters} LIMIT 1`;
-    
+   
     return res.at(-1);
   };
 
