@@ -10,7 +10,7 @@ import { generateAccessToken, generateRefreshToken } from "../../utils/jwt/jwt.u
 import userService from "../../services/user/user.service";
 
 import COOKIE from "../../const/COOKIE.const";
-import HTTP_ERRORS from "../../const/HTTP-ERRORS.const";
+import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
 export default async function logIn(
   req: Request<unknown, unknown, UserLogInReqBody>,
@@ -19,23 +19,21 @@ export default async function logIn(
   const user: User | undefined = await userService.getOne({ email: req.body.email });
   
   if(!user) {
-   throw new CaughtError({
-      server: {
-        message: `Unknown user ${req.socket.remoteAddress} has tried to log in with unknown email`
-      },
-      client: HTTP_ERRORS.NOT_FOUND("User with this email does not exist!")
-    });
+   throw new CaughtError(
+      HTTP_ERROR_CODES.NOT_FOUND,
+      `Unknown user ${req.socket.remoteAddress} has tried to log in with unknown email`,
+      "User with this email does not exist!"
+    );
   }
 
   const match: boolean = await argon.verify(user.password, req.body.password);
   
   if(!match) {
-    throw new CaughtError({
-      server: {
-        message: `${user.id} has does not passed a password verification`
-      },
-      client: HTTP_ERRORS.BAD_REQUEST("Password is not correct!")
-    });
+    throw new CaughtError(
+      HTTP_ERROR_CODES.BAD_REQUEST,
+      `${user.id} has does not passed a password verification`,
+      "Password is not correct!"
+    );
   }
 
   const access: string = generateAccessToken({ id: user.id });
