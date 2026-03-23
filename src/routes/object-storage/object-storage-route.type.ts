@@ -1,16 +1,16 @@
-import type { StorageObject } from "../../index.type";
+import type { StorageObject, User } from "../../index.type";
 
 export type ObjectStorageGetAllResLocals = {
-  userId: string
+  user: User
+};
+
+export type ObjectStorageGetAllReqBody = {
+  id?: string
 };
 
 export type ObjectStorageGetAllResBody = {
   parent: StorageObject
   items: StorageObject[]
-};
-
-export type ObjectStorageGetAllReqBody = {
-  id?: string
 };
 
 //###################################################
@@ -21,7 +21,7 @@ export type ObjectStorageCopyReqBody = {
 };
 
 export type ObjectStorageCopyResLocals = {
-  userId: string
+  user: User
 };
 
 //###################################################
@@ -32,7 +32,7 @@ export type ObjectStorageCreateItemReqBody = {
 };
 
 export type ObjectStorageCreateItemResLocals = {
-  userId: string
+  user: User
 };
 
 //###################################################
@@ -42,13 +42,13 @@ export type ObjectStorageGetObjectReqParams = {
 };
 
 export type ObjectStorageGetObjectResLocals = {
-  userId: string
+  user: User
 };
 
 //###################################################
 
 export type ObjectStorageMoveObjectsResLocals = {
-  userId: string
+  user: User
 };
 
 export type ObjectStorageMoveObjectsReqBody = {
@@ -61,17 +61,17 @@ export type ObjectStorageMoveObjectsReqBody = {
 export type ObjectStorageRemoveObjectsReqBody = Record<string, StorageObject>;
 
 export type ObjectStorageRemoveObjectsResLocals = {
-  userId: string
+  user: User
 };
 
 //###################################################
 
 export type ObjectStorageUploadReqBody = {
-  parentId: string
-};
+  parentId?: string
+} & { [index: string]: string };
 
 export type ObjectStorageUploadResLocals = {
-  userId: string
+  user: User 
 };
 
 //###################################################
