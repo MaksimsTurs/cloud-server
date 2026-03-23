@@ -11,12 +11,12 @@ import COOKIE from "../const/COOKIE.const";
 
 export default async function handleError(error: unknown, _req: Request, res: Response, _next: NextFunction): Promise<void> {
   if(error instanceof CaughtError) {
-    res.status(error.options.client.code).send(error.options.client);
+    res.status(error.options.code).send({ code: error.options.code, message: error.options.clientMessage });
 
-    if(error.options.server) {
-      logger.terminal.error(error.options.server.message);
+    if(error.options.serverMessage) {
+      logger.terminal.error(error.options.serverMessage);
     }
-  } if(error instanceof ValidationError) {
+  } else if(error instanceof ValidationError) {
     if(error.messages[0].field === COOKIE.ACCESS_TOKEN_KEY ||
        error.messages[0].field === COOKIE.REFRESH_TOKEN_KEY) {
       res.status(401).send(HTTP_ERRORS.UNAUTHORIZED());
