@@ -7,7 +7,11 @@ import generateId from "../../utils/generate-id.util";
 
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
+import fsAsync from "node:fs/promises";
+
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
+
+import { serverConfigs } from "../..";
 
 export default async function copy(user: User, body: ObjectStorageCopyReqBody): Promise<ObjectStorageServiceCopyReturn> {
   const items: Record<string, StorageObject> = body.items;
@@ -26,6 +30,8 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
     const item: StorageObject = items[name];
     const id: string = generateId();
     const isExist: boolean = !!(await objectStorageRepo.getOne({ parent_id: parent.id, name: item.name }));
+    const originalPath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}/${item.id}`;
+    const copyPath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}/${id}`;
     const itemCopy: StorageObject = {
       ...item,
       id,
@@ -39,8 +45,10 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
         "Item with the same name already exist!"
       );
     }
-  
+
     await objectStorageRepo.insertOne(itemCopy);
+    await fsAsync.cp(originalPath, copyPath);
+
     itemCopies.push(itemCopy);
   }
 
