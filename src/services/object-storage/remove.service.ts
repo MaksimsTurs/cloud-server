@@ -16,7 +16,7 @@ import { serverConfigs } from "../..";
 export default async function remove(user: User, body: ObjectStorageRemoveObjectsReqBody): Promise<void> {
   for(let name in body) {
     const item: StorageObject = body[name];
-    const itemPath: string = `${serverConfigs.BASE_USERS_PATH}/${item.user_id}`;
+    const itemPath: string = `${serverConfigs.BASE_USERS_PATH}/${item.user_id}/${item.id}`;
 
     if(item.user_id != user.id) {
       throw new CaughtError(
