@@ -6,7 +6,6 @@ import objectStorageRepo from "../../repos/Object-Storage.repo";
 import fsAsync from "node:fs/promises";
 
 import CaughtError from "../../utils/Caught-Error.util";
-import { isPathSafe } from "../../utils/is.util";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
@@ -23,14 +22,6 @@ export default async function remove(user: User, body: ObjectStorageRemoveObject
         HTTP_ERROR_CODES.FORBIDDEN,
         `User ${user.id} has tried to remove another user's directory ${item.id}`,
         "You can not remove this directory!"
-      );
-    }
-
-    if(!isPathSafe(serverConfigs.BASE_USERS_PATH, itemPath)) {
-      throw new CaughtError(
-        HTTP_ERROR_CODES.BAD_REQUEST,
-        `User ${user.id} has tried to remove suspicous item ${itemPath}`,
-        "You can not remove this item!"
       );
     }
 
