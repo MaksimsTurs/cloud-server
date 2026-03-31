@@ -31,9 +31,9 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.REFRESH_TOKEN_SECRET must be defined!");
   }
 
-  if(isUndefined(process.env.EMAIL_CONFORMATION_SECRET) || 
-     isNull(process.env.EMAIL_CONFORMATION_SECRET) ||
-     isStrEmpty(process.env.EMAIL_CONFORMATION_SECRET)) {
+  if(isUndefined(process.env.EMAIL_CONFIRM_SECRET) || 
+     isNull(process.env.EMAIL_CONFIRM_SECRET) ||
+     isStrEmpty(process.env.EMAIL_CONFIRM_SECRET)) {
     throw new TypeError("process.env.EMAIL_CONFORMATION_SECRET must be defined!");
   }
 
@@ -105,6 +105,30 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.DEV_BASE_URL must be defined!");
   }
 
+  if((isUndefined(process.env.NODEMAILER_HOST) || 
+     isNull(process.env.NODEMAILER_HOST) ||
+     isStrEmpty(process.env.NODEMAILER_HOST))) {
+    throw new TypeError("process.env.NODEMAILER_HOST must be defined!");
+  }
+
+  if((isUndefined(process.env.NODEMAILER_PORT) || 
+     isNull(process.env.NODEMAILER_PORT) ||
+     isStrEmpty(process.env.NODEMAILER_PORT))) {
+    throw new TypeError("process.env.NODEMAILER_PORT must be defined!");
+  }
+
+  if((isUndefined(process.env.NODEMAILER_USER) || 
+     isNull(process.env.NODEMAILER_USER) ||
+     isStrEmpty(process.env.NODEMAILER_USER))) {
+    throw new TypeError("process.env.NODEMAILER_USER must be defined!");
+  }
+
+  if((isUndefined(process.env.NODEMAILER_PASSWORD) || 
+     isNull(process.env.NODEMAILER_PASSWORD) ||
+     isStrEmpty(process.env.NODEMAILER_PASSWORD))) {
+    throw new TypeError("process.env.NODEMAILER_PASSWORD must be defined!");
+  }
+
   return {
     MODE: process.env.MODE,
 
@@ -116,6 +140,11 @@ export default function defineServerConfig() {
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
     EMAIL_CONFORMATION_SECRET: process.env.EMAIL_CONFORMATION_SECRET,
     RESET_PASSWORD_SECRET: process.env.RESET_PASSWORD_SECRET,
+
+    NODEMAILER_HOST: process.env.NODEMAILER_HOST,
+    NODEMAILER_PORT: parseInt(process.env.NODEMAILER_PORT),
+    NODEMAILER_USER: process.env.NODEMAILER_USER,
+    NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
 
     PORT: parseInt(process.env.PORT),
 
