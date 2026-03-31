@@ -86,6 +86,7 @@ export default {
     email: EmailScheme,
     password: PasswordScheme
       .clone()
+      .sameAs("confirmPassword")
       .confirmed({ as: "confirmPassword" }),
     confirmPassword: PasswordScheme
       .clone()
