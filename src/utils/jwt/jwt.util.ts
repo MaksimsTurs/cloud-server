@@ -31,7 +31,7 @@ export function generateRefreshToken(payload: any): string {
 };
 
 export function generateEmailConfirmationToken(payload: any): string {
-  return generateToken(payload, serverConfigs.EMAIL_CONFORMATION_SECRET, { expiresIn: "5 minutes" });
+  return generateToken(payload, serverConfigs.EMAIL_CONFIRM_SECRET, { expiresIn: "5 minutes" });
 };
 
 export function generateResetPasswordToken(payload: any): string {
@@ -47,7 +47,7 @@ export function verifyRefreshToken<P = unknown>(token?: string): JwtTokenPaylaod
 };
 
 export function verifyEmailConfirmToken<P>(token?: string): JwtTokenPaylaod<P> | undefined {
-  return verifyToken(token, serverConfigs.EMAIL_CONFORMATION_SECRET);
+  return verifyToken(token, serverConfigs.EMAIL_CONFIRM_SECRET);
 };
 
 export function verifyResetPasswordToken<P>(token?: string): JwtTokenPaylaod<P> | undefined {
