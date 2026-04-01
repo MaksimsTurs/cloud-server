@@ -49,6 +49,12 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.PORT must be defined!");
   }
 
+  if(isUndefined(process.env.HOST) ||
+     isNull(process.env.HOST) ||
+     isStrEmpty(process.env.HOST)) {
+    throw new TypeError("process.env.PORT must be defined!");
+  }
+
   if(isUndefined(process.env.ALLOWED_ORIGINS) || 
      isNull(process.env.ALLOWED_ORIGINS) ||
      isStrEmpty(process.env.ALLOWED_ORIGINS)) {
@@ -91,20 +97,6 @@ export default function defineServerConfig() {
     throw new TypeError("process.env.POSTGRES_CA_CERTIFICATE must be defined!");
   }
 
-  if(process.env.MODE === "prod" && 
-     (isUndefined(process.env.PROD_BASE_CLIENT_URL) || 
-     isNull(process.env.PROD_BASE_CLIENT_URL) ||
-     isStrEmpty(process.env.PROD_BASE_CLIENT_URL))) {
-    throw new TypeError("process.env.PROD_BASE_URL must be defined!");
-  }
-
-  if(process.env.MODE === "dev" &&
-     (isUndefined(process.env.DEV_BASE_CLIENT_URL) || 
-     isNull(process.env.DEV_BASE_CLIENT_URL) ||
-     isStrEmpty(process.env.DEV_BASE_CLIENT_URL))) {
-    throw new TypeError("process.env.DEV_BASE_URL must be defined!");
-  }
-
   if((isUndefined(process.env.NODEMAILER_HOST) || 
      isNull(process.env.NODEMAILER_HOST) ||
      isStrEmpty(process.env.NODEMAILER_HOST))) {
@@ -130,11 +122,8 @@ export default function defineServerConfig() {
   }
 
   return {
-    MODE: process.env.MODE,
-
     BASE_USERS_PATH: process.env.BASE_USERS_PATH,
     BASE_UPLOAD_TMP_PATH: process.env.BASE_UPLOAD_TMP_PATH,
-    BASE_CLIENT_URL: (process.env.MODE === "dev" ? process.env.DEV_BASE_CLIENT_URL : process.env.PROD_BASE_CLIENT_URL) as string,
 
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
@@ -145,7 +134,9 @@ export default function defineServerConfig() {
     NODEMAILER_PORT: parseInt(process.env.NODEMAILER_PORT),
     NODEMAILER_USER: process.env.NODEMAILER_USER,
     NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
-
+    
+    MODE: process.env.MODE,
+    HOST: process.env.HOST,
     PORT: parseInt(process.env.PORT),
 
     ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS,
