@@ -30,7 +30,7 @@ export function generateRefreshToken(payload: any): string {
   return generateToken(payload, serverConfigs.REFRESH_TOKEN_SECRET, { expiresIn: "15 minutes" });
 };
 
-export function generateEmailConfirmationToken(payload: any): string {
+export function generateConfirmEmailToken(payload: any): string {
   return generateToken(payload, serverConfigs.EMAIL_CONFIRM_SECRET, { expiresIn: "5 minutes" });
 };
 

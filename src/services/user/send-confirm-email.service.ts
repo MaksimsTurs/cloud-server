@@ -2,7 +2,7 @@ import type { User } from "../../index.type";
 
 import nodemailer from "nodemailer";
 
-import { generateEmailConfirmationToken } from "../../utils/jwt/jwt.util";
+import { generateConfirmEmailToken } from "../../utils/jwt/jwt.util";
 import generateConfirmEmail from "../../utils/generate-confirm-email.util";
 
 import { serverConfigs } from "../../index.ts";
@@ -18,7 +18,8 @@ const transporter = nodemailer.createTransport({
 });
 
 export default async function sendConfirmEmail(user: User): Promise<void> {
-  const token: string = generateEmailConfirmationToken({ id: user.id });
+  const token: string = generateConfirmEmailToken({ id: user.id });
+
   await transporter.sendMail({
     to: user.email,
     from: serverConfigs.NODEMAILER_USER,
