@@ -18,7 +18,7 @@ export default async function getAll(user: User, id?: string): Promise<ObjectSto
   if(!parent || parent.id !== parentId) {
     throw new CaughtError(
       HTTP_ERROR_CODES.NOT_FOUND,
-      `Can not find parent directory with id ${parentId}`,
+      `Can not find directory with id ${parentId}`,
       "Can not find directory!"
     );
   }
