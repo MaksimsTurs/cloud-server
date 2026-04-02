@@ -7,5 +7,9 @@ export default function extentionToFFmpegFormat(extention: string): string {
     return "apng";
   }
 
+  if(extention === "3gp") {
+    return "mp4"
+  }
+
   return extention;
 };
