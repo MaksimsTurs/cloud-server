@@ -11,5 +11,5 @@ export default async function confirmEmail(
 ): Promise<void> {
   await userService.confirmEmail(req.query.token);
 
-  res.redirect(301, serverConfigs.BASE_CLIENT_URL);
+  res.redirect(301, serverConfigs.ALLOWED_ORIGINS);
 };
