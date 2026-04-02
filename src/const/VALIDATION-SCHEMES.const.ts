@@ -1,145 +1,89 @@
+import type { VineString } from "@vinejs/vine";
+
 import vine from "@vinejs/vine";
 
 import COOKIE from "./COOKIE.const";
 
 vine.convertEmptyStringsToNull = true;
 
-const UUIDScheme = vine
-  .string()
-  .trim()
-  .escape()
-  .uuid({ version: [4] });
-const StorageObjectScheme = vine.object({
-  id: UUIDScheme,
-  user_id: UUIDScheme,
-  mime_type: vine
-    .string()
-    .trim()
-    .escape()
-    .optional(),
-  parent_id: UUIDScheme
-    .clone()
-    .optional(), 
-  name: vine
-    .string()
-    .trim()
-    .escape(),
-  type: vine
-    .number()
+const VineStringScheme: VineString = vine.string().escape().trim();
+const VineUUIDV4Scheme: VineString = VineStringScheme.clone().uuid({ version: [4] });
+const VinePasswordScheme: VineString = VineStringScheme.clone().minLength(12);
+const VineEmailScheme: VineString = VineStringScheme.clone().email();
+const VineJwtScheme: VineString = VineStringScheme.clone().jwt();
+const VineStorageObjectScheme = vine.object({
+  id: VineUUIDV4Scheme.clone(),
+  user_id: VineUUIDV4Scheme.clone(),
+  mime_type: VineStringScheme.clone().optional(),
+  parent_id: VineUUIDV4Scheme.clone().optional(),
+  name: VineStringScheme.clone(),
+  type: vine.number()
 });
-const PasswordScheme = vine
-  .string()
-  .trim()
-  .escape()
-  .minLength(12);
-const EmailScheme = vine
-  .string()
-  .trim()
-  .escape()
-  .email();
-const JwtScheme = vine
-  .string()
-  .jwt();
 
 export default {
   // Directory route schemes
   DIR_UPLOAD: vine.create({
-    parentId: UUIDScheme
-      .clone()
-      .optional()
+    parentId: VineUUIDV4Scheme.clone()
   }),
   DIR_UPLOAD_PROCESS_OPTIONS: vine.create({
-    name: vine
-      .string()
-      .trim()
-      .escape()
-      .maxLength(64)
-      .optional(),
-    convertTo: vine
-      .string()
-      .trim()
-      .escape()
-      .optional(),
-    quality: vine
-      .number()
-      .optional(),
-    width: vine
-      .number()
-      .optional(),
-    height: vine
-      .number()
-      .optional()
+    name: VineStringScheme.clone().maxLength(64).optional(),
+    convertTo: VineStringScheme.clone().optional(),
+    quality: vine.number().optional(),
+    width: vine.number().optional(),
+    height: vine.number().optional()
   }),
   DIR_CREATE: vine.create({
-    name: vine
-      .string()
-      .maxLength(64)
-      .trim()
-      .escape(),
-    parentId: UUIDScheme,
-    path: vine
-      .string()
-      .trim()
-      .escape()
+    name: VineStringScheme.clone().maxLength(64),
+    parentId: VineUUIDV4Scheme.clone(),
+    path: VineStringScheme.clone()
   }),
   DIR_READ: vine.create({
-    id: UUIDScheme
-      .clone()
-      .optional()
+    id: VineUUIDV4Scheme.clone().optional()
   }),
   DIR_READ_OBJECT: vine.create({
-    id: UUIDScheme
+    id: VineUUIDV4Scheme.clone()
   }),
-  DIR_REMOVE: vine.create(vine.record(StorageObjectScheme)),
+  DIR_REMOVE: vine.create(vine.record(VineStorageObjectScheme.clone())),
   DIR_COPY: vine.create({
-    parentId: UUIDScheme,
-    items: vine.record(StorageObjectScheme)
+    parentId: VineUUIDV4Scheme.clone(),
+    items: vine.record(VineStorageObjectScheme.clone())
   }),
   DIR_MOVE: vine.create({
-    parentId: UUIDScheme,
-    items: vine.record(StorageObjectScheme)
+    parentId: VineUUIDV4Scheme.clone(),
+    items: vine.record(VineStorageObjectScheme.clone())
   }),
   // User route schemes
   LOG_IN: vine.create({
-    email: EmailScheme, 
-    password: PasswordScheme 
+    email: VineEmailScheme.clone(), 
+    password: VinePasswordScheme.clone()
   }),
   LOG_UP: vine.create({
-    email: EmailScheme,
-    password: PasswordScheme
-      .clone()
-      .sameAs("confirmPassword")
-      .confirmed({ as: "confirmPassword" }),
-    confirmPassword: PasswordScheme
-      .clone()
-      .sameAs("password") 
+    email: VineEmailScheme.clone(),
+    password: VinePasswordScheme.clone().sameAs("confirmPassword").confirmed({ as: "confirmPassword" }),
+    confirmPassword: VinePasswordScheme.clone().sameAs("password") 
   }),
   REQUEST_RESET_PASSWORD: vine.create({
-    email: EmailScheme
+    email: VineEmailScheme.clone()
   }),
   RESET_PASSWORD: vine.create({
-    password: PasswordScheme,
-    token: JwtScheme
+    password: VinePasswordScheme.clone(),
+    token: VineJwtScheme.clone()
   }),
   REQUEST_CONFIRM_EMAIL: vine.create({
-    [COOKIE.ACCESS_TOKEN_KEY]: JwtScheme
+    [COOKIE.ACCESS_TOKEN_KEY]: VineJwtScheme.clone()
   }),
   CONFIRM_EMAIL: vine.create({
-    token: JwtScheme
+    token: VineJwtScheme.clone()
   }),
   // Middleware route schemes
   JWT_PAYLOAD: vine.create({
-    id: UUIDScheme
+    id: VineUUIDV4Scheme.clone()
   }),
   REFRESH_TOKEN: vine.create({
-    [COOKIE.ACCESS_TOKEN_KEY]: JwtScheme
+    [COOKIE.ACCESS_TOKEN_KEY]: VineJwtScheme.clone()
   }),
   AUTH: vine.create({
-    [COOKIE.REFRESH_TOKEN_KEY]: JwtScheme
-      .clone()
-      .optional(),
-    [COOKIE.ACCESS_TOKEN_KEY]: JwtScheme
-      .clone()
-      .optional()
+    [COOKIE.REFRESH_TOKEN_KEY]: VineJwtScheme.clone().optional(),
+    [COOKIE.ACCESS_TOKEN_KEY]: VineJwtScheme.clone().optional()
   }),
 };
