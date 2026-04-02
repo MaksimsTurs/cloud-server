@@ -27,7 +27,7 @@ export default async function upload(
   const parentId: string = body.parentId || user.id;
   const items: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(parentId);
-
+  
   if(!parent) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
@@ -35,26 +35,26 @@ export default async function upload(
       "Can not upload files into unknown directory!"
     );
   }
-
+    
   for(let index: number = 0; index < files.length; index++) {
     const file: Express.Multer.File = files[index];
     const fileType: FileTypeResult | undefined = await fileTypeFromFile(file.path);
-    // TODO Maybe add middleware to parse and validate json that was sended
-    // in form data.
-    const options: StorageObjectProcessOptions | null = JSON.parse(body[index] || "null");
-    const extention: string = fileType?.ext || path.extname(file.originalname);
+    const options: StorageObjectProcessOptions | undefined = body[index];
+    const filePath = path.parse(file.originalname);
+    const extention: string = (fileType?.ext || filePath.ext).toLowerCase();
 
     if(fileType?.mime && (!isExtentionSafe(extention) || !isMimeTypeSafe(fileType.mime))) {
       throw new CaughtError(
         HTTP_ERROR_CODES.BAD_REQUEST,
         `${user.id} has tried to upload unsafe file ext:${extention} mime-type:${file.mimetype}`,
-        `${fileType.ext} files are not supported!`
+        `${extention} files are not supported!`
       );
     }
 
     const fileBasePath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}`;
+    const filename: string = `${options.name || filePath.name}.${extention}`;
     const newObject: StorageObject = await objectStorageService.create({
-      name: options?.name || file.originalname,
+      name: filename,
       type: DIR_ITEM_TYPES.FILE,
       user_id: user.id,
       parent_id: body.parentId,

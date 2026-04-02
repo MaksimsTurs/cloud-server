@@ -48,6 +48,28 @@ export default {
       .clone()
       .optional()
   }),
+  DIR_UPLOAD_PROCESS_OPTIONS: vine.create({
+    name: vine
+      .string()
+      .trim()
+      .escape()
+      .maxLength(64)
+      .optional(),
+    convertTo: vine
+      .string()
+      .trim()
+      .escape()
+      .optional(),
+    quality: vine
+      .number()
+      .optional(),
+    width: vine
+      .number()
+      .optional(),
+    height: vine
+      .number()
+      .optional()
+  }),
   DIR_CREATE: vine.create({
     name: vine
       .string()
@@ -113,7 +135,11 @@ export default {
     [COOKIE.ACCESS_TOKEN_KEY]: JwtScheme
   }),
   AUTH: vine.create({
-    [COOKIE.REFRESH_TOKEN_KEY]: JwtScheme,
+    [COOKIE.REFRESH_TOKEN_KEY]: JwtScheme
+      .clone()
+      .optional(),
     [COOKIE.ACCESS_TOKEN_KEY]: JwtScheme
+      .clone()
+      .optional()
   }),
 };

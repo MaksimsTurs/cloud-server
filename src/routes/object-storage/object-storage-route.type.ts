@@ -1,4 +1,4 @@
-import type { StorageObject, User } from "../../index.type";
+import type { StorageObject, StorageObjectProcessOptions, User } from "../../index.type";
 
 export type ObjectStorageGetAllResLocals = {
   user: User
@@ -68,7 +68,7 @@ export type ObjectStorageRemoveObjectsResLocals = {
 
 export type ObjectStorageUploadReqBody = {
   parentId?: string
-} & { [index: string]: string };
+} & { [index: string]: StorageObjectProcessOptions };
 
 export type ObjectStorageUploadResLocals = {
   user: User 

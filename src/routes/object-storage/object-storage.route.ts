@@ -17,6 +17,7 @@ import isAuthorized from "../../middlewares/is-authorized.middleware";
 import isVerified from "../../middlewares/is-verified.middleware";
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
+import convertFormDataToObject from "../../middlewares/convert-form-data-to-object.middleware";
 
 const dirRouter: Router = express.Router();
 
@@ -81,6 +82,8 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     isAuthorized,
     isVerified,
+    convertFormDataToObject,
+    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD_PROCESS_OPTIONS),
     upload,
     handleError
   );
