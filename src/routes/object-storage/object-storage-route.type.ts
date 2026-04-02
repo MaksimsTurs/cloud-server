@@ -68,7 +68,7 @@ export type ObjectStorageRemoveObjectsResLocals = {
 
 export type ObjectStorageUploadReqBody = {
   parentId?: string
-} & { [index: string]: StorageObjectProcessOptions };
+} & { [index: string]: StorageObjectProcessOptions | undefined };
 
 export type ObjectStorageUploadResLocals = {
   user: User 
