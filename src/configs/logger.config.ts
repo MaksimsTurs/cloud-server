@@ -1,11 +1,11 @@
-import Logger from "../utils/Logger.js/src/Logger";
+import Logger from "@maksims/logger.js";
 
 type LoggingModes = "dev" | "prod";
 
 export default function createLogger(): Logger<LoggingModes> {
   return new Logger<LoggingModes>({
     mode: process.env.MODE as LoggingModes,
-    styling: {
+    styles: {
       colors: {
         info: Logger.colorizer().font().rgb(70, 135, 255),
         warn: Logger.colorizer().font().rgb(150, 150, 100),
