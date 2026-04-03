@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
+import dotenv from "@maksims/dotenv.js";
 
-dotenv.config();
+dotenv();
 
 import defineServerConfig from "./configs/define-server-config.config";
 import connectToPostgers from "./configs/postgres.config";
