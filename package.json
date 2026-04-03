@@ -20,12 +20,14 @@
     "nodemon": "^3.1.11"
   },
   "dependencies": {
+    "@maksims/dotenv.js": "^2.1.1",
+    "@maksims/form-multipart-encoder.js": "^1.0.0",
+    "@maksims/is.js": "^1.0.1",
+    "@maksims/logger.js": "^2.1.3",
     "@vinejs/vine": "^4.3.0",
     "argon2": "^0.44.0",
-    "colorizer.js": "^1.0.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^17.4.0",
     "express": "^5.2.1",
     "file-type": "^22.0.0",
     "jsonwebtoken": "^9.0.3",
