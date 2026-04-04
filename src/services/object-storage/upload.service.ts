@@ -7,7 +7,7 @@ import ffmpeg from "../../utils/ffmpeg/ffmpeg.util";
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
-import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
+import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
 import { serverConfigs } from "../../index";
 
@@ -55,7 +55,7 @@ export default async function upload(
     const filename: string = `${options?.name || filePath.name}.${extention}`;
     const newObject: StorageObject = await objectStorageService.create({
       name: filename,
-      type: DIR_ITEM_TYPES.FILE,
+      type: STORAGE_OBJECT_TYPES.FILE,
       user_id: user.id,
       parent_id: parentId,
       mime_type: file.mimetype

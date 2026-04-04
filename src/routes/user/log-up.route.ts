@@ -4,7 +4,7 @@ import type { UserServiceCreateReturn } from "../../services/user/user-service.t
 import type { StorageObject } from "../../index.type";
 
 import COOKIE from "../../const/COOKIE.const";
-import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const.ts";
+import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const.ts";
 
 import userService from "../../services/user/user.service";
 import objectStorageService from "../../services/object-storage/object-storage.service.ts"
@@ -18,7 +18,7 @@ export default async function logup(
     id: data.user.id,
     user_id: data.user.id,
     name: "root",
-    type: DIR_ITEM_TYPES.DIR,
+    type: STORAGE_OBJECT_TYPES.DIR,
   });
 
   await userService.sendConfirmEmail(data.user);

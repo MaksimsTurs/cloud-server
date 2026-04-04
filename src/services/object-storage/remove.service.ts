@@ -8,7 +8,7 @@ import fsAsync from "node:fs/promises";
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
-import DIR_ITEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
+import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
 import { serverConfigs } from "../..";
 
@@ -25,7 +25,7 @@ export default async function remove(user: User, body: ObjectStorageRemoveObject
       );
     }
 
-    if(item.type === DIR_ITEM_TYPES.FILE) {
+    if(item.type === STORAGE_OBJECT_TYPES.FILE) {
       await fsAsync.rm(itemPath);
     }
 

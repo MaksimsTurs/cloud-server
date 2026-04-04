@@ -4,7 +4,7 @@ import type { ObjectStorageCreateItemReqBody, ObjectStorageCreateItemResLocals }
 
 import objectStorageService from "../../services/object-storage/object-storage.service";
 
-import DIRI_TEM_TYPES from "../../const/DIR-ITEM-TYPES.const";
+import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
 export default async function create(
   req: Request<unknown, unknown, ObjectStorageCreateItemReqBody>,
@@ -13,7 +13,7 @@ export default async function create(
   const { user } = res.locals;
   const storageObject: StorageObject = await objectStorageService.create({
     user_id: user.id,
-    type: DIRI_TEM_TYPES.DIR,
+    type: STORAGE_OBJECT_TYPES.DIR,
     name: req.body.name,
     parent_id: req.body.parentId,
   });
