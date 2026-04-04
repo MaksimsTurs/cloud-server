@@ -43,7 +43,7 @@ export default async function upload(
     const filePath = path.parse(file.originalname);
     const extention: string = (fileType?.ext || filePath.ext).toLowerCase();
 
-    if(fileType?.mime && (!isExtentionSafe(extention) || !isMimeTypeSafe(fileType.mime))) {
+    if(!fileType?.mime || !isExtentionSafe(extention) || !isMimeTypeSafe(fileType.mime)) {
       throw new CaughtError(
         HTTP_ERROR_CODES.BAD_REQUEST,
         `${user.id} has tried to upload unsafe file ext:${extention} mime-type:${file.mimetype}`,
