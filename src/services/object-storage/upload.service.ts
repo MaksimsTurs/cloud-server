@@ -24,7 +24,7 @@ export default async function upload(
   body: ObjectStorageUploadReqBody, 
   files: Express.Multer.File[]
 ): Promise<StorageObject[]> {
-  const parentId: string = body.parentId || user.id;
+  const { parentId } = body
   const items: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(parentId);
   
