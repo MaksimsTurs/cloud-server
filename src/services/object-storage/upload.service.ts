@@ -57,7 +57,7 @@ export default async function upload(
       name: filename,
       type: DIR_ITEM_TYPES.FILE,
       user_id: user.id,
-      parent_id: body.parentId,
+      parent_id: parentId,
       mime_type: file.mimetype
     });
     const dstPath: string = `${fileBasePath}/${newObject.id}`;
