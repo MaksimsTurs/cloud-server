@@ -78,12 +78,12 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
 
   dirRouter.post("/upload",
     uploader.any(),
-    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD),
+    convertFormDataToObject,
+    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD_PARENT_ID),
+    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD_PROCESS_OPTIONS),
     validate("cookies", VALIDATION_SCHEMES.AUTH),
     isAuthorized,
     isVerified,
-    convertFormDataToObject,
-    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD_PROCESS_OPTIONS),
     upload,
     handleError
   );

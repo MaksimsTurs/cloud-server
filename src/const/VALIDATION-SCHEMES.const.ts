@@ -19,19 +19,20 @@ const VineStorageObjectScheme = vine.object({
   name: VineStringScheme.clone(),
   type: vine.number()
 });
+const VineStorageObjectProcessOptionsScheme = vine.object({
+  name: VineStringScheme.clone().maxLength(64).optional(),
+  convertTo: VineStringScheme.clone().optional(),
+  quality: vine.number().optional(),
+  width: vine.number().optional(),
+  height: vine.number().optional()
+});
 
 export default {
   // Directory route schemes
-  DIR_UPLOAD: vine.create({
+  DIR_UPLOAD_PARENT_ID: vine.create(vine.object({
     parentId: VineUUIDV4Scheme.clone()
-  }),
-  DIR_UPLOAD_PROCESS_OPTIONS: vine.create({
-    name: VineStringScheme.clone().maxLength(64).optional(),
-    convertTo: VineStringScheme.clone().optional(),
-    quality: vine.number().optional(),
-    width: vine.number().optional(),
-    height: vine.number().optional()
-  }),
+  }).allowUnknownProperties()),
+  DIR_UPLOAD_PROCESS_OPTIONS: vine.create(vine.record(VineStorageObjectProcessOptionsScheme.clone())),
   DIR_CREATE: vine.create({
     name: VineStringScheme.clone().maxLength(64),
     parentId: VineUUIDV4Scheme.clone(),
