@@ -6,7 +6,7 @@ import CaughtError from "../utils/Caught-Error.util";
 import { verifyAccessToken } from "../utils/jwt/jwt.util";
 
 import COOKIE from "../const/COOKIE.const";
-import VALIDATION_SCHEMES from "../const/VALIDATION-SCHEMES.const";
+import VALIDATION_SCHEMES from "../const/VALIDATION_SCHEMES.const";
 import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
 
 import userService from "../services/user/user.service";

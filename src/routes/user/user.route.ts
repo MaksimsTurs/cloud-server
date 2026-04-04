@@ -17,7 +17,7 @@ import handleError from "../../middlewares/handle-errors.middleware";
 import isAuthorized from "../../middlewares/is-authorized.middleware";
 import isNotVerified from "../../middlewares/is-not-verified.middleware";
 
-import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
+import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 
 const userRouter: Router = express.Router();
 

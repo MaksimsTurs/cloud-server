@@ -11,7 +11,7 @@ import remove from "./remove.route";
 import create from "./create.route";
 import upload from "./upload.route";
 
-import VALIDATION_SCHEMES from "../../const/VALIDATION-SCHEMES.const";
+import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 
 import isAuthorized from "../../middlewares/is-authorized.middleware";
 import isVerified from "../../middlewares/is-verified.middleware";
