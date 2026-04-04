@@ -32,7 +32,9 @@ export default {
   DIR_UPLOAD_PARENT_ID: vine.create(vine.object({
     parentId: VineUUIDV4Scheme.clone()
   }).allowUnknownProperties()),
-  DIR_UPLOAD_PROCESS_OPTIONS: vine.create(vine.record(VineStorageObjectProcessOptionsScheme.clone())),
+  DIR_UPLOAD_PROCESS_OPTIONS: vine.create(
+    vine.record(vine.unionOfTypes([vine.string(), VineStorageObjectProcessOptionsScheme.clone()]))
+  ),
   DIR_CREATE: vine.create({
     name: VineStringScheme.clone().maxLength(64),
     parentId: VineUUIDV4Scheme.clone(),
