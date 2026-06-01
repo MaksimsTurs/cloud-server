@@ -5,14 +5,14 @@ export default {
   REFRESH_TOKEN_KEY: "LCLOUD_REFRESH_TOKEN",
   REFRESH_OPTIONS: {
     httpOnly: true,
-    maxAge: 900_000,
+    maxAge: 604_800_000,
     path: "/",
     sameSite: "lax",
     secure: process.env.MODE != "dev"
   } as CookieOptions,
   ACCESS_OPTIONS: {
     httpOnly: true,
-    maxAge: 604_800_000,
+    maxAge: 900_000,
     path: "/",
     sameSite: "lax",
     secure: process.env.MODE != "dev"
