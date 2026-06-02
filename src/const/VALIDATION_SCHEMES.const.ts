@@ -1,4 +1,4 @@
-import type { VineString } from "@vinejs/vine";
+import type { VineObject, VineRecord, VineString, VineValidator } from "@vinejs/vine";
 
 import vine from "@vinejs/vine";
 
@@ -6,87 +6,116 @@ import COOKIE from "./COOKIE.const";
 
 vine.convertEmptyStringsToNull = true;
 
-const VineStringScheme: VineString = vine.string().escape().trim();
-const VineUUIDV4Scheme: VineString = VineStringScheme.clone().uuid({ version: [4] });
-const VinePasswordScheme: VineString = VineStringScheme.clone().minLength(12);
-const VineEmailScheme: VineString = VineStringScheme.clone().email();
-const VineJwtScheme: VineString = VineStringScheme.clone().jwt();
-const VineStorageObjectScheme = vine.object({
-  id: VineUUIDV4Scheme.clone(),
-  user_id: VineUUIDV4Scheme.clone(),
-  mime_type: VineStringScheme.clone().optional(),
-  parent_id: VineUUIDV4Scheme.clone().optional(),
-  name: VineStringScheme.clone(),
-  type: vine.number()
+// Common Schemes:
+const UUID_SHEME: VineString = vine.string().uuid({ version: [4] });
+const JWT_SCHEME: VineString = vine.string().jwt();
+const PASSWORD_SCHEME: VineString = vine.string().minLength(12);
+const EMAIL_SCHEME: VineString = vine.string().email();
+const JWT_USER_PAYLOAD_SCHEME: VineObject<any, any, any, any> = vine.object({
+  id: UUID_SHEME.clone()
 });
-const VineStorageObjectProcessOptionsScheme = vine.object({
-  name: VineStringScheme.clone().maxLength(64).optional(),
-  convertTo: VineStringScheme.clone().optional(),
-  quality: vine.number().optional(),
-  width: vine.number().optional(),
-  height: vine.number().optional()
+// Storage object routes/services schemes:
+const STORAGE_OBJECT_SCHEME: VineObject<any, any, unknown, unknown> = vine.object({
+  id:         UUID_SHEME.clone(),
+  user_id:    UUID_SHEME.clone(),
+  parent_id:  UUID_SHEME.clone().optional(),
+  mime_type:  vine.string().optional(),
+  name:       vine.string(),
+  type:       vine.number()
+});
+const STORAGE_OBJECT_PROCESS_OPTIONS_SCHEME: VineObject<any, any, any, any> = vine.object({
+  name:       vine.string().maxLength(64).optional(),
+  convertTo:  vine.string().optional(),
+  quality:    vine.number().optional(),
+  width:      vine.number().optional(),
+  height:     vine.number().optional()
+});
+const FILES_UPLOAD_KNOWN_PARAMS_SCHEME: VineObject<any, any, any, any> = vine.object({
+  parentId: UUID_SHEME.clone()
+}).allowUnknownProperties();
+const FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME: VineRecord<any> = vine.record(
+  vine.unionOfTypes([vine.string(), STORAGE_OBJECT_SCHEME.clone()])
+);
+const FOLDER_CREATE_SCHEME: VineObject<any, any, any, any> = vine.object({
+  name: vine.string().maxLength(64),
+  path: vine.string(),
+  parentId: UUID_SHEME.clone()
+});
+const FOLDER_REMOVE_SCHEME: VineRecord<VineObject<any, any, any, any>> = vine.record(STORAGE_OBJECT_SCHEME.clone());
+const FOLDER_GET_SCHEME: VineObject<any, any, any, any> = vine.object({
+  id: UUID_SHEME.clone().optional()
+});
+const FOLDER_MOVE_SCHEME: VineObject<any, any, any, any> = vine.object({
+  parentId: UUID_SHEME.clone(),
+  items: vine.record(STORAGE_OBJECT_SCHEME.clone())
+}); 
+const FOLDER_COPY_SCHEME: VineObject<any, any, any, any> = vine.object({
+  parentId: UUID_SHEME.clone(),
+  items: vine.record(STORAGE_OBJECT_SCHEME.clone())
+});
+const FOLDER_GET_OBJECT_SCHEME: VineObject<any, any, any, any> = vine.object({
+  id: UUID_SHEME.clone()
+});
+// User routes/services schemas:
+const USER_LOG_IN_SCHEME: VineObject<any, any, any, any> = vine.object({
+  email: EMAIL_SCHEME.clone(), 
+  password: PASSWORD_SCHEME.clone()
+});
+const USER_LOG_UP_SCHEME: VineObject<any, any, any, any> = vine.object({
+  email:            EMAIL_SCHEME.clone(),
+  password:         PASSWORD_SCHEME.clone().sameAs("confirmPassword").confirmed({ as: "confirmPassword" }),
+  confirmPassword:  PASSWORD_SCHEME.clone().sameAs("password") 
+});
+const USER_REQUEST_RESET_PASSWORD_SCHEME: VineObject<any, any, any, any> = vine.object({
+  email: EMAIL_SCHEME.clone()
+});
+const USER_RESET_PASSWORD_SCHEME: VineObject<any, any, any, any> = vine.object({
+  password: PASSWORD_SCHEME.clone(),
+  token:    JWT_SCHEME.clone()
+});
+const USER_REQUEST_CONFIRM_EMAIL_SCHEME: VineObject<any, any, any, any> = vine.object({
+  [COOKIE.ACCESS_TOKEN_KEY]: JWT_SCHEME.clone()
+});
+const USER_CONFIRM_EMAIL_SCHEME: VineObject<any, any, any, any> = vine.object({
+  token: JWT_SCHEME.clone()
+});
+const USER_REFRESH_TOKEN_SCHEME: VineObject<any, any, any, any> = vine.object({
+  [COOKIE.REFRESH_TOKEN_KEY]: JWT_SCHEME.clone()
+});
+// Middleware schemas:
+const IS_AUTHORIZED_SCHEMA: VineObject<any, any, any, any> = vine.object({
+    [COOKIE.ACCESS_TOKEN_KEY]: JWT_SCHEME.clone().optional()
 });
 
 export default {
-  // Directory route schemes
-  DIR_UPLOAD_PARENT_ID: vine.create(vine.object({
-    parentId: VineUUIDV4Scheme.clone()
-  }).allowUnknownProperties()),
-  DIR_UPLOAD_PROCESS_OPTIONS: vine.create(
-    vine.record(vine.unionOfTypes([vine.string(), VineStorageObjectProcessOptionsScheme.clone()]))
-  ),
-  DIR_CREATE: vine.create({
-    name: VineStringScheme.clone().maxLength(64),
-    parentId: VineUUIDV4Scheme.clone(),
-    path: VineStringScheme.clone()
-  }),
-  DIR_READ: vine.create({
-    id: VineUUIDV4Scheme.clone().optional()
-  }),
-  DIR_READ_OBJECT: vine.create({
-    id: VineUUIDV4Scheme.clone()
-  }),
-  DIR_REMOVE: vine.create(vine.record(VineStorageObjectScheme.clone())),
-  DIR_COPY: vine.create({
-    parentId: VineUUIDV4Scheme.clone(),
-    items: vine.record(VineStorageObjectScheme.clone())
-  }),
-  DIR_MOVE: vine.create({
-    parentId: VineUUIDV4Scheme.clone(),
-    items: vine.record(VineStorageObjectScheme.clone())
-  }),
+  create: function(scheme: any): VineValidator<any, any> {
+    return vine.create(scheme);
+  },
+  // Common schemes
+  UUID_SHEME,
+  JWT_SCHEME,
+  JWT_USER_PAYLOAD_SCHEME,
+  PASSWORD_SCHEME,
+  EMAIL_SCHEME,
+  STORAGE_OBJECT_SCHEME,
+  STORAGE_OBJECT_PROCESS_OPTIONS_SCHEME,
+  // Storage Object routes/services schemes
+  FILES_UPLOAD_KNOWN_PARAMS_SCHEME,
+  FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME,
+  FOLDER_CREATE_SCHEME,
+  FOLDER_GET_SCHEME,
+  FOLDER_REMOVE_SCHEME,
+  FOLDER_COPY_SCHEME,
+  FOLDER_MOVE_SCHEME,
+  FOLDER_GET_OBJECT_SCHEME,
   // User route schemes
-  LOG_IN: vine.create({
-    email: VineEmailScheme.clone(), 
-    password: VinePasswordScheme.clone()
-  }),
-  LOG_UP: vine.create({
-    email: VineEmailScheme.clone(),
-    password: VinePasswordScheme.clone().sameAs("confirmPassword").confirmed({ as: "confirmPassword" }),
-    confirmPassword: VinePasswordScheme.clone().sameAs("password") 
-  }),
-  REQUEST_RESET_PASSWORD: vine.create({
-    email: VineEmailScheme.clone()
-  }),
-  RESET_PASSWORD: vine.create({
-    password: VinePasswordScheme.clone(),
-    token: VineJwtScheme.clone()
-  }),
-  REQUEST_CONFIRM_EMAIL: vine.create({
-    [COOKIE.ACCESS_TOKEN_KEY]: VineJwtScheme.clone()
-  }),
-  CONFIRM_EMAIL: vine.create({
-    token: VineJwtScheme.clone()
-  }),
+  USER_LOG_UP_SCHEME,
+  USER_LOG_IN_SCHEME,
+  USER_RESET_PASSWORD_SCHEME,
+  USER_CONFIRM_EMAIL_SCHEME,
+  USER_REQUEST_CONFIRM_EMAIL_SCHEME,
+  USER_REQUEST_RESET_PASSWORD_SCHEME,
+  USER_REFRESH_TOKEN_SCHEME,
   // Middleware route schemes
-  JWT_PAYLOAD: vine.create({
-    id: VineUUIDV4Scheme.clone()
-  }),
-  REFRESH_TOKEN: vine.create({
-    [COOKIE.ACCESS_TOKEN_KEY]: VineJwtScheme.clone()
-  }),
-  AUTH: vine.create({
-    [COOKIE.REFRESH_TOKEN_KEY]: VineJwtScheme.clone().optional(),
-    [COOKIE.ACCESS_TOKEN_KEY]: VineJwtScheme.clone().optional()
-  }),
+  IS_AUTHORIZED_SCHEMA
 };
