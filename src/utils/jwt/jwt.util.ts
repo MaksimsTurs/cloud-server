@@ -1,17 +1,18 @@
 import type { JwtTokenPaylaod } from "./jwt.type";
-
 import type { SignOptions } from "jsonwebtoken";
 
 import { serverConfigs } from "../../index";
 
 import jsonwebtoken from "jsonwebtoken";
 
+import COOKIE from "../../const/COOKIE.const";
+
 function generateToken(payload: string, secret: string, options?: SignOptions): string {
   return jsonwebtoken.sign(payload, secret, options);
 };
 
 function verifyToken<P = unknown>(token: string = "", secret: string): JwtTokenPaylaod<P> | undefined {
-   if(!token) {
+  if(!token) {
     return undefined;
   }
 
@@ -23,11 +24,11 @@ function verifyToken<P = unknown>(token: string = "", secret: string): JwtTokenP
 };
 
 export function generateAccessToken(payload: any): string {
-  return generateToken(payload, serverConfigs.ACCESS_TOKEN_SECRET, { expiresIn: "7 days" });
+  return generateToken(payload, serverConfigs.ACCESS_TOKEN_SECRET, { expiresIn: COOKIE.ACCESS_OPTIONS.maxAge });
 };
 
 export function generateRefreshToken(payload: any): string {
-  return generateToken(payload, serverConfigs.REFRESH_TOKEN_SECRET, { expiresIn: "15 minutes" });
+  return generateToken(payload, serverConfigs.REFRESH_TOKEN_SECRET, { expiresIn: COOKIE.REFRESH_OPTIONS.maxAge });
 };
 
 export function generateConfirmEmailToken(payload: any): string {
