@@ -12,9 +12,9 @@ import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
 import userService from "../services/user/user.service";
 
 export default async function isAuthorized(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const token: string | undefined = req.cookies[COOKIE.ACCESS_TOKEN_KEY];
+  const accessToken: string | undefined = req.cookies[COOKIE.ACCESS_TOKEN_KEY];
   
-  if(!token) {
+  if(!accessToken) {
     throw new CaughtError(
       HTTP_ERROR_CODES.UNAUTHORIZED,
       undefined,
@@ -22,7 +22,7 @@ export default async function isAuthorized(req: Request, res: Response, next: Ne
     );
   }
 
-  const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyAccessToken<UserJwtPayload>(token);
+  const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyAccessToken<UserJwtPayload>(accessToken);
 
   if(!payload) {
     throw new CaughtError(
@@ -32,7 +32,8 @@ export default async function isAuthorized(req: Request, res: Response, next: Ne
     );
   }
 
-  VALIDATION_SCHEMES.JWT_PAYLOAD.validate(payload);
+  VALIDATION_SCHEMES.create(VALIDATION_SCHEMES.JWT_USER_PAYLOAD_SCHEME).validate(payload);
+  VALIDATION_SCHEMES.create(VALIDATION_SCHEMES.UUID_SHEME).validate(payload.id);
 
   // Unauthenticated, unauthorized and unverified users does not have access to API.
   const user: User | undefined = await userService.getById(payload.id);
