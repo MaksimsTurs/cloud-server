@@ -21,7 +21,7 @@ export default async function logIn(
   if(!user) {
    throw new CaughtError(
       HTTP_ERROR_CODES.NOT_FOUND,
-      `Unknown user ${req.socket.remoteAddress} has tried to log in with unknown email`,
+      `Unknown user(${req.socket.remoteAddress}) has tried to log in with unknown email.`,
       "User with this email does not exist!"
     );
   }
@@ -31,7 +31,7 @@ export default async function logIn(
   if(!match) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
-      `${user.id} has does not passed a password verification`,
+      `User(${user.id}) has failed password verification.`,
       "Password is not correct!"
     );
   }

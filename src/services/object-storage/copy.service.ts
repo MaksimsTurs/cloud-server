@@ -21,8 +21,8 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
   if(!parent) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
-      `${user.id} has tried to copy items into not existing directory`,
-      "You can not copy items into not existing directory!"
+      `User(${user.id}) has tried to copy items into not existing folder(${body.parentId}).`,
+      "You can not copy items into not existing folder!"
     );
   }
 
@@ -41,7 +41,7 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
     if(isExist) {
       throw new CaughtError(
         HTTP_ERROR_CODES.CONFLICT,
-        `${user.id} has tried to copy item ${item.name} that already exist in ${parent.id} directory`,
+        `User(${user.id}) has tried to copy item(${item.name}) that already exist in folder(${parent.id}).`,
         "Item with the same name already exist!"
       );
     }

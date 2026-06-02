@@ -18,7 +18,7 @@ export default async function create(data: UserLogUpReqBody): Promise<UserServic
   if(await userRepo.isExist("email", data.email)) {
     throw new CaughtError(
       HTTP_ERROR_CODES.CONFLICT,
-      "Unknown user has tried to create account with email that alredy exist",
+      "Unknown user has tried to create account with email that alredy exist.",
       "User with the same email alredy exist!"
     );
   }

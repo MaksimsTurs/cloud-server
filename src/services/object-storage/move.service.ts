@@ -14,8 +14,8 @@ export default async function move(user: User, body: ObjectStorageMoveObjectsReq
   if(!parent) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
-      `${user.id} has tried to move items into not existing directory!`,
-      "You can not move items into not existing directory!"
+      `User(${user.id}) has tried to move items into not existing folder(${body.parentId}).`,
+      "You can not move items into not existing folder!"
     );
   }
 
@@ -26,7 +26,7 @@ export default async function move(user: User, body: ObjectStorageMoveObjectsReq
     if(isExist) {
       throw new CaughtError(
         HTTP_ERROR_CODES.CONFLICT,
-        `${user.id} has tried to move item (${item.name}) that already exist in ${parent.id} directory`,
+        `User(${user.id}) has tried to move item(${item.name}) that already exist in folder(${parent.id}).`,
         "Item with the same name already exist!"
       );
     }

@@ -23,8 +23,8 @@ const dirRouter: Router = express.Router();
 
 export default function initObjectStorageRouter(uploader: Multer): Router {
   dirRouter.post("/get/all",     
-    validate("query", VALIDATION_SCHEMES.DIR_READ),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    validate("query", VALIDATION_SCHEMES.FOLDER_GET_SCHEME),
     isAuthorized,
     isVerified,
     getAll,
@@ -32,8 +32,8 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   );
 
   dirRouter.get("/get/:id",
-    validate("params", VALIDATION_SCHEMES.DIR_READ_OBJECT),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    validate("params", VALIDATION_SCHEMES.FOLDER_GET_OBJECT_SCHEME),
     isAuthorized,
     isVerified,
     getById,
@@ -41,8 +41,8 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   );
 
   dirRouter.post("/copy",     
-    validate("body", VALIDATION_SCHEMES.DIR_COPY),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    validate("body", VALIDATION_SCHEMES.FOLDER_COPY_SCHEME),
     isAuthorized,
     isVerified,
     copy,
@@ -50,8 +50,8 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   );
 
   dirRouter.post("/move",     
-    validate("body", VALIDATION_SCHEMES.DIR_MOVE),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    validate("body", VALIDATION_SCHEMES.FOLDER_MOVE_SCHEME),
     isAuthorized,
     isVerified,
     move,
@@ -59,8 +59,8 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   );
 
   dirRouter.post("/remove",    
-    validate("body", VALIDATION_SCHEMES.DIR_REMOVE),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    validate("body", VALIDATION_SCHEMES.FOLDER_CREATE_SCHEME),
     isAuthorized,
     isVerified,
     remove,
@@ -68,8 +68,8 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   );
 
   dirRouter.post("/create",     
-    validate("body", VALIDATION_SCHEMES.DIR_CREATE),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    validate("body", VALIDATION_SCHEMES.FOLDER_CREATE_SCHEME),
     isAuthorized,
     isVerified,
     create,
@@ -79,9 +79,9 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   dirRouter.post("/upload",
     uploader.any(),
     convertFormDataToObject,
-    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD_PARENT_ID),
-    validate("body", VALIDATION_SCHEMES.DIR_UPLOAD_PROCESS_OPTIONS),
-    validate("cookies", VALIDATION_SCHEMES.AUTH),
+    validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME),
+    validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_KNOWN_PARAMS_SCHEME),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
     isAuthorized,
     isVerified,
     upload,

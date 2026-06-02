@@ -24,7 +24,7 @@ export default async function getById(
   if(!storageObject) {
     throw new CaughtError(
       HTTP_ERROR_CODES.NOT_FOUND,
-      `User ${user.id} has tried to get not existing file ${id}`,
+      `User(${user.id}) has tried to get not existing file(${id}).`,
       "File not found!"
     );
   }
@@ -35,7 +35,7 @@ export default async function getById(
   if(!isPathSafe(basePath, filePath)) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
-      `User ${user.id} has tried to get suspicous file ${filePath}`,
+      `User(${user.id}) has tried to get suspicous file(${filePath}).`,
       "You can not get this file!"
     );
   }

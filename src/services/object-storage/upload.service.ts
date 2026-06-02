@@ -31,7 +31,7 @@ export default async function upload(
   if(!parent) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
-      `${user.id} has tried to upload files into not existing directory ${parentId}`,
+      `User(${user.id}) has tried to upload files into not existing folder (${parentId}).`,
       "Can not upload files into unknown directory!"
     );
   }
@@ -46,8 +46,8 @@ export default async function upload(
     if(!fileType?.mime || !isExtentionSafe(extention) || !isMimeTypeSafe(fileType.mime)) {
       throw new CaughtError(
         HTTP_ERROR_CODES.BAD_REQUEST,
-        `${user.id} has tried to upload unsafe file ext:${extention} mime-type:${file.mimetype}`,
-        `${extention} files are not supported!`
+        `User(${user.id}) has tried to upload unsafe file ext(${extention}) mime-type(${file.mimetype}).`,
+        `${extention} can not be uploaded!`
       );
     }
 
@@ -65,7 +65,7 @@ export default async function upload(
     if(!isPathSafe(fileBasePath, dstPath)) {
       throw new CaughtError(
         HTTP_ERROR_CODES.BAD_REQUEST,
-        `${user.id} has tried to upload file into suspicious directory ${dstPath}`,
+        `User(${user.id}) has tried to upload file into suspicious folder(${dstPath}).`,
         "You can not upload files into this directory!"
       );
     }

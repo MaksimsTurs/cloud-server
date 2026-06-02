@@ -20,7 +20,7 @@ export default async function remove(user: User, body: ObjectStorageRemoveObject
     if(item.user_id != user.id) {
       throw new CaughtError(
         HTTP_ERROR_CODES.FORBIDDEN,
-        `User ${user.id} has tried to remove another user's directory ${item.id}`,
+        `User(${user.id}) has tried to remove another user's folder.`,
         "You can not remove this directory!"
       );
     }

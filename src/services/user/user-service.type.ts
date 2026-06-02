@@ -5,3 +5,9 @@ export type UserServiceCreateReturn = {
   user: User
   workDir: string
 };
+
+export type UserServiceInitReturn = {
+  accessToken: string
+  refreshToken: string
+  is_verified: boolean
+};
