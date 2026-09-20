@@ -10,6 +10,8 @@ import Logger from "@maksims/logger.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { existsSync } from "node:fs";
+import { mkdir } from "node:fs/promises";
 
 import defineServerConf from "./configs/define-server-conf.config";
 import connectToPostgres from "./configs/connect-to-postgres.config";
@@ -47,10 +49,29 @@ class Application implements ApplicationImpl {
     }
   };
 
-  public start(): void {
+  public async start(): Promise<void> {
     const { conf, server, uploader, logger } = this.context;
-    
+
     logger.console.info("Start application");
+    logger.console.info(`Creating storage directory ${conf.BASE_STORAGE_PATH}`);
+    logger.console.info(`Creating tmp directory ${conf.BASE_TMP_PATH}`);
+
+    try {
+      if(!existsSync(conf.BASE_STORAGE_PATH)) {
+        await mkdir(conf.BASE_STORAGE_PATH);
+      }
+
+      if(!existsSync(conf.BASE_TMP_PATH)) {
+        await mkdir(conf.BASE_TMP_PATH);
+      }
+    } catch(error) {
+      if(error instanceof Error) {
+        logger.console.error(`Directory creation fails, cause: ${error.message}`);
+      } else {
+        logger.console.error("Directory creation fails, cause: Unknown error", error);
+      }
+    }
+    
     logger.console.info(`Start server on ${conf.HOST}:${conf.PORT}`);
     
     try {
@@ -74,5 +95,4 @@ class Application implements ApplicationImpl {
 };
 
 const app = new Application();
-
 export default app;

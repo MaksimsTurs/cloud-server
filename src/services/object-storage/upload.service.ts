@@ -52,7 +52,7 @@ export default async function upload(
       );
     }
 
-    const fileBasePath: string = `${conf.BASE_USERS_PATH}/${user.id}`;
+    const fileBasePath: string = `${conf.BASE_STORAGE_PATH}/${user.id}`;
     const filename: string = `${options?.name || filePath.name}.${extention}`;
     const newObject: StorageObject = await objectStorageService.create({
       name: filename,

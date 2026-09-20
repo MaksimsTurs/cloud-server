@@ -10,16 +10,16 @@ export default function defineServerEnv() {
     throw new TypeError("process.env.MODE must be defined!");
   }
 
-  if(isUndefined(process.env.BASE_USERS_PATH) ||
-     isNull(process.env.BASE_USERS_PATH) || 
-     !process.env.BASE_USERS_PATH.length) {
-    throw new TypeError("process.env.BASE_USERS_PATH must be defined!");
+  if(isUndefined(process.env.BASE_STORAGE_PATH) ||
+     isNull(process.env.BASE_STORAGE_PATH) || 
+     !process.env.BASE_STORAGE_PATH.length) {
+    throw new TypeError("process.env.BASE_STORAGE_PATH must be defined!");
   }
 
-  if(isUndefined(process.env.BASE_UPLOAD_TMP_PATH) ||
-     isNull(process.env.BASE_UPLOAD_TMP_PATH) ||
-     !process.env.BASE_UPLOAD_TMP_PATH.length) {
-    throw new TypeError("process.env.BASE_UPLOAD_TMP_PATH must be defined!");
+  if(isUndefined(process.env.BASE_TMP_PATH) ||
+     isNull(process.env.BASE_TMP_PATH) ||
+     !process.env.BASE_TMP_PATH.length) {
+    throw new TypeError("process.env.BASE_TMP_PATH must be defined!");
   }
 
   if(isUndefined(process.env.ACCESS_TOKEN_SECRET) ||
@@ -125,8 +125,8 @@ export default function defineServerEnv() {
   }
 
   return {
-    BASE_USERS_PATH: process.env.BASE_USERS_PATH,
-    BASE_UPLOAD_TMP_PATH: process.env.BASE_UPLOAD_TMP_PATH,
+    BASE_STORAGE_PATH: `${process.env.HOME}/${process.env.BASE_STORAGE_PATH}`,
+    BASE_TMP_PATH: `${process.env.HOME}/${process.env.BASE_TMP_PATH}`,
 
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,

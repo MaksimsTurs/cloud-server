@@ -2,7 +2,6 @@ import type { FileFilterCallback, Multer, StorageEngine } from "multer";
 import type { Request } from "express";
 
 import multer from "multer";
-import fsSync from "node:fs";
 import path from "node:path";
 
 import { isMimeTypeSafe, isExtentionSafe } from "../utils/is.util";
@@ -36,17 +35,7 @@ function fileDestination(
   _file: Express.Multer.File, 
   callback: MulterStorageCreationCallback
 ): void {
-  if(!fsSync.existsSync(app.context.conf.BASE_UPLOAD_TMP_PATH)) {
-    fsSync.mkdir(app.context.conf.BASE_UPLOAD_TMP_PATH, (error): void => {
-      if(error) {
-        callback(error, "");
-      } else {
-        callback(null, app.context.conf.BASE_UPLOAD_TMP_PATH);
-      }
-    });
-  } else {
-    callback(null, app.context.conf.BASE_UPLOAD_TMP_PATH);
-  }
+  callback(null, app.context.conf.BASE_TMP_PATH);
 };
 
 function fileName(

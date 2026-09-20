@@ -31,7 +31,7 @@ export default async function getById(
     );
   }
 
-  const basePath: string = `${conf.BASE_USERS_PATH}/${user.id}`;
+  const basePath: string = `${conf.BASE_STORAGE_PATH}/${user.id}`;
   const filePath: string = path.resolve(basePath, storageObject!.id);
 
   if(!isPathSafe(basePath, filePath)) {

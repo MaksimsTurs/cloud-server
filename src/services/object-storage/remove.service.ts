@@ -31,7 +31,7 @@ export default async function remove(user: User, body: ObjectStorageRemoveObject
     if(item.type === STORAGE_OBJECT_TYPES.DIR) {
       folders.push(item);
     } else {
-      const itemPath: string = `${conf.BASE_USERS_PATH}/${item.user_id}/${item.id}`;
+      const itemPath: string = `${conf.BASE_STORAGE_PATH}/${item.user_id}/${item.id}`;
 
       await fsAsync.rm(itemPath);
       await objectStorageRepo.removeOne("id", item.id);
