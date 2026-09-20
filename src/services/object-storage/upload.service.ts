@@ -9,7 +9,7 @@ import CaughtError from "../../utils/Caught-Error.util";
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
-import { serverConfigs } from "../../index";
+import app from "../../Application";
 
 import fsAsync from "node:fs/promises";
 import path from "node:path";
@@ -24,6 +24,7 @@ export default async function upload(
   body: ObjectStorageUploadReqBody, 
   files: Express.Multer.File[]
 ): Promise<StorageObject[]> {
+  const { conf } = app.context;
   const { parentId } = body
   const items: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(parentId);
@@ -32,7 +33,7 @@ export default async function upload(
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
       `User(${user.id}) has tried to upload files into not existing folder (${parentId}).`,
-      "Can not upload files into unknown directory!"
+      "You can not upload files into unknown directory!"
     );
   }
     
@@ -47,11 +48,11 @@ export default async function upload(
       throw new CaughtError(
         HTTP_ERROR_CODES.BAD_REQUEST,
         `User(${user.id}) has tried to upload unsafe file ext(${extention}) mime-type(${file.mimetype}).`,
-        `${extention} can not be uploaded!`
+        `${extention} files can not be uploaded!`
       );
     }
 
-    const fileBasePath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}`;
+    const fileBasePath: string = `${conf.BASE_USERS_PATH}/${user.id}`;
     const filename: string = `${options?.name || filePath.name}.${extention}`;
     const newObject: StorageObject = await objectStorageService.create({
       name: filename,

@@ -1,6 +1,6 @@
 import type { StorageObject } from "../index.type";
 
-import { sql } from "../index";
+import app from "../Application";
 
 import SQLRepository from "./SQL.repo";
 
@@ -10,6 +10,8 @@ class ObjectStorageRepository extends SQLRepository<StorageObject> {
   };
 
   public async getAll(userId: string, parentId: string): Promise<StorageObject[]> {
+    const { sql } = app.context;
+
     const res = await sql<StorageObject[]>`
       SELECT * FROM(
         SELECT * FROM ${sql(this.table)}

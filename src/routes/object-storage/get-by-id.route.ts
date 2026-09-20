@@ -7,16 +7,18 @@ import objectStorageService from "../../services/object-storage/object-storage.s
 import path from "node:path";
 import fsAsync from "node:fs/promises";
 
-import { serverConfigs } from "../../index";
 import { isPathSafe } from "../../utils/is.util";
 import CaughtError from "../../utils/Caught-Error.util";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
+import app from "../../Application";
+
 export default async function getById(
   req: Request<ObjectStorageGetObjectReqParams>, 
   res: Response<unknown, ObjectStorageGetObjectResLocals>
 ): Promise<void> {
+  const { conf } = app.context;
   const { id } = req.params;
   const { user } = res.locals;
   const storageObject: StorageObject | undefined = await objectStorageService.getById(id);
@@ -29,7 +31,7 @@ export default async function getById(
     );
   }
 
-  const basePath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}`;
+  const basePath: string = `${conf.BASE_USERS_PATH}/${user.id}`;
   const filePath: string = path.resolve(basePath, storageObject!.id);
 
   if(!isPathSafe(basePath, filePath)) {

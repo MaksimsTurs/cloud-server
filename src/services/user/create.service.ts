@@ -12,7 +12,7 @@ import argon from "argon2";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
-import { serverConfigs } from "../../index";
+import app from "../../Application";
 
 export default async function create(data: UserLogUpReqBody): Promise<UserServiceCreateReturn> {
   if(await userRepo.isExist("email", data.email)) {
@@ -23,11 +23,12 @@ export default async function create(data: UserLogUpReqBody): Promise<UserServic
     );
   }
 
+  const { conf } = app.context;
   const id: string = generateId();
   const hash: string = await argon.hash(data.password);
   const access: string = generateAccessToken({ id });
   const refresh: string = generateRefreshToken({ id });
-  const workDir: string = `${serverConfigs.BASE_USERS_PATH}/${id}`;
+  const workDir: string = `${conf.BASE_USERS_PATH}/${id}`;
   const user: User = {
     id,
     password: hash,

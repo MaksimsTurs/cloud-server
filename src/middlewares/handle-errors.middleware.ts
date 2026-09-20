@@ -4,12 +4,14 @@ import { ValidationError } from "@vinejs/vine";
 
 import CaughtError from "../utils/Caught-Error.util";
 
-import { logger } from "../index";
+import app from "../Application";
 
 import HTTP_ERRORS from "../const/HTTP_ERRORS.const";
 import COOKIE from "../const/COOKIE.const";
 
 export default async function handleError(error: unknown, _req: Request, res: Response, _next: NextFunction): Promise<void> {
+  const { logger } = app.context;
+
   if(error instanceof CaughtError) {
     res.status(error.options.code).send({ code: error.options.code, message: error.options.clientMessage });
 

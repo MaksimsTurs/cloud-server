@@ -2,7 +2,7 @@ import type { PendingQuery, Row, RowList } from "postgres";
 
 import joinSqlQueries from "../utils/join-sql-queries.util";
 
-import { sql } from "../index";
+import app from "../Application";
 
 class SQLRepository<T extends object> {
   public table: string = "";
@@ -12,11 +12,13 @@ class SQLRepository<T extends object> {
   };
 
   public async insertOne(data: T): Promise<void> {
+    const { sql } = app.context;
     const keys: string[] = Object.keys(data as any);
     await sql<T[]>`INSERT INTO ${sql(this.table)} ${sql(data as any, keys)}`;
   };
 
   public async getOne(data: Partial<T>): Promise<T | undefined> {
+    const { sql } = app.context;
     const conditions: PendingQuery<Row[]>[] = [];
 
     for(let key in data) {
@@ -31,20 +33,24 @@ class SQLRepository<T extends object> {
   };
 
   public async getById(id: string): Promise<T | undefined> {
+    const { sql } = app.context;
     const res: RowList<T[]> = await sql<T[]>`SELECT * FROM ${sql(this.table)} WHERE id = ${id} LIMIT 1`;
     return res.at(-1);
   };
 
   public async removeOne(column: string, value: any): Promise<void> {
+    const { sql } = app.context;
     await sql<T[]>`DELETE FROM ${sql(this.table)} WHERE ${sql(column)} = ${value}`
   };
 
   public async updateById(id: string, data: Partial<T>): Promise<void> {
+    const { sql } = app.context;
     const keys: string[] = Object.keys(data as any);
     await sql<T[]>`UPDATE ${sql(this.table)} SET ${sql(data as any, keys)} WHERE id = ${id}`;
   };
 
   public async isExist(column: string, value: any): Promise<boolean> {
+    const { sql } = app.context;
     const res: RowList<Row[]> = await sql<T[]>`SELECT ${sql(column)} FROM ${sql(this.table)} WHERE ${sql(column)} = ${value} LIMIT 1`;
     return res.length != 0;
   };
