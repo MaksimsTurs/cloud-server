@@ -94,9 +94,9 @@ export default function defineServerEnv() {
     throw new TypeError("process.env.POSTGRES_DATABASE must be defined!");
   }
 
-  if(isUndefined(process.env.POSTGRES_CA_CERTIFICATE) || 
+  if(process.env.MODE === "prod" && (isUndefined(process.env.POSTGRES_CA_CERTIFICATE) || 
      isNull(process.env.POSTGRES_CA_CERTIFICATE) ||
-     !process.env.POSTGRES_CA_CERTIFICATE.length) {
+     !process.env.POSTGRES_CA_CERTIFICATE.length)) {
     throw new TypeError("process.env.POSTGRES_CA_CERTIFICATE must be defined!");
   }
 
