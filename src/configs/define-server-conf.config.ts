@@ -1,6 +1,9 @@
 import { isNull, isUndefined } from "@maksims/is.js";
+import dotenv from "@maksims/dotenv.js";
 
-export default function defineServerConfig() {
+export default function defineServerEnv() {
+  dotenv();
+
   if(isUndefined(process.env.MODE) || 
      isNull(process.env.MODE) || 
      !process.env.MODE.length) {
