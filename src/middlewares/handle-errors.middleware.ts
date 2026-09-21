@@ -26,10 +26,10 @@ export default async function handleError(error: unknown, _req: Request, res: Re
       res.status(400).send(HTTP_ERRORS.BAD_REQUEST(error.messages[0].message));
     }
 
-    logger.console.error("Validation failed", error.messages);
+    logger.console.error(`Validation error, ${error.messages[0].message}`);
   } else if(error instanceof Error) {
     res.status(500).send(HTTP_ERRORS.INTERNAL_SERVER_ERROR());
-    logger.console.error(error.message, error.stack);
+    logger.console.error(error.message);
   } else {
     res.status(500).send(HTTP_ERRORS.INTERNAL_SERVER_ERROR());
     logger.console.error("Uncaught server error!");
