@@ -5,8 +5,8 @@
   "license": "ISC",
   "scripts": {
     "dev": "npx nodemon",
-    "build": "tsc --project tsconfig.json",
-    "start": "node ./output/index.js"
+    "prod": "node ./output/index.js",
+    "build": "tsc --project tsconfig.json"
   },
   "devDependencies": {
     "@types/argon2": "^0.14.1",
@@ -14,26 +14,27 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^2.1.0",
-    "@types/node": "^25.5.2",
-    "@types/nodemailer": "^7.0.11",
-    "nodemon": "^3.1.11"
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.6.2",
+    "@types/nodemailer": "^8.0.2",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "@maksims/dotenv.js": "^2.1.1",
     "@maksims/form-multipart-encoder.js": "^1.0.0",
     "@maksims/is.js": "^1.0.1",
-    "@maksims/logger.js": "^2.1.3",
-    "@vinejs/vine": "^4.3.0",
-    "argon2": "^0.44.0",
+    "@maksims/logger.js": "^2.1.5",
+    "@vinejs/vine": "^4.4.0",
+    "argon2": "^0.45.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "file-type": "^22.0.0",
+    "file-type": "^22.1.1",
     "jsonwebtoken": "^9.0.3",
-    "multer": "^2.1.1",
-    "nodemailer": "^8.0.4",
-    "postgres": "^3.4.8",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.0.10",
+    "postgres": "^3.4.9",
     "typescript": "^6.0.2"
   }
 }
