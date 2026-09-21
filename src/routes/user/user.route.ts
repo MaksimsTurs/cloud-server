@@ -14,7 +14,7 @@ import requestConfirmEmail from "./request-confirm-email.route";
 
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
-import isAuthorized from "../../middlewares/is-authorized.middleware";
+import isAuthenticated from "../../middlewares/is-authenticated.middleware";
 import isNotVerified from "../../middlewares/is-not-verified.middleware";
 
 import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
@@ -23,7 +23,8 @@ const userRouter: Router = express.Router();
 
 export default function initUserRouter(): Router {
   userRouter.get("/init",
-    validate("cookies", VALIDATION_SCHEMES.USER_REFRESH_TOKEN_SCHEME),
+    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    isAuthenticated,
     init,
     handleError
   );
@@ -42,14 +43,14 @@ export default function initUserRouter(): Router {
 
   userRouter.get("/log-out",    
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthorized,
+    isAuthenticated,
     logOut,
     handleError
   );
 
   userRouter.get("/confirm",
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthorized,
+    isAuthenticated,
     isNotVerified,
     validate("query", VALIDATION_SCHEMES.USER_CONFIRM_EMAIL_SCHEME),
     confirmEmail,
@@ -64,7 +65,7 @@ export default function initUserRouter(): Router {
 
   userRouter.get("/request-confirm-email", 
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthorized,
+    isAuthenticated,
     isNotVerified,
     requestConfirmEmail,
     handleError
