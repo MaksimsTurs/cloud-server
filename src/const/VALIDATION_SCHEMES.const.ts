@@ -1,4 +1,4 @@
-import type { VineObject, VineRecord, VineString, VineValidator } from "@vinejs/vine";
+import type { VineObject, VineRecord, VineString } from "@vinejs/vine";
 
 import vine from "@vinejs/vine";
 
@@ -12,8 +12,8 @@ const JWT_SCHEME: VineString = vine.string().jwt();
 const PASSWORD_SCHEME: VineString = vine.string().minLength(12);
 const EMAIL_SCHEME: VineString = vine.string().email();
 const JWT_USER_PAYLOAD_SCHEME: VineObject<any, any, any, any> = vine.object({
-  id: UUID_SHEME.clone()
-});
+  id: UUID_SHEME.clone(),
+}).allowUnknownProperties();
 // Storage object routes/services schemes:
 const STORAGE_OBJECT_SCHEME: VineObject<any, any, unknown, unknown> = vine.object({
   id:         UUID_SHEME.clone(),
@@ -34,7 +34,7 @@ const FILES_UPLOAD_KNOWN_PARAMS_SCHEME: VineObject<any, any, any, any> = vine.ob
   parentId: UUID_SHEME.clone()
 }).allowUnknownProperties();
 const FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME: VineRecord<any> = vine.record(
-  vine.unionOfTypes([vine.string(), STORAGE_OBJECT_SCHEME.clone()])
+  vine.unionOfTypes([vine.string(), STORAGE_OBJECT_PROCESS_OPTIONS_SCHEME.clone()])
 );
 const FOLDER_CREATE_SCHEME: VineObject<any, any, any, any> = vine.object({
   name: vine.string().maxLength(64),
@@ -88,8 +88,8 @@ const IS_AUTHORIZED_SCHEMA: VineObject<any, any, any, any> = vine.object({
 });
 
 export default {
-  create: function(scheme: any): VineValidator<any, any> {
-    return vine.create(scheme);
+  validate: async function(scheme: any, data: any): Promise<void> {
+    await (vine.create(scheme).validate(data));
   },
   // Common schemes
   UUID_SHEME,
