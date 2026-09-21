@@ -17,7 +17,7 @@ export default async function requestResetPassword(
   if(!user) {
     throw new CaughtError(
       HTTP_ERROR_CODES.FORBIDDEN,
-      `Unknown user ${req.socket.remoteAddress} has tried to request password reseting.`,
+      `Unknown user(${req.socket.remoteAddress}) has tried to request password reseting.`,
       "You can not reset the password!"
     );
   }
