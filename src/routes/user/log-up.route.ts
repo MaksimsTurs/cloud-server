@@ -15,7 +15,6 @@ export default async function logup(
 ): Promise<void> {
   const data: UserServiceCreateReturn = await userService.create(req.body);
   const storageObject: StorageObject = await objectStorageService.create({
-    id: data.user.id,
     user_id: data.user.id,
     name: "root",
     type: STORAGE_OBJECT_TYPES.DIR,
