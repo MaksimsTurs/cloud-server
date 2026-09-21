@@ -6,13 +6,13 @@ import type {
   ObjectStorageGetAllResLocals
 } from "./object-storage-route.type";
 
-import storageService from "../../services/object-storage/object-storage.service";
+import objectStorageService from "../../services/object-storage/object-storage.service";
 
 export default async function getAll(
   req: Request<unknown, unknown, ObjectStorageGetAllReqBody>, 
   res: Response<ObjectStorageGetAllResBody, ObjectStorageGetAllResLocals>
 ): Promise<void> {
-  const storageObject: ObjectStorageServiceGetAllReturn = await storageService.getAll(res.locals.user, req.body.id);
+  const storageObject: ObjectStorageServiceGetAllReturn = await objectStorageService.getAll(res.locals.user, req.body.id);
 
   res.status(200).send(storageObject);
 };
