@@ -45,15 +45,15 @@ class Application implements ApplicationImpl {
     const { conf, server, logger } = this.context;
 
     logger.console.info("Start application");
-    logger.console.info(`Creating storage directory ${conf.BASE_STORAGE_PATH}`);
-    logger.console.info(`Creating tmp directory ${conf.BASE_TMP_PATH}`);
 
     try {
       if(!existsSync(conf.BASE_STORAGE_PATH)) {
+        logger.console.info(`Creating storage directory ${conf.BASE_STORAGE_PATH}`);
         await mkdir(conf.BASE_STORAGE_PATH);
       }
 
       if(!existsSync(conf.BASE_TMP_PATH)) {
+        logger.console.info(`Creating tmp directory ${conf.BASE_TMP_PATH}`);
         await mkdir(conf.BASE_TMP_PATH);
       }
     } catch(error) {
