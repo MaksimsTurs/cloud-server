@@ -13,8 +13,6 @@ export type ObjectStorageGetAllResBody = {
   items: StorageObject[]
 };
 
-//###################################################
-
 export type ObjectStorageCopyReqBody = {
   parentId: string
   items: Record<string, StorageObject>
@@ -23,8 +21,6 @@ export type ObjectStorageCopyReqBody = {
 export type ObjectStorageCopyResLocals = {
   user: User
 };
-
-//###################################################
 
 export type ObjectStorageCreateItemReqBody = {
   name: string
@@ -35,8 +31,6 @@ export type ObjectStorageCreateItemResLocals = {
   user: User
 };
 
-//###################################################
-
 export type ObjectStorageGetObjectReqParams = {
   id: string
 };
@@ -44,8 +38,6 @@ export type ObjectStorageGetObjectReqParams = {
 export type ObjectStorageGetObjectResLocals = {
   user: User
 };
-
-//###################################################
 
 export type ObjectStorageMoveObjectsResLocals = {
   user: User
@@ -56,15 +48,11 @@ export type ObjectStorageMoveObjectsReqBody = {
   items: Record<string, StorageObject>
 };
 
-//###################################################
-
 export type ObjectStorageRemoveObjectsReqBody = Record<string, StorageObject>;
 
 export type ObjectStorageRemoveObjectsResLocals = {
   user: User
 };
-
-//###################################################
 
 export type ObjectStorageUploadReqBody = {
   parentId: string
@@ -73,8 +61,6 @@ export type ObjectStorageUploadReqBody = {
 export type ObjectStorageUploadResLocals = {
   user: User 
 };
-
-//###################################################
 
 export type ObjectStoragePreviewReqParams = {
   id: string
