@@ -1,4 +1,7 @@
+import app from "../Application";
+
 export default function generateResetPasswordEmail(token: string): string {
+  const { conf } = app.context;
   return(
     `
 <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -84,7 +87,7 @@ export default function generateResetPasswordEmail(token: string): string {
                                                     <td align="left" style="padding:0;Margin:0;width:560px">
                                                         <table cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-spacing:0px">
                                                             <tr>
-                                                                <td align="center" style="padding:0;Margin:0"><span class="es-button-border" style="border-style:solid;border-color:#002d7a;background:#002d7a;border-width:0;display:inline-block;border-radius:5px;width:auto"><a target="_blank" href="http://localhost:3000/reset-password?token=${token}" class="es-button" style="mso-style-priority:100 !important;text-decoration:none !important;mso-line-height-rule:exactly;color:#FFFFFF;font-size:14px;padding:10px 20px 10px 20px;display:inline-block;background:#002d7a;border-radius:5px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:16.8px;width:auto;text-align:center;letter-spacing:0;mso-padding-alt:0;mso-border-alt:10px solid #002d7a">Reset</a> </span></td>
+                                                                <td align="center" style="padding:0;Margin:0"><span class="es-button-border" style="border-style:solid;border-color:#002d7a;background:#002d7a;border-width:0;display:inline-block;border-radius:5px;width:auto"><a target="_blank" href="http://${conf.HOST}:${conf.PORT}/reset-password?token=${token}" class="es-button" style="mso-style-priority:100 !important;text-decoration:none !important;mso-line-height-rule:exactly;color:#FFFFFF;font-size:14px;padding:10px 20px 10px 20px;display:inline-block;background:#002d7a;border-radius:5px;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-weight:normal;font-style:normal;line-height:16.8px;width:auto;text-align:center;letter-spacing:0;mso-padding-alt:0;mso-border-alt:10px solid #002d7a">Reset</a> </span></td>
                                                             </tr>
                                                         </table>
                                                     </td>

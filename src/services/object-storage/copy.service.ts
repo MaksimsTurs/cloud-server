@@ -11,9 +11,10 @@ import fsAsync from "node:fs/promises";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
-import { serverConfigs } from "../..";
+import app from "../../Application";
 
 export default async function copy(user: User, body: ObjectStorageCopyReqBody): Promise<ObjectStorageServiceCopyReturn> {
+  const { conf } = app.context;
   const items: Record<string, StorageObject> = body.items;
   const itemCopies: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(body.parentId);
@@ -30,8 +31,8 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
     const item: StorageObject = items[name];
     const id: string = generateId();
     const isExist: boolean = !!(await objectStorageRepo.getOne({ parent_id: parent.id, name: item.name }));
-    const originalPath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}/${item.id}`;
-    const copyPath: string = `${serverConfigs.BASE_USERS_PATH}/${user.id}/${id}`;
+    const originalPath: string = `${conf.BASE_STORAGE_PATH}/${user.id}/${item.id}`;
+    const copyPath: string = `${conf.BASE_STORAGE_PATH}/${user.id}/${id}`;
     const itemCopy: StorageObject = {
       ...item,
       id,

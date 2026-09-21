@@ -1,6 +1,7 @@
-import { serverConfigs } from "../index";
+import app from "../Application";
 
 export default function generateConfirmEmail(token: string): string {
+  const { conf } = app.context;
   return(
     `
 <!DOCTYPE html>
@@ -230,8 +231,8 @@ export default function generateConfirmEmail(token: string): string {
 																<table class="button_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 																	<tr>
 																		<td class="pad" style="text-align:center;">
-																			<div class="alignment" align="center"><a href="${serverConfigs.HOST}/user/confirm?token=${token}" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="http://localhost:4000/"  style="height:42px;width:96px;v-text-anchor:middle;" arcsize="0%" fillcolor="#002d7a">
+																			<div class="alignment" align="center"><a href="${conf.HOST}:${conf.PORT}/user/confirm?token=${token}" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="http://${conf.HOST}:${conf.PORT}/"  style="height:42px;width:96px;v-text-anchor:middle;" arcsize="0%" fillcolor="#002d7a">
 <v:stroke dashstyle="Solid" weight="1px" color="#002d7a"/>
 <w:anchorlock/>
 <v:textbox inset="0px,0px,0px,0px">
