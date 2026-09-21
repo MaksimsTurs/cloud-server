@@ -21,6 +21,15 @@ export default async function move(user: User, body: ObjectStorageMoveObjectsReq
 
   for(let name in items) {
     const item: StorageObject = items[name];
+
+    if(item.id === parent.id) {
+      throw new CaughtError(
+        HTTP_ERROR_CODES.CONFLICT,
+        `User(${user.id}) has tried to move the folder(${item.id}) into itself.`,
+        "You cannot move these folder here!"
+      );
+    }
+
     const isExist: boolean = !!(await objectStorageRepo.getOne({ parent_id: parent.id, name: item.name }));
 
     if(isExist) {
