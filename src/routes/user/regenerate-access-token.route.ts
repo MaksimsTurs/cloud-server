@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import type { UserRefreshTokenResLocals } from "./user-route.type";
 import type { UserJwtPayload } from "../../index.type";
 
 import CaughtError from "../../utils/Caught-Error.util";
@@ -11,7 +10,7 @@ import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 
 export default async function regenerateAccessToken(
   req: Request,
-  res: Response<string, UserRefreshTokenResLocals>
+  res: Response<string>
 ): Promise<void> {
   const refreshToken: string | undefined = req.cookies[COOKIE.REFRESH_TOKEN_KEY];
   const payload: UserJwtPayload | undefined = verifyRefreshToken(refreshToken);
@@ -24,10 +23,10 @@ export default async function regenerateAccessToken(
     );
   }
 
-  VALIDATION_SCHEMES.create(VALIDATION_SCHEMES.JWT_USER_PAYLOAD_SCHEME).validate(payload);
-  VALIDATION_SCHEMES.create(VALIDATION_SCHEMES.UUID_SHEME).validate(payload.id);
+  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.JWT_USER_PAYLOAD_SCHEME, payload);
+  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.UUID_SHEME, payload.id);
 
-  const access: string = generateAccessToken({ id: res.locals.user });
+  const access: string = generateAccessToken({ id: payload.id });
 
   res.cookie(COOKIE.ACCESS_TOKEN_KEY, access, COOKIE.ACCESS_OPTIONS);
   res.status(200).send(access);
