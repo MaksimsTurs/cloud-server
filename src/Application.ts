@@ -7,9 +7,6 @@ import type { EmailTransporter } from "./configs/create-email-transporter.config
 import pck from "../package.json";
 
 import Logger from "@maksims/logger.js";
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
 import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 
@@ -18,12 +15,7 @@ import connectToPostgres from "./configs/connect-to-postgres.config";
 import createUploader from "./configs/create-multer.config";
 import createEmailTransporter from "./configs/create-email-transporter.config";
 import createLogger from "./configs/create-logger.config";
-
-import initUserRouter from "./routes/user/user.route";
-import initObjectStorageRouter from "./routes/object-storage/object-storage.route";
-import defaultRoute from "./routes/404.route";
-
-import handleError from "./middlewares/handle-errors.middleware";
+import createServer from "./configs/create-server.conf";
 
 class Application implements ApplicationImpl {
   public context: ApplicationContext
@@ -33,8 +25,8 @@ class Application implements ApplicationImpl {
       const conf: ApplicationConf = defineServerConf();
       const logger: Logger<ApplicationModes> = createLogger(conf);
       const sql: Sql = connectToPostgres(conf);
-      const server: Express = express();
       const uploader: Multer = createUploader();
+      const server: Express = createServer(conf, uploader);
       const emailTransporter: EmailTransporter = createEmailTransporter(conf);
     
       logger.console.info(`Initialize application v${pck.version}`);
@@ -50,7 +42,7 @@ class Application implements ApplicationImpl {
   };
 
   public async start(): Promise<void> {
-    const { conf, server, uploader, logger } = this.context;
+    const { conf, server, logger } = this.context;
 
     logger.console.info("Start application");
     logger.console.info(`Creating storage directory ${conf.BASE_STORAGE_PATH}`);
@@ -75,15 +67,7 @@ class Application implements ApplicationImpl {
     logger.console.info(`Start server on ${conf.HOST}:${conf.PORT}`);
     
     try {
-      server
-        .use(cors({ origin: conf.ALLOWED_ORIGINS, credentials: true }))
-        .use(express.json())
-        .use(express.urlencoded({ extended: true }))
-        .use(cookieParser())
-        .use("/user",         initUserRouter())
-        .use("/storage",      initObjectStorageRouter(uploader))
-        .all("/{*splat}",     defaultRoute, handleError)
-        .listen(conf.PORT, conf.HOST);
+      server.listen(conf.PORT, conf.HOST);
     } catch(error) {
       if(error instanceof Error) {
         logger.console.error(`Server start fails, cause: ${error.message}`);
