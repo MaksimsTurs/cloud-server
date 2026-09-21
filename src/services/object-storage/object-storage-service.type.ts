@@ -5,8 +5,6 @@ export type ObjectStorageServiceGetAllReturn = {
   parent: StorageObject
 };
 
-export type ObjectStorageServiceCreateParam = {
-  id?: string
-} & Omit<StorageObject, "id">;
+export type ObjectStorageServiceCreateParam = Omit<StorageObject, "id">;
 
 export type ObjectStorageServiceCopyReturn = StorageObject[];
