@@ -1,22 +1,48 @@
-## Build
-build: update packages version
+## Chore
+chore: update package version
+chore: rename config files
 
-## Style
-style: rename VALIDATION-SCHEMES to VALIDATION_SCHEMES
-style: rename HTTP-ERRORS to HTT_ERRORS
-style: rename DIR-ITEM-TYPES to STORAGE_OBJECT_TYPES
+## Feat
+feat: add bubleSort utility
+feat: add user service for authentication with cookie
+feat: add check for case if user try move folder into itself
+feat: change type definitions
+feat: replace isAuthorized with isAuthenticated
+feat: add is authenticated middleware
+feat: add is authenticated middleware
+feat: add app context vars
+feat: replace "create" function with function for direct data validation
+feat: add directory initialization into Applicaiton start function
+feat: add ssl based on application mode
+feat: add Application class that contains global context (logger, sql, etc.) and lifecycle functions
+feat: add simple utility function to compile vine schemes
 
 ## Refactor
-refactor(object-storage-route.type): replace body.parentId with destructed from body parentId
-refactor(object-storage-storage/upload): change the extention and mime type validation
-refactor: parentId must be always provided when uploading files
-refactor: rename dirService to objectStorageService
-refactor: update vinejs DIR_UPLOAD_PROCESS_OPTIONS validation scheme
-refactor: move form data to object converting and validation before authorization and verification checks
-refactor: replace is.js utility with @maksims/is.js package
-refactor: replace form data to object convert utility with @maksims/form-multipart-encoder.js package
-refactor: replace logger.js utility with @maksims/logger.js package
-refactor: replace dotenv package with @maksims/dotenv.js package
+refactor: replace init with authWithCookie
+refactor: remove init.ts
+refactor: replace BASE_USERS_PATH with BASE_STORAGE_PATH
+refactor: remove optional id
+refactor: new object does not take user id anymore
+refactor: replace isAuthorized with isAuthenticated
+refactor: objects does not take user id anymore
+refactor: add types to res param
+refactor: rename storageService to objectStorageService
+refactor: replace create function with validate
+refactor: change error messages
+refactor: remove stack logging in error handler
+refactor: replace string token exparation time with cookie maxAge
+refactor: fix grammer mistakes
+refactor (object-storage/get-by-id): fix grammer
+refactor: remove redundant utils
+
+## Style
+style: rename UserResetPasswordBody to UserResetPasswordReqBody
+style: remove comments
 
 ## Build
-build: replace thrid party packages with custom packages
+build: update package version and scripts
+build: fix tsc has not compiled ts files
+
+## Fix
+fix: authorization fails even if refresh token was valid
+fix: access and refresh token lifetimes
