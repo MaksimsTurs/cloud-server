@@ -28,7 +28,7 @@ export default async function create(data: UserLogUpReqBody): Promise<UserServic
   const hash: string = await argon.hash(data.password);
   const access: string = generateAccessToken({ id });
   const refresh: string = generateRefreshToken({ id });
-  const workDir: string = `${conf.BASE_USERS_PATH}/${id}`;
+  const workDir: string = `${conf.BASE_STORAGE_PATH}/${id}`;
   const user: User = {
     id,
     password: hash,
