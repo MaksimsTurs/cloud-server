@@ -8,6 +8,7 @@ import generateId from "../../utils/generate-id.util";
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
 import fsAsync from "node:fs/promises";
+import path from "node:path";
 
 import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 
@@ -31,8 +32,8 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
     const item: StorageObject = items[name];
     const id: string = generateId();
     const isExist: boolean = !!(await objectStorageRepo.getOne({ parent_id: parent.id, name: item.name }));
-    const originalPath: string = `${conf.BASE_STORAGE_PATH}/${user.id}/${item.id}`;
-    const copyPath: string = `${conf.BASE_STORAGE_PATH}/${user.id}/${id}`;
+    const originalPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${item.id}`);
+    const copyPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${id}`);
     const itemCopy: StorageObject = {
       ...item,
       id,

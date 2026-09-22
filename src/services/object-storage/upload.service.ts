@@ -52,8 +52,8 @@ export default async function upload(
       );
     }
 
-    const fileBasePath: string = `${conf.BASE_STORAGE_PATH}/${user.id}`;
-    const filename: string = `${options?.name || filePath.name}.${extention}`;
+    const fileBasePath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}`);
+    const filename: string = path.resolve(`${options?.name || filePath.name}.${extention}`);
     const newObject: StorageObject = await objectStorageService.create({
       name: filename,
       type: STORAGE_OBJECT_TYPES.FILE,
@@ -61,7 +61,7 @@ export default async function upload(
       parent_id: parentId,
       mime_type: file.mimetype
     });
-    const dstPath: string = `${fileBasePath}/${newObject.id}`;
+    const dstPath: string = path.resolve(`${fileBasePath}/${newObject.id}`);
 
     if(!isPathSafe(fileBasePath, dstPath)) {
       throw new CaughtError(

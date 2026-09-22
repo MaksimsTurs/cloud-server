@@ -4,6 +4,7 @@ import type { ObjectStorageRemoveObjectsReqBody } from "../../routes/object-stor
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
 import fsAsync from "node:fs/promises";
+import path from "node:path";
 
 import CaughtError from "../../utils/Caught-Error.util";
 import bubleSort from "../../utils/buble-sort.util";
@@ -31,7 +32,7 @@ export default async function remove(user: User, body: ObjectStorageRemoveObject
     if(item.type === STORAGE_OBJECT_TYPES.DIR) {
       folders.push(item);
     } else {
-      const itemPath: string = `${conf.BASE_STORAGE_PATH}/${item.user_id}/${item.id}`;
+      const itemPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${item.user_id}/${item.id}`);
 
       await fsAsync.rm(itemPath);
       await objectStorageRepo.removeOne("id", item.id);
