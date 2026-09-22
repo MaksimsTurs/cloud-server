@@ -18,7 +18,7 @@ export default function createServer(conf: ApplicationConf, uploader: Multer): E
   server
     .disable("x-powered-by")
     .use(cors({ origin: conf.ALLOWED_ORIGINS, credentials: true }))
-    .use(express.json())
+    .use(express.json({ limit: 50000 /* 50 kb */ }))
     .use(express.urlencoded({ extended: true }))
     .use(cookieParser())
     .use("/user",         initUserRouter())
