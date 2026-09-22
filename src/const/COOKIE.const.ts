@@ -1,20 +1,22 @@
 import type { CookieOptions } from "express";
 
+import app from "../Application";
+
 export default {
-  ACCESS_TOKEN_KEY: "LCLOUD_ACCESS_TOKEN",
-  REFRESH_TOKEN_KEY: "LCLOUD_REFRESH_TOKEN",
+  ACCESS_TOKEN_KEY:   "$55959286437",
+  REFRESH_TOKEN_KEY:  "$53879365562",
   REFRESH_OPTIONS: {
-    httpOnly: true,
     maxAge: 604_800_000,
     path: "/",
     sameSite: "lax",
-    secure: process.env.MODE != "dev"
+    httpOnly: true,
+    secure: app.context.conf.MODE != "dev"
   } as CookieOptions,
   ACCESS_OPTIONS: {
-    httpOnly: true,
     maxAge: 900_000,
     path: "/",
     sameSite: "lax",
-    secure: process.env.MODE != "dev"
+    httpOnly: true,
+    secure: app.context.conf.MODE != "dev"
   } as CookieOptions
 } as const;
