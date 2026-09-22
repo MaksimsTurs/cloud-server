@@ -16,6 +16,7 @@ export default function createServer(conf: ApplicationConf, uploader: Multer): E
   const server: Express = express();
 
   server
+    .disable("x-powered-by")
     .use(cors({ origin: conf.ALLOWED_ORIGINS, credentials: true }))
     .use(express.json())
     .use(express.urlencoded({ extended: true }))
