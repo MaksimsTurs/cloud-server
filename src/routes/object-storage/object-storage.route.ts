@@ -11,18 +11,26 @@ import remove from "./remove.route";
 import create from "./create.route";
 import upload from "./upload.route";
 
-import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
-
 import isAuthenticated from "../../middlewares/is-authenticated.middleware";
 import isVerified from "../../middlewares/is-verified.middleware";
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
 import convertFormDataToObject from "../../middlewares/convert-form-data-to-object.middleware";
+import rateLimitter from "../../middlewares/rate-limitter.middleware";
+
+import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
+import RATE_LIMITTER from "../../const/RATE_LIMITTER.const";
 
 const dirRouter: Router = express.Router();
 
+dirRouter.use(rateLimitter({
+  maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE,
+  windowInMs: RATE_LIMITTER.WINDOW_5MIN,
+  sendHeaders: false
+}));
+
 export default function initObjectStorageRouter(uploader: Multer): Router {
-  dirRouter.post("/get/all",     
+  dirRouter.post("/get/all",
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
     validate("query", VALIDATION_SCHEMES.FOLDER_GET_SCHEME),
     isAuthenticated,

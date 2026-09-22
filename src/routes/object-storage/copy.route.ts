@@ -9,6 +9,6 @@ export default async function copy(
   res: Response<ObjectStorageServiceCopyReturn, ObjectStorageCopyResLocals>
 ): Promise<void> {
   const obejctStorageCopy: ObjectStorageServiceCopyReturn = await objectStorageService.copy(res.locals.user, req.body);
-
+  
   res.status(200).send(obejctStorageCopy);
 };
