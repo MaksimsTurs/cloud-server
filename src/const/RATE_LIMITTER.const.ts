@@ -4,4 +4,4 @@ export default {
   WINDOW_2MIN:  120000,
   WINDOW_5MIN:  300000,
   WINDOW_10MIN: 600000
-};
+} as const;
