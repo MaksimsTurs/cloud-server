@@ -33,15 +33,15 @@ export default function rateLimitter(options: RateLimitterOptions) {
     }
 
     if((!Object.hasOwn(requests[route] || {}, ip) && isUndefined(requests[route]![ip])) || 
-       (Object.hasOwn(requests[route] || {}, ip) && shouldResetRateCount(requests[route]![ip], windowInMs))) {
+       (Object.hasOwn(requests[route] || {}, ip) && shouldResetRateCount(requests[route]![ip]))) {
       requests[route]![ip] = { 
-        count: 1, 
+        count: 0,
         resetIn: Date.now() + windowInMs
       };
     } else if(requests[route]![ip]!.count >= maxRequestsPerWindow) {
       throw new CaughtError(
         HTTP_ERROR_CODES.TO_MANY_REQUESTS,
-        `${req.ip} has reached the rate limit count on path(${req.path})`
+        `${req.ip} has reached the rate limit on path ${req.path}`
       );
     }
 
@@ -51,11 +51,12 @@ export default function rateLimitter(options: RateLimitterOptions) {
       res.header("Retry-After", (requests[route]![ip].resetIn - Date.now()).toString());
     }
 
+    requests[route]![ip].count++;
     next();
   };
 };
 
-function shouldResetRateCount(metadata: RateLimitterRequestMetadata, windowInMs: number): boolean {
+function shouldResetRateCount(metadata: RateLimitterRequestMetadata): boolean {
   const { resetIn } = metadata;
-  return (Date.now() + windowInMs) >= resetIn;
+  return Date.now() >= resetIn;
 };
