@@ -1,4 +1,6 @@
-import MALICIOUS_FILES from "../const/MALICIOUS_FILES.const";
+import FILE_EXT from "../const/FILE_EXT.const";
+
+export const isFileSafe = (ext?: string): boolean => !FILE_EXT.UNSAFE.has(ext || "");
 
 export const isMediaFile = (mimeType: string): boolean => {
   return(
@@ -7,9 +9,5 @@ export const isMediaFile = (mimeType: string): boolean => {
     /video\/*/.test(mimeType)
   );
 };
-
-export const isMimeTypeSafe = (mimeType: string): boolean => !MALICIOUS_FILES.MIME_TYPES.has(mimeType);
-
-export const isExtentionSafe = (extention: string): boolean => !MALICIOUS_FILES.EXTENTIONS.has(extention);
 
 export const isPathSafe = (basePath: string, path: string): boolean => /^\/?([A-Za-z0-9])\/?.+/.test(path) && path.startsWith(basePath);

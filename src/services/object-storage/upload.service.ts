@@ -2,7 +2,7 @@ import type { FileTypeResult } from "file-type";
 import type { ObjectStorageUploadReqBody } from "../../routes/object-storage/object-storage-route.type";
 import type { StorageObject, StorageObjectProcessOptions, User } from "../../index.type";
 
-import { isMimeTypeSafe, isExtentionSafe, isPathSafe, isMediaFile } from "../../utils/is.util";
+import { isFileSafe, isPathSafe, isMediaFile } from "../../utils/is.util";
 import ffmpeg from "../../utils/ffmpeg/ffmpeg.util";
 import CaughtError from "../../utils/Caught-Error.util";
 
@@ -44,7 +44,7 @@ export default async function upload(
     const filePath = path.parse(file.originalname);
     const extention: string = (fileType?.ext || filePath.ext).toLowerCase();
 
-    if(!fileType?.mime || !isExtentionSafe(extention) || !isMimeTypeSafe(fileType.mime)) {
+    if(isFileSafe(fileType?.ext)) {
       throw new CaughtError(
         HTTP_ERROR_CODES.BAD_REQUEST,
         `User(${user.id}) has tried to upload unsafe file ext(${extention}) mime-type(${file.mimetype}).`,

@@ -1,12 +1,5 @@
-const MALICIOUS_FILES = {
-  MIME_TYPES: new Set([
-    "application/x-msdownload",
-    "application/octet-stream",
-    "application/x-msi",
-    "application/vnd.microsoft.portable-executable",
-    "application/java-archive"
-  ]),
-  EXTENTIONS: new Set([
+export default {
+  UNSAFE: new Set([
     "exe",
     "msi",
     "bat",
@@ -48,6 +41,4 @@ const MALICIOUS_FILES = {
     ".gz",
     ".iso"
   ])
-};
-
-export default MALICIOUS_FILES;
+} as const;
