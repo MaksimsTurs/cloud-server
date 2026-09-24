@@ -42,7 +42,7 @@ class Application implements ApplicationImpl {
   };
 
   public async start(): Promise<void> {
-    const { conf, server, sql, logger } = this.context;
+    const { conf, server, sql, emailTransporter, logger } = this.context;
 
     logger.console.info("Start application");
     
@@ -85,6 +85,18 @@ class Application implements ApplicationImpl {
         logger.console.error(`SQL connection fails, cause: ${error.message}`);
       } else {
         logger.console.error("SQL connection fails, cause: Unknown error", error);
+      }
+    }
+
+    logger.console.info(`Verify email transporter ${conf.NODEMAILER_HOST}:${conf.NODEMAILER_PORT}`);
+
+    try {
+      await emailTransporter.verify();
+    } catch(error) {
+      if(error instanceof Error) {
+        logger.console.error(`Email transporter verification fails, cause: ${error.message}`);
+      } else {
+        logger.console.error("Email transporter verification fails, cause: Unknown error", error);
       }
     }
   };
