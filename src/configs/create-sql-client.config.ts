@@ -3,7 +3,7 @@ import type { ApplicationConf } from "../Application.type";
 
 import postgres from "postgres";
 
-export default function connectToPostgres(conf: ApplicationConf): Sql {
+export default function createSQLClient(conf: ApplicationConf): Sql {
   const ssl = conf.MODE === "dev" ? false : { rejectUnauthorized: true, ca: conf.POSTGRES_CA_CERTIFICATE };
   return postgres({
     host: conf.POSTGRES_HOST,

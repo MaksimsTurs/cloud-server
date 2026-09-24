@@ -11,7 +11,7 @@ import { existsSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 
 import defineServerConf from "./configs/define-server-conf.config";
-import connectToPostgres from "./configs/connect-to-postgres.config";
+import createSQLClient from "./configs/create-sql-client.config";
 import createUploader from "./configs/create-multer.config";
 import createEmailTransporter from "./configs/create-email-transporter.config";
 import createLogger from "./configs/create-logger.config";
@@ -24,7 +24,7 @@ class Application implements ApplicationImpl {
     try {
       const conf: ApplicationConf = defineServerConf();
       const logger: Logger<ApplicationModes> = createLogger(conf);
-      const sql: Sql = connectToPostgres(conf);
+      const sql: Sql = createSQLClient(conf);
       const uploader: Multer = createUploader();
       const server: Express = createServer(conf, uploader);
       const emailTransporter: EmailTransporter = createEmailTransporter(conf);
@@ -42,10 +42,10 @@ class Application implements ApplicationImpl {
   };
 
   public async start(): Promise<void> {
-    const { conf, server, logger } = this.context;
+    const { conf, server, sql, logger } = this.context;
 
     logger.console.info("Start application");
-
+    
     try {
       if(!existsSync(conf.BASE_STORAGE_PATH)) {
         logger.console.info(`Creating storage directory ${conf.BASE_STORAGE_PATH}`);
@@ -73,6 +73,18 @@ class Application implements ApplicationImpl {
         logger.console.error(`Server start fails, cause: ${error.message}`);
       } else {
         logger.console.error("Server start fails, cause: Unknown error", error);
+      }
+    }
+
+    logger.console.info(`Check PostgresQL connection ${conf.POSTGRES_HOST}:${conf.POSTGRES_PORT}`);
+
+    try {
+      await sql`SELECT 1`;
+    } catch(error) {
+      if(error instanceof Error) {
+        logger.console.error(`SQL connection fails, cause: ${error.message}`);
+      } else {
+        logger.console.error("SQL connection fails, cause: Unknown error", error);
       }
     }
   };
