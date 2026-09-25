@@ -6,7 +6,6 @@ import sendConfirmEmail from "./send-confirm-email.service";
 import confirmEmail from "./confirm-email.service";
 import getById from "./get-by-id.service";
 import getOne from "./get-one.service";
-import hasAccess from "./has-access.service";
 
 const userService = {
   create,
@@ -17,7 +16,6 @@ const userService = {
   resetPassword,
   sendConfirmEmail,
   confirmEmail,
-  hasAccess,
 } as const;
 
 export default userService;

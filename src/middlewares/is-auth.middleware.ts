@@ -2,13 +2,14 @@ import type { NextFunction, Request, Response } from "express";
 import type { User } from "../index.type";
 
 import CaughtError from "../utils/Caught-Error.util";
+import checkAccessToken from "../utils/check-access-token.util";
 
 import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
 
 import userService from "../services/user/user.service";
 
 export default async function isAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const userId: string = await userService.hasAccess(req.cookies);
+  const userId: string = await checkAccessToken(req);
   const user: User | undefined = await userService.getById(userId);
 
   if(!user) {
