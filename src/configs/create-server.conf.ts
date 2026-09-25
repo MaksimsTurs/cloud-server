@@ -16,9 +16,7 @@ import cookieParser from "cookie-parser";
 import RATE_LIMITTER from "../const/RATE_LIMITTER.const";
 
 export default function createServer(conf: ApplicationConf, uploader: Multer): Express {
-  const server: Express = express();
-
-  server
+  return express()
     .disable("x-powered-by")
     .disable("etag")
     .use(cors({ origin: conf.ALLOWED_ORIGINS, credentials: true }))
@@ -34,7 +32,5 @@ export default function createServer(conf: ApplicationConf, uploader: Multer): E
       }), 
       defaultRoute, 
       handleError
-    )
-
-  return server;
+    );
 };
