@@ -2,7 +2,7 @@ import type { Multer } from "multer";
 import type { ApplicationConf } from "../Application.type";
 import type { Express } from "express";
 
-import initUserRouter from "../routes/user/user.route";
+import createUserRouter from "../routes/user/user.route";
 import initObjectStorageRouter from "../routes/object-storage/object-storage.route";
 import defaultRoute from "../routes/404.route";
 import rateLimitter from "../middlewares/rate-limitter.middleware";
@@ -25,7 +25,7 @@ export default function createServer(conf: ApplicationConf, uploader: Multer): E
     .use(express.json({ limit: 50000 /* 50 kb */ }))
     .use(express.urlencoded({ extended: true }))
     .use(cookieParser())
-    .use("/user",         initUserRouter())
+    .use("/user",         createUserRouter())
     .use("/storage",      initObjectStorageRouter(uploader))
     .all("/{*splat}",     
       rateLimitter({

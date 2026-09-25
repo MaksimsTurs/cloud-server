@@ -21,114 +21,104 @@ import isNotVerified from "../../middlewares/is-not-verified.middleware";
 import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 import RATE_LIMITTER from "../../const/RATE_LIMITTER.const";
 
-const userRouter: Router = express.Router();
-
-export default function initUserRouter(): Router {
-  userRouter.get("/init",
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuth,
-    init,
-    handleError
-  );
-
-  userRouter.post("/log-up",
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("body", VALIDATION_SCHEMES.USER_LOG_UP_SCHEME),
-    logUp,
-    handleError
-  );
-
-  userRouter.post("/log-in",
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("body", VALIDATION_SCHEMES.USER_LOG_IN_SCHEME),
-    logIn,
-    handleError
-  );
-
-  userRouter.get("/log-out",
-    rateLimitter({
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE,
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuth,
-    logOut,
-    handleError
-  );
-
-  userRouter.get("/confirm",
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuth,
-    isNotVerified,
-    validate("query", VALIDATION_SCHEMES.USER_CONFIRM_EMAIL_SCHEME),
-    confirmEmail,
-    handleError
-  );
-
-  userRouter.get("/refresh-token", 
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("cookies", VALIDATION_SCHEMES.USER_REFRESH_TOKEN_SCHEME),
-    regenerateAccessToken,
-    handleError
-  );
-
-  userRouter.get("/request-confirm-email", 
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuth,
-    isNotVerified,
-    requestConfirmEmail,
-    handleError
-  );
-
-  userRouter.post("/request-reset-password", 
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("body", VALIDATION_SCHEMES.USER_REQUEST_RESET_PASSWORD_SCHEME),
-    requestResetPassword,
-    handleError
-  );
-
-  userRouter.put("/reset-password",
-    rateLimitter({ 
-      maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
-      windowInMs: RATE_LIMITTER.WINDOW_10MIN,
-      sendHeaders: false
-    }),
-    validate("body", VALIDATION_SCHEMES.USER_RESET_PASSWORD_SCHEME),
-    resetPassword,
-    handleError
-  );
-
-  return userRouter;
+export default function createUserRouter(): Router {
+  return express
+    .Router()
+    .get("/init",
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      isAuth,
+      init,
+      handleError
+    )
+    .post("/log-up",
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("body", VALIDATION_SCHEMES.USER_LOG_UP_SCHEME),
+      logUp,
+      handleError
+    )
+    .post("/log-in",
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("body", VALIDATION_SCHEMES.USER_LOG_IN_SCHEME),
+      logIn,
+      handleError
+    )
+    .get("/log-out",
+      rateLimitter({
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE,
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      isAuth,
+      logOut,
+      handleError
+    )
+    .get("/confirm",
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      isAuth,
+      isNotVerified,
+      validate("query", VALIDATION_SCHEMES.USER_CONFIRM_EMAIL_SCHEME),
+      confirmEmail,
+      handleError
+    )
+    .get("/refresh-token", 
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("cookies", VALIDATION_SCHEMES.USER_REFRESH_TOKEN_SCHEME),
+      regenerateAccessToken,
+      handleError
+    )
+    .get("/request-confirm-email", 
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      isAuth,
+      isNotVerified,
+      requestConfirmEmail,
+      handleError
+    )
+    .post("/request-reset-password", 
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("body", VALIDATION_SCHEMES.USER_REQUEST_RESET_PASSWORD_SCHEME),
+      requestResetPassword,
+      handleError
+    )
+    .put("/reset-password",
+      rateLimitter({ 
+        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE, 
+        windowInMs: RATE_LIMITTER.WINDOW_10MIN,
+        sendHeaders: false
+      }),
+      validate("body", VALIDATION_SCHEMES.USER_RESET_PASSWORD_SCHEME),
+      resetPassword,
+      handleError
+    );
 };
