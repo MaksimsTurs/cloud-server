@@ -15,7 +15,7 @@ export default async function confirmEmail(token: string): Promise<void> {
   if(!payload || !payload?.id) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
-      "Unknown user has tried to confirm email.",
+      "Unknown user has tried to confirm email",
       "You email confirm token is not valid!"
     );
   }

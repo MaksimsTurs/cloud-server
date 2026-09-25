@@ -18,7 +18,7 @@ export default async function regenerateAccessToken(
   if(!payload || !payload?.id) {
     throw new CaughtError(
       HTTP_ERROR_CODES.UNAUTHORIZED,
-      `User with suspicious id(${payload?.id}) has tried to generate new access token.`,
+      `User with suspicious id ${payload?.id} has tried to generate new access token`,
       "You are unauthorized!"
     );
   }
