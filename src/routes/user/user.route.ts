@@ -15,7 +15,7 @@ import requestConfirmEmail from "./request-confirm-email.route";
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
 import rateLimitter from "../../middlewares/rate-limitter.middleware";
-import isAuthenticated from "../../middlewares/is-authenticated.middleware";
+import isAuth from "../../middlewares/is-auth.middleware";
 import isNotVerified from "../../middlewares/is-not-verified.middleware";
 
 import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
@@ -31,7 +31,7 @@ export default function initUserRouter(): Router {
       sendHeaders: false
     }),
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthenticated,
+    isAuth,
     init,
     handleError
   );
@@ -65,7 +65,7 @@ export default function initUserRouter(): Router {
       sendHeaders: false
     }),
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthenticated,
+    isAuth,
     logOut,
     handleError
   );
@@ -77,7 +77,7 @@ export default function initUserRouter(): Router {
       sendHeaders: false
     }),
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthenticated,
+    isAuth,
     isNotVerified,
     validate("query", VALIDATION_SCHEMES.USER_CONFIRM_EMAIL_SCHEME),
     confirmEmail,
@@ -102,7 +102,7 @@ export default function initUserRouter(): Router {
       sendHeaders: false
     }),
     validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuthenticated,
+    isAuth,
     isNotVerified,
     requestConfirmEmail,
     handleError
