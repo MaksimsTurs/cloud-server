@@ -9,7 +9,7 @@ import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const.ts";
 import userService from "../../services/user/user.service";
 import objectStorageService from "../../services/object-storage/object-storage.service.ts"
 
-export default async function logup(
+export default async function logUp(
   req: Request<unknown, unknown, UserLogUpReqBody>, 
   res: Response<UserLogUpResBody, any>
 ): Promise<void> {
