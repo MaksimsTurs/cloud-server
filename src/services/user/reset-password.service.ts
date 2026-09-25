@@ -14,8 +14,8 @@ import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 
 export default async function resetPassword(body: UserResetPasswordReqBody): Promise<void> {
   const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyResetPasswordToken<UserJwtPayload>(body.token);
-
-  if(!payload || payload.id) {
+  
+  if(!payload) {
     throw new CaughtError(
       HTTP_ERROR_CODES.BAD_REQUEST,
       "Unknown user has tried to reset password",
