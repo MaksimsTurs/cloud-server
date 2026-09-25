@@ -25,7 +25,7 @@ const requests: RateLimitterRequestRecord = {};
 export default function rateLimitter(options: RateLimitterOptions) {
   return function(req: Request, res: Response, next: NextFunction) {
     const ip: string = req.ip!;
-    const route: string = req.route.path;
+    const route: string = req.url;
     const { maxRequestsPerWindow, windowInMs, sendHeaders } = options;
 
     if(!Object.hasOwn(requests, route)) {
