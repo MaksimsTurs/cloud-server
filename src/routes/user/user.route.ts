@@ -5,7 +5,7 @@ import express from "express";
 import logUp from "./log-up.route";
 import logOut from "./log-out.route";
 import logIn from "./log-in.route";
-import init from "./init.route";
+import getMe from "./get-me.route";
 import regenerateAccessToken from "./regenerate-access-token.route";
 import confirmEmail from "./confirm-email.route";
 import resetPassword from "./reset-password.route";
@@ -24,7 +24,7 @@ import RATE_LIMITTER from "../../const/RATE_LIMITTER.const";
 export default function createUserRouter(): Router {
   return express
     .Router()
-    .get("/init",
+    .get("/get-me",
       rateLimitter({ 
         maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE, 
         windowInMs: RATE_LIMITTER.WINDOW_10MIN,
@@ -32,7 +32,7 @@ export default function createUserRouter(): Router {
       }),
       validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
       isAuth,
-      init,
+      getMe,
       handleError
     )
     .post("/log-up",

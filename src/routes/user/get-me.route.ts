@@ -3,17 +3,17 @@ import type { UserInitResBody, UserInitResLocals } from "./user-route.type";
 
 import COOKIE from "../../const/COOKIE.const";
 
-export default async function init(
+export default async function getMe(
   req: Request, 
   res: Response<UserInitResBody, UserInitResLocals>
 ): Promise<void> {
   res.status(200).send({
-    tokens: {
-      access: req.cookies[COOKIE.ACCESS_TOKEN_KEY],
-      refresh: req.cookies[COOKIE.REFRESH_TOKEN_KEY]
-    },
-    user: {
-      is_verified: res.locals.user.is_verified
-    }
-  });
+      tokens: {
+        access: req.cookies[COOKIE.ACCESS_TOKEN_KEY],
+        refresh: req.cookies[COOKIE.REFRESH_TOKEN_KEY]
+      },
+      user: {
+        is_verified: res.locals.user.is_verified
+      }
+    });
 };
