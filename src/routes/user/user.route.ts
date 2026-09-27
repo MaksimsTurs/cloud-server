@@ -6,7 +6,7 @@ import logUp from "./log-up.route";
 import logOut from "./log-out.route";
 import logIn from "./log-in.route";
 import getMe from "./get-me.route";
-import regenerateAccessToken from "./regenerate-access-token.route";
+import refreshAccessToken from "./refresh-access-token.route";
 import confirmEmail from "./confirm-email.route";
 import resetPassword from "./reset-password.route";
 import requestResetPassword from "./request-reset-password.route";
@@ -86,7 +86,7 @@ export default function createUserRouter(): Router {
         sendHeaders: false
       }),
       validate("cookies", VALIDATION_SCHEMES.USER_REFRESH_TOKEN_SCHEME),
-      regenerateAccessToken,
+      refreshAccessToken,
       handleError
     )
     .get("/request-confirm-email", 

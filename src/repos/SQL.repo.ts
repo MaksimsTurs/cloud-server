@@ -49,10 +49,8 @@ class SQLRepository<T extends object> {
     await sql<T[]>`UPDATE ${sql(this.table)} SET ${sql(data as any, keys)} WHERE id = ${id}`;
   };
 
-  public async isExist(column: string, value: any): Promise<boolean> {
-    const { sql } = app.context;
-    const res: RowList<Row[]> = await sql<T[]>`SELECT ${sql(column)} FROM ${sql(this.table)} WHERE ${sql(column)} = ${value} LIMIT 1`;
-    return res.length != 0;
+  public async isExist(data: Partial<T>): Promise<boolean> {
+    return !!(await this.getOne(data));
   };
 };
 

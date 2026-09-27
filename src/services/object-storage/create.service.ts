@@ -3,6 +3,6 @@ import type { ObjectStorageServiceCreateParam } from "./object-storage-service.t
 
 import generateId from "../../utils/generate-id.util";
 
-export default async function create(data: ObjectStorageServiceCreateParam): Promise<StorageObject> {
+export default function create(data: ObjectStorageServiceCreateParam): StorageObject {
   return {...data, id: generateId() };
 };

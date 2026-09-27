@@ -15,16 +15,18 @@ class ObjectStorageRepository extends SQLRepository<StorageObject> {
     const res = await sql<StorageObject[]>`
       SELECT * FROM(
         SELECT * FROM ${sql(this.table)}
-        WHERE id = ${parentId} AND
-              user_id = ${userId}
-
-        UNION ALL
+        WHERE parent_id = ${parentId} AND
+              user_id = ${userId} AND NOT
+              id = ${parentId}
+        
+        UNION ALL 
 
         SELECT * FROM ${sql(this.table)}
-        WHERE parent_id = ${parentId} AND
+        WHERE id = ${parentId} AND
               user_id = ${userId}
       )
     `;
+
     return res;
   };
 };

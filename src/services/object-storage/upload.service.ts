@@ -3,11 +3,8 @@ import type { ObjectStorageUploadReqBody } from "../../routes/object-storage/obj
 import type { StorageObject, StorageObjectProcessOptions, User } from "../../index.type";
 
 import { isFileSafe, isPathSafe, isMediaFile } from "../../utils/is.util";
+import { HTTP400Error, HTTP401Error } from "../../utils/HTTP-Error.util";
 import ffmpeg from "../../utils/ffmpeg/ffmpeg.util";
-import CaughtError from "../../utils/Caught-Error.util";
-
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
-import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
 import app from "../../Application";
 
@@ -18,6 +15,8 @@ import { fileTypeFromFile } from "file-type";
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
 import objectStorageService from "./object-storage.service";
+
+import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
 export default async function upload(
   user: User, 
@@ -30,10 +29,9 @@ export default async function upload(
   const parent: StorageObject | undefined = await objectStorageRepo.getById(parentId);
   
   if(!parent) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.BAD_REQUEST,
-      `User(${user.id}) has tried to upload files into not existing folder (${parentId}).`,
-      "You can not upload files into unknown directory!"
+    throw new HTTP401Error(
+      `User ${user.id} has tried to upload files into not existing directory ${parentId}`,
+      "You can not upload files into not existing directory!"
     );
   }
     
@@ -45,28 +43,27 @@ export default async function upload(
     const extention: string = (fileType?.ext || filePath.ext).toLowerCase();
 
     if(isFileSafe(fileType?.ext)) {
-      throw new CaughtError(
-        HTTP_ERROR_CODES.BAD_REQUEST,
-        `User(${user.id}) has tried to upload unsafe file ext(${extention}) mime-type(${file.mimetype}).`,
+      throw new HTTP400Error(
+        `User ${user.id} has tried to upload unsafe file ${extention}`,
         `${extention} files can not be uploaded!`
       );
     }
 
     const fileBasePath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}`);
     const filename: string = path.resolve(`${options?.name || filePath.name}.${extention}`);
-    const newObject: StorageObject = await objectStorageService.create({
+    const newObject: StorageObject = objectStorageService.create({
       name: filename,
       type: STORAGE_OBJECT_TYPES.FILE,
       user_id: user.id,
       parent_id: parentId,
-      mime_type: file.mimetype
+      mime_type: file.mimetype,
+      is_root: false
     });
     const dstPath: string = path.resolve(`${fileBasePath}/${newObject.id}`);
 
     if(!isPathSafe(fileBasePath, dstPath)) {
-      throw new CaughtError(
-        HTTP_ERROR_CODES.BAD_REQUEST,
-        `User(${user.id}) has tried to upload file into suspicious folder(${dstPath}).`,
+      throw new HTTP400Error(
+        `User ${user.id} has tried to upload file into suspicious directory ${dstPath}`,
         "You can not upload files into this directory!"
       );
     }

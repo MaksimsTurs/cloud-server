@@ -2,57 +2,56 @@ import type { StorageObject, User } from "../../index.type";
 import type { ObjectStorageCopyReqBody } from "../../routes/object-storage/object-storage-route.type";
 import type { ObjectStorageServiceCopyReturn } from "./object-storage-service.type";
 
-import CaughtError from "../../utils/Caught-Error.util";
-import generateId from "../../utils/generate-id.util";
+import { HTTP401Error, HTTP409Error } from "../../utils/HTTP-Error.util";
 
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
 import fsAsync from "node:fs/promises";
 import path from "node:path";
 
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
-
 import app from "../../Application";
+
+import objectStorageService from "./object-storage.service";
 
 export default async function copy(user: User, body: ObjectStorageCopyReqBody): Promise<ObjectStorageServiceCopyReturn> {
   const { conf } = app.context;
   const items: Record<string, StorageObject> = body.items;
-  const itemCopies: StorageObject[] = [];
-  const parent: StorageObject | undefined = await objectStorageRepo.getById(body.parentId);
+  const copies: StorageObject[] = [];
+  const copiesParent: StorageObject | undefined = await objectStorageRepo.getById(body.parentId);
 
-  if(!parent) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.BAD_REQUEST,
-      `User(${user.id}) has tried to copy items into not existing folder(${body.parentId}).`,
-      "You can not copy items into not existing folder!"
+  if(!copiesParent) {
+    throw new HTTP401Error(
+      `User ${user.id} has tried to copy objects into not existing directory ${body.parentId}`,
+      "You can not copy objects into not existing directory!"
     );
   }
 
-  for(let name in items) {
-    const item: StorageObject = items[name];
-    const id: string = generateId();
-    const isExist: boolean = !!(await objectStorageRepo.getOne({ parent_id: parent.id, name: item.name }));
-    const originalPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${item.id}`);
-    const copyPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${id}`);
-    const itemCopy: StorageObject = {
-      ...item,
-      id,
-      parent_id: body.parentId
-    };
-
-    if(isExist) {
-      throw new CaughtError(
-        HTTP_ERROR_CODES.CONFLICT,
-        `User(${user.id}) has tried to copy item(${item.name}) that already exist in folder(${parent.id}).`,
-        "Item with the same name already exist!"
+  for(let id in items) {
+    const item: StorageObject = items[id];
+    
+    if(!await objectStorageRepo.isExist({ id })) {
+      throw new HTTP401Error(
+        `User ${user.id} has tried to copy not existing item ${id}`,
+        `${item.name} does not exist!`
       );
     }
+
+    if(await objectStorageRepo.isExist({ parent_id: copiesParent.id, name: item.name })) {
+      throw new HTTP409Error(
+        `User ${user.id} has tried to copy object ${item.name} that already exist in directory ${copiesParent.id}`,
+        "Object with the same name already exist!"
+      );
+    }
+
+    const itemCopy: StorageObject = objectStorageService.create({...item, parent_id: body.parentId });
+    const originalPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${item.id}`);
+    const copyPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${itemCopy.id}`);
 
     await objectStorageRepo.insertOne(itemCopy);
     await fsAsync.cp(originalPath, copyPath);
 
-    itemCopies.push(itemCopy);
+    copies.push(itemCopy);
   }
 
-  return itemCopies;
+  return copies;
 };

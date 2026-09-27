@@ -1,13 +1,14 @@
 import type { User, UserTokens } from "../../index.type";
 
-export type UserInitResLocals = {
+export type UserGetMeResLocals = {
   user: User
 };
 
-export type UserInitResBody = {
+export type UserGetMeResBody = {
   tokens: UserTokens
   user: {
     is_verified: boolean
+    root_id: string
   }
 };
 
@@ -20,6 +21,7 @@ export type UserLogInResBody = {
   tokens: UserTokens
   user: {
     is_verified: boolean
+    root_id: string
   }
 };
 
@@ -33,6 +35,7 @@ export type UserLogUpResBody = {
   tokens: UserTokens
   user: {
     is_verified: boolean
+    root_id: string
   }
 };
 
@@ -50,6 +53,6 @@ export type UserResetPasswordReqBody = {
   password: string
 };
 
-export type UserConfirmQuery = {
+export type UserConfirmEmailQuery = {
   token: string
 };

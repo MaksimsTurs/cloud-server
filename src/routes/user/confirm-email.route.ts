@@ -1,12 +1,12 @@
 import type { Request, Response } from "express";
-import type { UserConfirmQuery } from "./user-route.type";
+import type { UserConfirmEmailQuery } from "./user-route.type";
 
 import userService from "../../services/user/user.service";
 
 import app from "../../Application";
 
 export default async function confirmEmail(
-  req: Request<unknown, unknown, unknown, UserConfirmQuery>, 
+  req: Request<unknown, unknown, unknown, UserConfirmEmailQuery>, 
   res: Response
 ): Promise<void> {
   const { conf } = app.context;

@@ -2,9 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 
 import { isUndefined } from "@maksims/is.js";
 
-import CaughtError from "../utils/Caught-Error.util";
-
-import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
+import { HTTP429Error } from "../utils/HTTP-Error.util";
 
 export type RateLimitterRequestRecord = Partial<Record<string, Record<string, RateLimitterRequestMetadata>>>;
 
@@ -27,7 +25,7 @@ export default function rateLimitter(options: RateLimitterOptions) {
     const ip: string = req.ip!;
     const route: string = req.url;
     const { maxRequestsPerWindow, windowInMs, sendHeaders } = options;
-
+    
     if(!Object.hasOwn(requests, route)) {
       requests[route] = {};
     }
@@ -39,10 +37,7 @@ export default function rateLimitter(options: RateLimitterOptions) {
         resetIn: Date.now() + windowInMs
       };
     } else if(requests[route]![ip]!.count >= maxRequestsPerWindow) {
-      throw new CaughtError(
-        HTTP_ERROR_CODES.TO_MANY_REQUESTS,
-        `${req.ip} has reached the rate limit on path ${req.path}`
-      );
+      throw new HTTP429Error(`Unknown user ${req.socket.remoteAddress} has reached request limit on path ${req.path}`);
     }
 
     if(sendHeaders && requests[route]![ip]) {

@@ -4,9 +4,7 @@ import type { User } from "../../index.type";
 
 import userService from "../../services/user/user.service";
 
-import CaughtError from "../../utils/Caught-Error.util";
-
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
+import { HTTP400Error } from "../../utils/HTTP-Error.util";
 
 export default async function requestResetPassword(
   req: Request<unknown, unknown, UserRequestResetPasswordReqBody>,
@@ -15,10 +13,9 @@ export default async function requestResetPassword(
   const user: User | undefined = await userService.getOne({ email: req.body.email });
 
   if(!user) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.FORBIDDEN,
+    throw new HTTP400Error(
       `Unknown user ${req.socket.remoteAddress} has tried to request password reseting`,
-      "You can not reset the password!"
+      "User does not exist!"
     );
   }
 

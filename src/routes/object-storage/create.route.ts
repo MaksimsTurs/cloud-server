@@ -11,11 +11,12 @@ export default async function create(
   res: Response<StorageObject, ObjectStorageCreateItemResLocals>
 ): Promise<void> {
   const { user } = res.locals;
-  const storageObject: StorageObject = await objectStorageService.create({
+  const storageObject: StorageObject = objectStorageService.create({
     user_id: user.id,
     type: STORAGE_OBJECT_TYPES.DIR,
     name: req.body.name,
     parent_id: req.body.parentId,
+    is_root: false
   });
 
   await objectStorageService.save(storageObject);

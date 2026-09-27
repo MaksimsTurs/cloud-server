@@ -40,5 +40,5 @@ export default {
     ".tar",
     ".gz",
     ".iso"
-  ])
+  ]) as Set<string>
 } as const;

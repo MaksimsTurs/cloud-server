@@ -7,7 +7,7 @@ import confirmEmail from "./confirm-email.service";
 import getById from "./get-by-id.service";
 import getOne from "./get-one.service";
 
-const userService = {
+export default {
   create,
   save,
   getById,
@@ -17,5 +17,3 @@ const userService = {
   sendConfirmEmail,
   confirmEmail,
 } as const;
-
-export default userService;

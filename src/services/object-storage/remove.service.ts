@@ -6,10 +6,9 @@ import objectStorageRepo from "../../repos/Object-Storage.repo";
 import fsAsync from "node:fs/promises";
 import path from "node:path";
 
-import CaughtError from "../../utils/Caught-Error.util";
+import { HTTP400Error } from "../../utils/HTTP-Error.util";
 import bubleSort from "../../utils/buble-sort.util";
 
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 import STORAGE_OBJECT_TYPES from "../../const/STORAGE_OBJECT_TYPES.const";
 
 import app from "../../Application";
@@ -22,10 +21,9 @@ export default async function remove(user: User, body: ObjectStorageRemoveObject
     const item: StorageObject = body[id];
 
     if(item.user_id != user.id) {
-      throw new CaughtError(
-        HTTP_ERROR_CODES.FORBIDDEN,
-        `User(${user.id}) has tried to remove another user's items.`,
-        "You cannot remove these items!"
+      throw new HTTP400Error(
+        `User ${user.id} has tried to remove another user's object`,
+        "You cannot remove these object!"
       );
     }
 

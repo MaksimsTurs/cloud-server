@@ -1,14 +1,13 @@
 import type { Request, Response } from "express";
 import type { UserJwtPayload } from "../../index.type";
 
-import CaughtError from "../../utils/Caught-Error.util";
+import { HTTP401Error } from "../../utils/HTTP-Error.util";
 import { generateAccessToken, verifyRefreshToken } from "../../utils/jwt/jwt.util";
 
 import COOKIE from "../../const/COOKIE.const";
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
 import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 
-export default async function regenerateAccessToken(
+export default async function refreshAccessToken(
   req: Request,
   res: Response<string>
 ): Promise<void> {
@@ -16,8 +15,7 @@ export default async function regenerateAccessToken(
   const payload: UserJwtPayload | undefined = verifyRefreshToken(refreshToken);
   
   if(!payload || !payload?.id) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.UNAUTHORIZED,
+    throw new HTTP401Error(
       `User with suspicious id ${payload?.id} has tried to generate new access token`,
       "You are unauthorized!"
     );

@@ -1,18 +1,16 @@
 import type { Request, Response, NextFunction } from "express";
 
-import CaughtError from "../utils/Caught-Error.util";
+import { HTTP403Error } from "../utils/HTTP-Error.util";
 
-import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
-
-export default async function isVerified(req: Request, res: Response, next: NextFunction): Promise<void> {
+export default async function isVerified(
+  req: Request, 
+  res: Response, 
+  next: NextFunction
+): Promise<void> {
   const { user } = res.locals;
 
   if(!user.is_verified) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.FORBIDDEN,
-      `Unverified user ${user.id} has tried to access path ${req.path}`,
-      "You are not verified!"
-    );
+    throw new HTTP403Error(`Not verified user ${user.id} has tried to access path ${req.path}`);
   }
 
   next();

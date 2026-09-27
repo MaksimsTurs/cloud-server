@@ -43,7 +43,7 @@ const FOLDER_CREATE_SCHEME: VineObject<any, any, any, any> = vine.object({
 });
 const FOLDER_REMOVE_SCHEME: VineRecord<VineObject<any, any, any, any>> = vine.record(STORAGE_OBJECT_SCHEME.clone());
 const FOLDER_GET_SCHEME: VineObject<any, any, any, any> = vine.object({
-  id: UUID_SHEME.clone().optional()
+  id: UUID_SHEME.clone()
 });
 const FOLDER_MOVE_SCHEME: VineObject<any, any, any, any> = vine.object({
   parentId: UUID_SHEME.clone(),
@@ -118,4 +118,4 @@ export default {
   USER_REFRESH_TOKEN_SCHEME,
   // Middleware route schemes
   IS_AUTHORIZED_SCHEMA
-};
+} as const;

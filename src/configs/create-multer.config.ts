@@ -7,12 +7,11 @@ import path from "node:path";
 import { fileTypeFromBuffer } from "file-type";
 import { isUndefined } from "@maksims/is.js";
 
-import CaughtError from "../utils/Caught-Error.util";
 import generateId from "../utils/generate-id.util";
 import app from "../Application";
 import { isFileSafe } from "../utils/is.util";
+import { HTTP400Error } from "../utils/HTTP-Error.util";
 
-import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
 import UPLOADER from "../const/UPLOADER.const";
 
 type MulterStorageCreationCallback = (error: Error | null, path: string) => void;
@@ -58,15 +57,13 @@ function fileFilter(
   fileTypeFromBuffer(file.buffer)
     .then((res: FileTypeResult | undefined) => {
       if(isUndefined(res)) {
-        callback(new CaughtError(
-          HTTP_ERROR_CODES.BAD_REQUEST,
-          `${req.socket.remoteAddress} try to upload file with unknown format`,
-          `Can not upload file with unknown format!`
+        callback(new HTTP400Error(
+          `Unknown user ${req.socket.remoteAddress} has tried to upload file with unknown format`,
+          `Yout can not upload file with unknown format!`
         ));
       } else if(!isFileSafe(res.ext)) {
-        callback(new CaughtError(
-          HTTP_ERROR_CODES.BAD_REQUEST,
-          `${req.socket.remoteAddress} try to upload file with unsafe format(${res.ext})`,
+        callback(new HTTP400Error(
+          `Unknown user ${req.socket.remoteAddress} try to upload file with unsafe format ${res.ext}`,
           `${res.ext} files can not be uploaded!`
         ));
       } else {

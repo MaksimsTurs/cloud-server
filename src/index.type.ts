@@ -17,6 +17,7 @@ export type UserJwtPayload = {
 export type StorageObject = {
   id: string
   user_id: string
+  is_root: boolean
   parent_id?: string
   mime_type?: string
   name: string

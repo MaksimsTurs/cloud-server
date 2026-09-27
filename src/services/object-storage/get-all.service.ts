@@ -1,30 +1,12 @@
 import type { StorageObject, User } from "../../index.type";
 import type { ObjectStorageServiceGetAllReturn } from "./object-storage-service.type"
 
-import storageRepo from "../../repos/Object-Storage.repo";
-
-import CaughtError from "../../utils/Caught-Error.util";
-
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
+import objectStorageRepo from "../../repos/Object-Storage.repo";
 
 export default async function getAll(user: User, id?: string): Promise<ObjectStorageServiceGetAllReturn> {
-  let parentId: string = id || user.id;
-  let items: StorageObject[] = [];
-  let parent: StorageObject | undefined;
+  const parentId: string = id || user.id;
+  const items: StorageObject[] = await objectStorageRepo.getAll(user.id, parentId);  
+  const parent: StorageObject = items.pop()!;
 
-  items = await storageRepo.getAll(user.id, parentId);
-  parent = items.at(0);
-
-  if(!parent || parent.id !== parentId) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.NOT_FOUND,
-      `User(${user.id}) has tried to read folder with id(${parentId}).`,
-      "Can not find folder!"
-    );
-  }
-
-  return { 
-    items: items.slice(1, items.length), 
-    parent 
-  };
+  return { items, parent };
 };

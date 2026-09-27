@@ -8,9 +8,7 @@ import path from "node:path";
 import fsAsync from "node:fs/promises";
 
 import { isPathSafe } from "../../utils/is.util";
-import CaughtError from "../../utils/Caught-Error.util";
-
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
+import { HTTP401Error, HTTP404Error } from "../../utils/HTTP-Error.util";
 
 import app from "../../Application";
 
@@ -24,9 +22,8 @@ export default async function getById(
   const storageObject: StorageObject | undefined = await objectStorageService.getById(id);
 
   if(!storageObject) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.NOT_FOUND,
-      `User(${user.id}) has tried to get not existing file(${id}).`,
+    throw new HTTP404Error(
+      `User ${user.id} has tried to get not existing file ${id}`,
       "File not found!"
     );
   }
@@ -35,9 +32,8 @@ export default async function getById(
   const filePath: string = path.resolve(basePath, storageObject!.id);
 
   if(!isPathSafe(basePath, filePath)) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.BAD_REQUEST,
-      `User(${user.id}) has tried to get suspicous file(${filePath}).`,
+    throw new HTTP401Error(
+      `User ${user.id} has tried to get suspicous file ${filePath}`,
       "You can not get this file!"
     );
   }

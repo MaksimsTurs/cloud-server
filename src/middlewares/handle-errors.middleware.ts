@@ -1,37 +1,51 @@
-import type { Response, Request, NextFunction } from "express";
+import type { Response, Request } from "express";
 
 import { ValidationError } from "@vinejs/vine";
 
-import CaughtError from "../utils/Caught-Error.util";
+import { HTTPError } from "../utils/HTTP-Error.util";
 
 import app from "../Application";
 
-import HTTP_ERRORS from "../const/HTTP_ERRORS.const";
+import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
 import COOKIE from "../const/COOKIE.const";
 
-export default async function handleError(error: unknown, _req: Request, res: Response, _next: NextFunction): Promise<void> {
+export default async function handleError(
+  error: unknown, 
+  _req: Request, 
+  res: Response
+): Promise<void> {
   const { logger } = app.context;
 
-  if(error instanceof CaughtError) {
-    res.status(error.options.code).send({ code: error.options.code, message: error.options.clientMessage });
+  if(error instanceof HTTPError) {
+    const { code, clientMessage, serverMessage } = error.options;
 
-    if(error.options.serverMessage) {
-      logger.console.error(error.options.serverMessage);
+    res.status(code).send({ code, message: clientMessage });
+
+    if(serverMessage) {
+      logger.console.error(serverMessage);
     }
   } else if(error instanceof ValidationError) {
-    if(error.messages[0].field === COOKIE.ACCESS_TOKEN_KEY ||
+    if(error.messages[0].field === COOKIE.ACCESS_TOKEN_KEY || 
        error.messages[0].field === COOKIE.REFRESH_TOKEN_KEY) {
-      res.status(401).send(HTTP_ERRORS.UNAUTHORIZED());
+      res
+        .status(HTTP_ERROR_CODES.UNAUTHORIZED)
+        .send({ code: HTTP_ERROR_CODES.UNAUTHORIZED, message: "Unauthorized!" });
     } else {
-      res.status(400).send(HTTP_ERRORS.BAD_REQUEST(error.messages[0].message));
+      res
+        .status(HTTP_ERROR_CODES.BAD_REQUEST)
+        .send({ code: HTTP_ERROR_CODES.BAD_REQUEST, message: error.messages[0].message });
     }
 
     logger.console.error(`Validation error, ${error.messages[0].message}`);
   } else if(error instanceof Error) {
-    res.status(500).send(HTTP_ERRORS.INTERNAL_SERVER_ERROR());
+    res
+      .status(HTTP_ERROR_CODES.INTERNAL_SERVER_ERROR)
+      .send({ code: HTTP_ERROR_CODES.INTERNAL_SERVER_ERROR, message: "Internal Server Error!" });
     logger.console.error(error.message);
   } else {
-    res.status(500).send(HTTP_ERRORS.INTERNAL_SERVER_ERROR());
+    res
+      .status(HTTP_ERROR_CODES.INTERNAL_SERVER_ERROR)
+      .send({ code: HTTP_ERROR_CODES.INTERNAL_SERVER_ERROR, message: "Internal Server Error!" });
     logger.console.error("Uncaught server error!");
   }
 };

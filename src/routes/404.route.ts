@@ -1,13 +1,7 @@
 import type { Request } from "express";
 
-import CaughtError from "../utils/Caught-Error.util";
-
-import HTTP_ERROR_CODES from "../const/HTTP_ERROR_CODES.const";
+import { HTTP404Error } from "../utils/HTTP-Error.util";
 
 export default function defaultRoute(req: Request): void {
-  throw new CaughtError(
-    HTTP_ERROR_CODES.NOT_FOUND,
-    `Remote user ${req.socket.remoteAddress} has requested unknown route path ${req.path}`,
-    "Path not found!"
-  );
+  throw new HTTP404Error(`Unknown user ${req.socket.remoteAddress} has requested unknown path ${req.path}`);
 };

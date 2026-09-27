@@ -2,43 +2,35 @@ import type { User } from "../../index.type";
 import type { UserServiceCreateReturn } from "./user-service.type";
 import type { UserLogUpReqBody } from "../../routes/user/user-route.type";
 
-import CaughtError from "../../utils/Caught-Error.util";
+import argon from "argon2";
+
 import generateId from "../../utils/generate-id.util";
+import { HTTP409Error } from "../../utils/HTTP-Error.util";
 import { generateRefreshToken, generateAccessToken } from "../../utils/jwt/jwt.util";
 
 import userRepo from "../../repos/User.repo";
 
-import argon from "argon2";
-
-import HTTP_ERROR_CODES from "../../const/HTTP_ERROR_CODES.const";
-
-import app from "../../Application";
-
-export default async function create(data: UserLogUpReqBody): Promise<UserServiceCreateReturn> {
-  if(await userRepo.isExist("email", data.email)) {
-    throw new CaughtError(
-      HTTP_ERROR_CODES.CONFLICT,
+export default async function create(body: UserLogUpReqBody): Promise<UserServiceCreateReturn> {
+  if(await userRepo.isExist({ email: body.email })) {
+    throw new HTTP409Error(
       "Unknown user has tried to create account with email that already exists",
-      "User with the same email alredy exist!"
+      "User already exist!"
     );
   }
 
-  const { conf } = app.context;
   const id: string = generateId();
-  const hash: string = await argon.hash(data.password);
-  const access: string = generateAccessToken({ id });
-  const refresh: string = generateRefreshToken({ id });
-  const workDir: string = `${conf.BASE_STORAGE_PATH}/${id}`;
+  const hash: string = await argon.hash(body.password);
+  const accessToken: string = generateAccessToken({ id });
+  const refreshToken: string = generateRefreshToken({ id });
   const user: User = {
     id,
     password: hash,
-    email: data.email,
+    email: body.email,
     is_verified: false
   };
 
   return {
     user,
-    workDir,
-    tokens: { access, refresh }
+    tokens: { access: accessToken, refresh: refreshToken }
   };
 };

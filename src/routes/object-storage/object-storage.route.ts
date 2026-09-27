@@ -21,79 +21,70 @@ import rateLimitter from "../../middlewares/rate-limitter.middleware";
 import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
 import RATE_LIMITTER from "../../const/RATE_LIMITTER.const";
 
-const dirRouter: Router = express.Router();
-
-dirRouter.use(rateLimitter({
-  maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE,
-  windowInMs: RATE_LIMITTER.WINDOW_5MIN,
-  sendHeaders: false
-}));
-
 export default function initObjectStorageRouter(uploader: Multer): Router {
-  dirRouter.post("/get/all",
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    validate("query", VALIDATION_SCHEMES.FOLDER_GET_SCHEME),
-    isAuth,
-    isVerified,
-    getAll,
-    handleError
-  );
-
-  dirRouter.get("/get/:id",
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    validate("params", VALIDATION_SCHEMES.FOLDER_GET_OBJECT_SCHEME),
-    isAuth,
-    isVerified,
-    getById,
-    handleError
-  );
-
-  dirRouter.post("/copy",     
-    validate("body", VALIDATION_SCHEMES.FOLDER_COPY_SCHEME),
-    isAuth,
-    isVerified,
-    copy,
-    handleError
-  );
-
-  dirRouter.post("/move",     
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    validate("body", VALIDATION_SCHEMES.FOLDER_MOVE_SCHEME),
-    isAuth,
-    isVerified,
-    move,
-    handleError
-  );
-
-  dirRouter.post("/remove",    
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    validate("body", VALIDATION_SCHEMES.FOLDER_REMOVE_SCHEME),
-    isAuth,
-    isVerified,
-    remove,
-    handleError
-  );
-
-  dirRouter.post("/create",     
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    validate("body", VALIDATION_SCHEMES.FOLDER_CREATE_SCHEME),
-    isAuth,
-    isVerified,
-    create,
-    handleError
-  );
-
-  dirRouter.post("/upload",
-    uploader.any(),
-    convertFormDataToObject,
-    validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME),
-    validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_KNOWN_PARAMS_SCHEME),
-    validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-    isAuth,
-    isVerified,
-    upload,
-    handleError
-  );
-
-  return dirRouter;
+  return express
+    .Router()
+    .use(rateLimitter({
+      maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE,
+      windowInMs: RATE_LIMITTER.WINDOW_5MIN,
+      sendHeaders: false
+    }))
+    .post("/get/all",
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("query", VALIDATION_SCHEMES.FOLDER_GET_SCHEME),
+      isAuth,
+      isVerified,
+      getAll,
+      handleError
+    )
+    .get("/get/:id",
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("params", VALIDATION_SCHEMES.FOLDER_GET_OBJECT_SCHEME),
+      isAuth,
+      isVerified,
+      getById,
+      handleError
+    )
+    .post("/copy",     
+      validate("body", VALIDATION_SCHEMES.FOLDER_COPY_SCHEME),
+      isAuth,
+      isVerified,
+      copy,
+      handleError
+    )
+    .post("/move",     
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("body", VALIDATION_SCHEMES.FOLDER_MOVE_SCHEME),
+      isAuth,
+      isVerified,
+      move,
+      handleError
+    )
+    .post("/remove",    
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("body", VALIDATION_SCHEMES.FOLDER_REMOVE_SCHEME),
+      isAuth,
+      isVerified,
+      remove,
+      handleError
+    )
+    .post("/create",     
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("body", VALIDATION_SCHEMES.FOLDER_CREATE_SCHEME),
+      isAuth,
+      isVerified,
+      create,
+      handleError
+    )
+    .post("/upload",
+      uploader.any(),
+      convertFormDataToObject,
+      validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME),
+      validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_KNOWN_PARAMS_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      isAuth,
+      isVerified,
+      upload,
+      handleError
+    );
 };
