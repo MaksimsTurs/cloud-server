@@ -1,4 +1,4 @@
-import type { Response, Request } from "express";
+import type { Response, Request, NextFunction } from "express";
 
 import { ValidationError } from "@vinejs/vine";
 
@@ -12,10 +12,11 @@ import COOKIE from "../const/COOKIE.const";
 export default async function handleError(
   error: unknown, 
   _req: Request, 
-  res: Response
+  res: Response,
+  _next: NextFunction
 ): Promise<void> {
   const { logger } = app.context;
-
+  
   if(error instanceof HTTPError) {
     const { code, clientMessage, serverMessage } = error.options;
 
