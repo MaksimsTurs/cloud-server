@@ -1,6 +1,6 @@
 {
   "name": "cloud-server",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "main": "./output/index.js",
   "license": "ISC",
   "scripts": {
