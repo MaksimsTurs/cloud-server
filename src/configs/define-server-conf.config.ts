@@ -4,10 +4,10 @@ import dotenv from "@maksims/dotenv.js";
 export default function defineServerEnv() {
   dotenv();
 
-  if(isUndefined(process.env.MODE) || 
-     isNull(process.env.MODE) || 
-     !process.env.MODE.length) {
-    throw new TypeError("process.env.MODE must be defined!");
+  if(isUndefined(process.env.NODE_ENV) || 
+     isNull(process.env.NODE_ENV) || 
+     !process.env.NODE_ENV.length) {
+    throw new TypeError("process.env.NODE_ENV must be defined!");
   }
 
   if(isUndefined(process.env.BASE_STORAGE_PATH) ||
@@ -138,7 +138,7 @@ export default function defineServerEnv() {
     NODEMAILER_USER: process.env.NODEMAILER_USER,
     NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
     
-    MODE: process.env.MODE,
+    MODE: process.env.NODE_ENV,
     HOST: process.env.HOST,
     PORT: parseInt(process.env.PORT),
 
