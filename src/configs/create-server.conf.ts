@@ -3,9 +3,8 @@ import type { ApplicationConf } from "../Application.type";
 import type { Express } from "express";
 
 import createUserRouter from "../routes/user/user.route";
-import initObjectStorageRouter from "../routes/object-storage/object-storage.route";
+import createObjectStorageRouter from "../routes/object-storage/object-storage.route";
 import defaultRoute from "../routes/404.route";
-import rateLimitter from "../middlewares/rate-limitter.middleware";
 
 import handleError from "../middlewares/handle-errors.middleware";
 
@@ -13,8 +12,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import RATE_LIMITTER from "../const/RATE_LIMITTER.const";
-
+// TODO: Replace rate limitter middleware with rate limitter from haproxy.
 export default function createServer(conf: ApplicationConf, uploader: Multer): Express {
   return express()
     .disable("x-powered-by")
@@ -24,13 +22,6 @@ export default function createServer(conf: ApplicationConf, uploader: Multer): E
     .use(express.urlencoded({ extended: true }))
     .use(cookieParser())
     .use("/user",         createUserRouter())
-    .use("/storage",      initObjectStorageRouter(uploader))
-    .all("/{*splat}",     
-      rateLimitter({
-        maxRequestsPerWindow: RATE_LIMITTER.RARELY_USED_ROUTE,
-        windowInMs: RATE_LIMITTER.WINDOW_10MIN
-      }), 
-      defaultRoute, 
-      handleError
-    );
+    .use("/storage",      createObjectStorageRouter(uploader))
+    .all("/{*splat}",     defaultRoute, handleError);
 };
