@@ -16,19 +16,12 @@ import isVerified from "../../middlewares/is-verified.middleware";
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
 import convertFormDataToObject from "../../middlewares/convert-form-data-to-object.middleware";
-import rateLimitter from "../../middlewares/rate-limitter.middleware";
 
 import VALIDATION_SCHEMES from "../../const/VALIDATION_SCHEMES.const";
-import RATE_LIMITTER from "../../const/RATE_LIMITTER.const";
 
 export default function initObjectStorageRouter(uploader: Multer): Router {
   return express
     .Router()
-    .use(rateLimitter({
-      maxRequestsPerWindow: RATE_LIMITTER.FREQUENTLY_USED_ROUTE,
-      windowInMs: RATE_LIMITTER.WINDOW_5MIN,
-      sendHeaders: false
-    }))
     .post("/get/all",
       validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
       validate("query", VALIDATION_SCHEMES.FOLDER_GET_SCHEME),
