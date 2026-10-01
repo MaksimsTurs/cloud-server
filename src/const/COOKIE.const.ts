@@ -5,16 +5,14 @@ export default {
   REFRESH_TOKEN_KEY:  "$53879365562",
   REFRESH_OPTIONS: {
     maxAge: 604_800_000,
-    path: "/",
-    sameSite: "lax",
+    sameSite: "none",
     httpOnly: true,
-    secure: process.env.MODE != "dev"
+    secure: process.env.NODE_ENV === "prod"
   } as CookieOptions,
   ACCESS_OPTIONS: {
     maxAge: 900_000,
-    path: "/",
-    sameSite: "lax",
+    sameSite: "none",
     httpOnly: true,
-    secure: process.env.MODE != "dev"
+    secure: process.env.NODE_ENV != "prod"
   } as CookieOptions
 } as const;
