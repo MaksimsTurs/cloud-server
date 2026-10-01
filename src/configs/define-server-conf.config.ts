@@ -58,10 +58,10 @@ export default function defineServerEnv() {
     throw new TypeError("process.env.PORT must be defined!");
   }
 
-  if(isUndefined(process.env.ALLOWED_ORIGINS) || 
-     isNull(process.env.ALLOWED_ORIGINS) ||
-     !process.env.ALLOWED_ORIGINS.length) {
-    throw new TypeError("process.env.ALLOWED_ORIGINS must be defined!");
+  if(isUndefined(process.env.ALLOWED_ORIGIN) || 
+     isNull(process.env.ALLOWED_ORIGIN) ||
+     !process.env.ALLOWED_ORIGIN.length) {
+    throw new TypeError("process.env.ALLOWED_ORIGIN must be defined!");
   }
 
   if(isUndefined(process.env.POSTGRES_HOST) || 
@@ -142,7 +142,7 @@ export default function defineServerEnv() {
     HOST: process.env.HOST,
     PORT: parseInt(process.env.PORT),
 
-    ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS,
+    ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN,
 
     POSTGRES_HOST: process.env.POSTGRES_HOST,
     POSTGRES_PORT: parseInt(process.env.POSTGRES_PORT),

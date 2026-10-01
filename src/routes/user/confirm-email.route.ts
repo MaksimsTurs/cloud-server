@@ -12,5 +12,5 @@ export default async function confirmEmail(
   const { conf } = app.context;
   await userService.confirmEmail(req.query.token);
 
-  res.redirect(301, conf.ALLOWED_ORIGINS);
+  res.redirect(301, conf.ALLOWED_ORIGIN);
 };
