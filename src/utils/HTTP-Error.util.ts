@@ -10,7 +10,7 @@ export class HTTPError extends Error {
   public options: HTTPErrorOptions;
 
   public constructor(code: number, serverMessage?: string, clientMessage?: string) {
-    super();
+    super(serverMessage);
     this.options = { code, serverMessage, clientMessage };
   };
 };
