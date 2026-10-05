@@ -4,7 +4,7 @@ import SQLRepository from "./SQL.repo";
 
 class UserRepository extends SQLRepository<User> {
   constructor() {
-    super("t_users");
+    super({ table: "t_users" });
   };
 };
 

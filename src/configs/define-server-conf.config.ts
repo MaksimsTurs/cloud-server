@@ -10,6 +10,24 @@ export default function defineServerEnv() {
     throw new TypeError("process.env.NODE_ENV must be defined!");
   }
 
+  if(isUndefined(process.env.AES_SECRET) || 
+     isNull(process.env.AES_SECRET) || 
+     !process.env.AES_SECRET.length) {
+    throw new TypeError("process.env.AES_SECRET must be defined!");
+  }
+
+  if(isUndefined(process.env.AES_IV_SIZE) || 
+     isNull(process.env.AES_IV_SIZE) || 
+     !process.env.AES_IV_SIZE.length) {
+    throw new TypeError("process.env.AES_IV_SIZE must be defined!");
+  }
+
+  if(isUndefined(process.env.AES_ALGORITHM) || 
+     isNull(process.env.AES_ALGORITM) || 
+     !process.env.AES_ALGORITHM.length) {
+    throw new TypeError("process.env.AES_ALGORITHM must be defined!");
+  }
+
   if(isUndefined(process.env.BASE_STORAGE_PATH) ||
      isNull(process.env.BASE_STORAGE_PATH) || 
      !process.env.BASE_STORAGE_PATH.length) {
@@ -141,6 +159,10 @@ export default function defineServerEnv() {
     MODE: process.env.NODE_ENV,
     HOST: process.env.HOST,
     PORT: parseInt(process.env.PORT),
+
+    AES_ALGORITHM: process.env.AES_ALGORITHM,
+    AES_IV_SIZE: parseInt(process.env.AES_IV_SIZE),
+    AES_SECRET: process.env.AES_SECRET,
 
     ALLOWED_ORIGIN: process.env.ALLOWED_ORIGIN,
 
