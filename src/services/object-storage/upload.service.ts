@@ -5,6 +5,7 @@ import type { StorageObject, StorageObjectProcessOptions, User } from "../../ind
 import { isFileSafe, isPathSafe, isMediaFile } from "../../utils/is.util";
 import { HTTP400Error, HTTP401Error } from "../../utils/HTTP-Error.util";
 import ffmpeg from "../../utils/ffmpeg/ffmpeg.util";
+import SagaPattern from "../../utils/Saga-Pattern/Saga-Pattern.util";
 
 import app from "../../Application";
 
@@ -24,7 +25,8 @@ export default async function upload(
   files: Express.Multer.File[]
 ): Promise<StorageObject[]> {
   const { conf } = app.context;
-  const { parentId } = body
+  const { parentId } = body;
+  const saga: SagaPattern = new SagaPattern({ stepRetryCount: 1, compensateRetryCount: 2 });
   const items: StorageObject[] = [];
   const parent: StorageObject | undefined = await objectStorageRepo.getById(parentId);
   
@@ -36,23 +38,23 @@ export default async function upload(
   }
     
   for(let index: number = 0; index < files.length; index++) {
-    const file: Express.Multer.File = files[index];
+    const file: Express.Multer.File = files[index]!;
     const fileType: FileTypeResult | undefined = await fileTypeFromFile(file.path);
     const options: StorageObjectProcessOptions | undefined = body[index];
     const filePath = path.parse(file.originalname);
-    const extention: string = (fileType?.ext || filePath.ext).toLowerCase();
+    const ext: string = (fileType?.ext || filePath.ext).toLowerCase();
 
-    if(isFileSafe(fileType?.ext)) {
+    if(!isFileSafe(ext)) {
       throw new HTTP400Error(
-        `User ${user.id} has tried to upload unsafe file ${extention}`,
-        `${extention} files can not be uploaded!`
+        `User ${user.id} has tried to upload unsafe file ${ext}`,
+        `${ext} files can not be uploaded!`
       );
     }
 
     const fileBasePath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}`);
-    const filename: string = path.resolve(`${options?.name || filePath.name}.${extention}`);
+    const fileName: string = `${options?.name || filePath.name}.${ext}`;
     const newObject: StorageObject = objectStorageService.create({
-      name: filename,
+      name: fileName,
       type: STORAGE_OBJECT_TYPES.FILE,
       user_id: user.id,
       parent_id: parentId,
@@ -67,19 +69,30 @@ export default async function upload(
         "You can not upload files into this directory!"
       );
     }
-
-    if(isMediaFile(file.mimetype)) {
-      await ffmpeg(file.path)
-        .resize(options?.width, options?.height)
-        .process({ [options?.convertTo || extention]: {...options }})
-        .outputFormatFromExtention(options?.convertTo || extention)
-        .outputFile(dstPath);
-      await fsAsync.rm(file.path);
-    } else {
-      await fsAsync.rename(file.path, dstPath);
-    }
-
-    await objectStorageService.save(newObject);
+    
+    (await saga
+      .add(
+        async (): Promise<void> => {
+          if(isMediaFile(file.mimetype)) {
+            await ffmpeg(file.path)
+              .resize(options?.width, options?.height)
+              .process({ [options?.convertTo || ext]: {...options }})
+              .outputFormatFromExtention(options?.convertTo || ext)
+              .outputFile(dstPath);
+          } else {
+            await fsAsync.rename(file.path, dstPath);
+          }
+          
+          await fsAsync.rm(file.path, { force: true });
+          await objectStorageService.save(newObject);
+        },
+        async (): Promise<void> => {
+          await fsAsync.rm(file.path, { force: true });
+          await fsAsync.rm(dstPath, { force: true });
+        }
+      )
+      .execute())
+      .throw();
 
     items.push(newObject);
   }

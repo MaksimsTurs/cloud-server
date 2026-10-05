@@ -4,12 +4,14 @@ import save from "./save.service";
 import copy from "./copy.service";
 import move from "./move.service";
 import remove from "./remove.service";
+import removeById from "./remove-by-id.service";
 import create from "./create.service";
 import upload from "./upload.service";
 
 export default {
   getAll,
   getById,
+  removeById,
   copy,
   move,
   remove,

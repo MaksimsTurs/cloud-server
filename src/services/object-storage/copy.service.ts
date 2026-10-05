@@ -3,6 +3,7 @@ import type { ObjectStorageCopyReqBody } from "../../routes/object-storage/objec
 import type { ObjectStorageServiceCopyReturn } from "./object-storage-service.type";
 
 import { HTTP401Error, HTTP409Error } from "../../utils/HTTP-Error.util";
+import SagaPattern from "../../utils/Saga-Pattern/Saga-Pattern.util";
 
 import objectStorageRepo from "../../repos/Object-Storage.repo";
 
@@ -15,6 +16,7 @@ import objectStorageService from "./object-storage.service";
 
 export default async function copy(user: User, body: ObjectStorageCopyReqBody): Promise<ObjectStorageServiceCopyReturn> {
   const { conf } = app.context;
+  const saga: SagaPattern = new SagaPattern({ stepRetryCount: 1, compensateRetryCount: 2 });
   const items: Record<string, StorageObject> = body.items;
   const copies: StorageObject[] = [];
   const copiesParent: StorageObject | undefined = await objectStorageRepo.getById(body.parentId);
@@ -27,7 +29,7 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
   }
 
   for(let id in items) {
-    const item: StorageObject = items[id];
+    const item: StorageObject = items[id]!;
     
     if(!await objectStorageRepo.isExist({ id })) {
       throw new HTTP401Error(
@@ -47,8 +49,19 @@ export default async function copy(user: User, body: ObjectStorageCopyReqBody): 
     const originalPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${item.id}`);
     const copyPath: string = path.resolve(`${conf.BASE_STORAGE_PATH}/${user.id}/${itemCopy.id}`);
 
-    await objectStorageRepo.insertOne(itemCopy);
-    await fsAsync.cp(originalPath, copyPath);
+    (await saga
+      .add(
+        async (): Promise<void> => {
+          await objectStorageRepo.insertOne(itemCopy);
+          await fsAsync.cp(originalPath, copyPath);
+        },
+        async (): Promise<void> => {
+          await objectStorageRepo.removeOne(itemCopy);
+          await fsAsync.rm(copyPath, { recursive: true, force: true });
+        }
+      )
+      .execute())
+      .throw();
 
     copies.push(itemCopy);
   }
