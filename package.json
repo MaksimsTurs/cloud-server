@@ -1,6 +1,6 @@
 {
   "name": "Die.Wolke",
-  "version": "3.6.4",
+  "version": "3.7.4",
   "main": "./output/index.js",
   "license": "ISC",
   "scripts": {
