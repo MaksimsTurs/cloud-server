@@ -13,7 +13,7 @@ export type UserGetMeResBody = {
 };
 
 export type UserLogInReqBody = {
-  email: string
+  pseudonym: string
   password: string
 };
 
@@ -26,6 +26,7 @@ export type UserLogInResBody = {
 };
 
 export type UserLogUpReqBody = {
+  pseudonym: string
   email: string
   password: string
   confirmPassword: string
@@ -39,12 +40,16 @@ export type UserLogUpResBody = {
   }
 };
 
-export type UserRequestConfirmEmailResLocals = {
+export type UserResponseConfirmEmailLocals = {
   user: User
 };
 
+export type UserRequestConfirmEmailReqBody = {
+  email: string
+};
+
 export type UserRequestResetPasswordReqBody = {
-  token: string
+  pseudonym: string
   email: string
 };
 
@@ -55,4 +60,8 @@ export type UserResetPasswordReqBody = {
 
 export type UserConfirmEmailQuery = {
   token: string
+};
+
+export type UserDownloadMyDataResLocals = {
+  user: User
 };
