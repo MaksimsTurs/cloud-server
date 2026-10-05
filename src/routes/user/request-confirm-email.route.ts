@@ -1,13 +1,13 @@
 import type { Request, Response } from "express";
-import type { UserRequestConfirmEmailResLocals } from "./user-route.type.ts";
+import type { UserRequestConfirmEmailReqBody, UserResponseConfirmEmailLocals } from "./user-route.type.ts";
 
 import userService from "../../services/user/user.service";
 
 export default async function requestConfirmEmail(
-  _req: Request, 
-  res: Response<unknown, UserRequestConfirmEmailResLocals>
+  req: Request<unknown, unknown, UserRequestConfirmEmailReqBody>, 
+  res: Response<unknown, UserResponseConfirmEmailLocals>
 ): Promise<void> {
-  await userService.sendConfirmEmail(res.locals.user);
+  await userService.sendConfirmEmail(req.body.email, res.locals.user);
 
   res.sendStatus(200);
 };

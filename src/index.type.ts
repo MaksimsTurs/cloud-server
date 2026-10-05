@@ -1,7 +1,7 @@
 export type User = {
   id: string
   password: string
-  email: string
+  pseudonym: string
   is_verified: boolean
 };
 

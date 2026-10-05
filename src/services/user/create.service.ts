@@ -11,7 +11,7 @@ import { generateRefreshToken, generateAccessToken } from "../../utils/jwt/jwt.u
 import userRepo from "../../repos/User.repo";
 
 export default async function create(body: UserLogUpReqBody): Promise<UserServiceCreateReturn> {
-  if(await userRepo.isExist({ email: body.email })) {
+  if(await userRepo.isExist({ pseudonym: body.pseudonym })) {
     throw new HTTP409Error(
       "Unknown user has tried to create account with email that already exists",
       "User already exist!"
@@ -23,9 +23,9 @@ export default async function create(body: UserLogUpReqBody): Promise<UserServic
   const accessToken: string = generateAccessToken({ id });
   const refreshToken: string = generateRefreshToken({ id });
   const user: User = {
+    pseudonym: body.pseudonym,
     id,
     password: hash,
-    email: body.email,
     is_verified: false
   };
 

@@ -17,7 +17,7 @@ export default async function logIn(
   req: Request<unknown, unknown, UserLogInReqBody>,
   res: Response<UserLogInResBody>
 ): Promise<void> {
-  const user: User | undefined = await userService.getOne({ email: req.body.email });
+  const user: User | undefined = await userService.getOne({ pseudonym: req.body.pseudonym });
   
   if(!user) {
     throw new HTTP404Error(

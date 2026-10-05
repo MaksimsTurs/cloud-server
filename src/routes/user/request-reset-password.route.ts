@@ -10,7 +10,7 @@ export default async function requestResetPassword(
   req: Request<unknown, unknown, UserRequestResetPasswordReqBody>,
   res: Response
 ): Promise<void> {
-  const user: User | undefined = await userService.getOne({ email: req.body.email });
+  const user: User | undefined = await userService.getOne({ pseudonym: req.body.pseudonym });
 
   if(!user) {
     throw new HTTP400Error(
@@ -19,7 +19,7 @@ export default async function requestResetPassword(
     );
   }
 
-  await userService.sendResetPasswordEmail(user);
+  await userService.sendResetPasswordEmail(req.body.email, user);
  
   res.sendStatus(200);
 };
