@@ -1,11 +1,8 @@
 import type { FileFilterCallback, Multer, StorageEngine } from "multer";
 import type { Request } from "express";
-import type { FileTypeResult } from "file-type";
 
 import multer from "multer";
 import path from "node:path";
-import { fileTypeFromBuffer } from "file-type";
-import { isUndefined } from "@maksims/is.js";
 
 import generateId from "../utils/generate-id.util";
 import app from "../Application";
@@ -52,23 +49,14 @@ function fileFilter(
   file: Express.Multer.File, 
   callback: FileFilterCallback
 ): void {
-  // TODO:  Maybe return preview filter method (path.extname(file.originalname))
-  //        this method may be safer but slower.
-  fileTypeFromBuffer(file.buffer)
-    .then((res: FileTypeResult | undefined) => {
-      if(isUndefined(res)) {
-        callback(new HTTP400Error(
-          `Unknown user ${req.socket.remoteAddress} has tried to upload file with unknown format`,
-          `Yout can not upload file with unknown format!`
-        ));
-      } else if(!isFileSafe(res.ext)) {
-        callback(new HTTP400Error(
-          `Unknown user ${req.socket.remoteAddress} try to upload file with unsafe format ${res.ext}`,
-          `${res.ext} files can not be uploaded!`
-        ));
-      } else {
-        callback(null, true);
-      } 
-    })
-    .catch(reason => callback(reason));
+  const ext: string = path.extname(file.originalname);
+  
+  if(!isFileSafe(ext)) {
+    callback(new HTTP400Error(
+      `Unknown user ${req.socket.remoteAddress} try to upload file with unsafe format ${ext}`,
+      `${ext} files can not be uploaded!`
+    ));
+  } else {
+    callback(null, true);
+  }
 };
