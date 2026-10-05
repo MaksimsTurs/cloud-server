@@ -9,7 +9,7 @@ export default async function upload(
   res: Response<StorageObject[], ObjectStorageUploadResLocals>
 ): Promise<void> {
   let items: StorageObject[] = [];
-
+  
   if(req.files) {
     items = await objectStorageService.upload(res.locals.user, req.body, req.files as Express.Multer.File[]);
   }

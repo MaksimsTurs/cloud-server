@@ -17,7 +17,7 @@ export default async function move(user: User, body: ObjectStorageMoveObjectsReq
   }
 
   for(let id in items) {
-    const item: StorageObject = items[id];
+    const item: StorageObject = items[id]!;
 
     if(item.is_root) {
       throw new HTTP400Error(
@@ -39,7 +39,7 @@ export default async function move(user: User, body: ObjectStorageMoveObjectsReq
         "Object with the same name already exist!"
       );
     }
-
+    
     await objectStorageRepo.updateById(item.id, { parent_id: parent.id });
   } 
 };

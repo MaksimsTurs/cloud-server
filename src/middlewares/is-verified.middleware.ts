@@ -10,7 +10,10 @@ export default async function isVerified(
   const { user } = res.locals;
 
   if(!user.is_verified) {
-    throw new HTTP403Error(`Not verified user ${user.id} has tried to access path ${req.path}`);
+    throw new HTTP403Error(
+      `Not verified user ${user.id} has tried to access path ${req.path}`,
+      "You are not verified, check you email!"
+    );
   }
 
   next();
