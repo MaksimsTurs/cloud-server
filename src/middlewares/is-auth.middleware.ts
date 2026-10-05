@@ -40,8 +40,8 @@ async function verifyAuthToken(req: Request): Promise<string> {
 
   const payload: JwtTokenPaylaod<UserJwtPayload> | undefined = verifyAccessToken<UserJwtPayload>(accessToken);
 
-  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.JWT_USER_PAYLOAD_SCHEME, payload);
-  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.UUID_SHEME, payload?.id);
+  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.COMMON.JWT_PAYLOAD, payload);
+  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.COMMON.UUID, payload?.id);
 
   return payload!.id;
 };

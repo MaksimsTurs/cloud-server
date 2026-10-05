@@ -23,47 +23,48 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
   return express
     .Router()
     .post("/get/all",
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-      validate("query", VALIDATION_SCHEMES.FOLDER_GET_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.STORAGE.GET_OBJECT_BY_ID),
       isAuth,
       isVerified,
       getAll,
       handleError
     )
     .get("/get/:id",
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-      validate("params", VALIDATION_SCHEMES.FOLDER_GET_OBJECT_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("params", VALIDATION_SCHEMES.STORAGE.GET_OBJECT_BY_ID),
       isAuth,
       isVerified,
       getById,
       handleError
     )
-    .post("/copy",     
-      validate("body", VALIDATION_SCHEMES.FOLDER_COPY_SCHEME),
+    .post("/copy",
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.STORAGE.COPY),
       isAuth,
       isVerified,
       copy,
       handleError
     )
     .post("/move",     
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-      validate("body", VALIDATION_SCHEMES.FOLDER_MOVE_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.STORAGE.MOVE),
       isAuth,
       isVerified,
       move,
       handleError
     )
     .post("/remove",    
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-      validate("body", VALIDATION_SCHEMES.FOLDER_REMOVE_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.STORAGE.REMOVE),
       isAuth,
       isVerified,
       remove,
       handleError
     )
     .post("/create",     
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-      validate("body", VALIDATION_SCHEMES.FOLDER_CREATE_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.STORAGE.CREATE),
       isAuth,
       isVerified,
       create,
@@ -71,10 +72,10 @@ export default function initObjectStorageRouter(uploader: Multer): Router {
     )
     .post("/upload",
       uploader.any(),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.STORAGE.KNOWN_UPLOAD_PARAMS),
+      validate("body", VALIDATION_SCHEMES.STORAGE.UNKNOWN_UPLOAD_PARAMS),
       convertFormDataToObject,
-      validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_UNKNOWN_PARAMS_SCHEME),
-      validate("body", VALIDATION_SCHEMES.FILES_UPLOAD_KNOWN_PARAMS_SCHEME),
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
       isAuth,
       isVerified,
       upload,

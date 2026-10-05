@@ -18,8 +18,8 @@ export default async function confirmEmail(token: string): Promise<void> {
     );
   }
 
-  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.JWT_USER_PAYLOAD_SCHEME, payload);
-  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.UUID_SHEME, payload.id);
+  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.COMMON.JWT_PAYLOAD, payload);
+  await VALIDATION_SCHEMES.validate(VALIDATION_SCHEMES.COMMON.UUID, payload.id);
 
   await userRepo.updateById(payload.id, { is_verified: true });
 };

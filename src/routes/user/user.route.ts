@@ -11,6 +11,8 @@ import confirmEmail from "./confirm-email.route";
 import resetPassword from "./reset-password.route";
 import requestResetPassword from "./request-reset-password.route";
 import requestConfirmEmail from "./request-confirm-email.route";
+import downloadMyData from "./download-my-data.route";
+import removeMe from "./remove-me.route";
 
 import validate from "../../middlewares/validate-input.middleware";
 import handleError from "../../middlewares/handle-errors.middleware";
@@ -23,54 +25,67 @@ export default function createUserRouter(): Router {
   return express
     .Router()
     .get("/get-me",
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
       isAuth,
       getMe,
       handleError
     )
+    .get("/remove-me",
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      isAuth,
+      removeMe,
+      handleError
+    )
+    .get("/download-my-data",
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      isAuth,
+      downloadMyData,
+      handleError
+    )
     .post("/log-up",
-      validate("body", VALIDATION_SCHEMES.USER_LOG_UP_SCHEME),
+      validate("body", VALIDATION_SCHEMES.USER.LOG_UP),
       logUp,
       handleError
     )
     .post("/log-in",
-      validate("body", VALIDATION_SCHEMES.USER_LOG_IN_SCHEME),
+      validate("body", VALIDATION_SCHEMES.USER.LOG_IN),
       logIn,
       handleError
     )
     .get("/log-out",
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
       isAuth,
       logOut,
       handleError
     )
-    .get("/confirm",
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
-      isAuth,
-      isNotVerified,
-      validate("query", VALIDATION_SCHEMES.USER_CONFIRM_EMAIL_SCHEME),
-      confirmEmail,
-      handleError
-    )
     .get("/refresh-token", 
-      validate("cookies", VALIDATION_SCHEMES.USER_REFRESH_TOKEN_SCHEME),
+      validate("cookies", VALIDATION_SCHEMES.USER.REFRESH_TOKEN),
       refreshAccessToken,
       handleError
     )
-    .get("/request-confirm-email", 
-      validate("cookies", VALIDATION_SCHEMES.IS_AUTHORIZED_SCHEMA),
+    .post("/request-confirm-email", 
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("body", VALIDATION_SCHEMES.USER.REQUEST_CONFIRM_EMAIL),
       isAuth,
       isNotVerified,
       requestConfirmEmail,
       handleError
     )
     .post("/request-reset-password", 
-      validate("body", VALIDATION_SCHEMES.USER_REQUEST_RESET_PASSWORD_SCHEME),
+      validate("body", VALIDATION_SCHEMES.USER.REQUEST_RESET_PASSWORD),
       requestResetPassword,
       handleError
     )
+    .get("/confirm",
+      validate("cookies", VALIDATION_SCHEMES.COMMON.IS_AUTH),
+      validate("query", VALIDATION_SCHEMES.USER.CONFIRM_EMAIL),
+      isAuth,
+      isNotVerified,
+      confirmEmail,
+      handleError
+    )
     .put("/reset-password",
-      validate("body", VALIDATION_SCHEMES.USER_RESET_PASSWORD_SCHEME),
+      validate("body", VALIDATION_SCHEMES.USER.RESET_PASSWORD),
       resetPassword,
       handleError
     );
