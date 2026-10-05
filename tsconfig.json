@@ -1,25 +1,27 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./output",
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "rootDir": "./src",
-    "outDir": "./output",
     "useDefineForClassFields": true,
     "lib": ["ESNext"],
-    "skipLibCheck": true,
-
-    "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
     "isolatedModules": true,
-    "moduleDetection": "force",
+    "moduleDetection": "force",   
+    "skipLibCheck": true,
+    "rewriteRelativeImportExtensions": true,
 
     "strict": true,
+    "erasableSyntaxOnly": true,
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "allowUnusedLabels": false,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true,
   }
 }
