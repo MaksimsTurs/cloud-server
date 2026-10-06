@@ -37,16 +37,18 @@ export default {
     CREATE:                 vine.create(vine.object({ name: StorageObjectName.clone(), path: vine.string(), parentId: UUIDv4.clone() })),
     KNOWN_UPLOAD_PARAMS:    vine.create(vine.object({ parentId: UUIDv4.clone() }).allowUnknownProperties()),
     UNKNOWN_UPLOAD_PARAMS:  vine.create(
-      vine.record(vine.unionOfTypes([
-        vine.string(),
-        vine.object({
-          name:       StorageObjectName.clone().optional(),
-          convertTo:  vine.enum(["png", "webp", "jpg", "jpeg"]).optional(),
-          quality:    vine.number().range([0, 100]).optional(),
-          width:      vine.number().optional(),
-          height:     vine.number().optional()
-        })
-      ]))
+      vine.record(
+        vine.unionOfTypes([
+          UUIDv4.clone(),
+          vine.object({
+            name:       StorageObjectName.clone().optional(),
+            convertTo:  vine.enum(["png", "webp", "jpg", "jpeg"]).optional(),
+            quality:    vine.number().range([0, 100]).optional(),
+            width:      vine.number().optional(),
+            height:     vine.number().optional()
+          })
+        ])
+      )
     )
   },
   USER: {
